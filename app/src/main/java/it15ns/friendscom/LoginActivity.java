@@ -32,6 +32,8 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.serverPackage.ServerServiceGrpc;
 import io.grpc.serverPackage.HelloRequest;
 import io.grpc.serverPackage.HelloReply;
+import io.grpc.serverPackage.LoginRequest;
+import io.grpc.serverPackage.LoginReply;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -46,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private GrpcTask mAuthTask = null;
+    private GrpcAuthTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -123,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new GrpcTask(email, password);
+            mAuthTask = new GrpcAuthTask(email, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -178,9 +180,9 @@ public class LoginActivity extends AppCompatActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    private class GrpcTask extends AsyncTask<Void, Void, String> {
+    private class GrpcAuthTask extends AsyncTask<Void, Void, String> {
         //TODO: IP Adresse des Servers eintragen
-        private String mHost = "10.8.0.17";
+        private String mHost = "192.168.1.24";
         private int mPort = 50051;
 
         private String mPassword;
@@ -188,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
 
         private ManagedChannel mChannel;
 
-        public GrpcTask (String email, String password) {
+        public GrpcAuthTask (String email, String password) {
             mEmail = email;
             mPassword = password;
         }
@@ -199,11 +201,12 @@ public class LoginActivity extends AppCompatActivity {
                 mChannel = ManagedChannelBuilder.forAddress(mHost, mPort).usePlaintext(true).build();
 
                 ServerServiceGrpc.ServerServiceBlockingStub stub = ServerServiceGrpc.newBlockingStub(mChannel);
-                HelloRequest loginRequest = HelloRequest.newBuilder()
-                        .setName(mEmail)
+                LoginRequest loginRequest = LoginRequest.newBuilder()
+                        .setUser(mEmail)
+                        .setPassword(mPassword)
                         .build();
 
-                HelloReply reply = stub.sayHello(loginRequest);
+                LoginReply reply = stub.login(loginRequest);
                 return reply.getMessage();
             } catch (Exception e) {
                 StringWriter sw = new StringWriter();
