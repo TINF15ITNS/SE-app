@@ -9,25 +9,26 @@ package serverPackage;
 
 service ServerService {
   rpc SayHello (HelloRequest) returns (HelloReply) {}
-  rpc Login (LoginRequest) returns (LoginReply) {}
+  rpc Login	   (LoginRequest) returns (LoginReply) {}
 }
-
-message LoginRequest {
-  string user = 1;
-  string passwd = 2;
-}
-
-message LoginReply {
-  string message = 1;
-}
-
 
 // The request message containing the user's name.
 message HelloRequest {
   string name = 1;
 }
 
-// The response message containing the greetings
 message HelloReply {
   string message = 1;
 }
+
+// Login messages definition
+message LoginRequest {
+  string user = 1;
+  string password = 2;
+}
+
+message LoginReply {
+  bool success = 1;
+  string token = 2;
+}
+

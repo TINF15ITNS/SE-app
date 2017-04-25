@@ -141,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
-**/
+    **/
 
     // GRPC
     private void attemptLogin() {
@@ -253,6 +253,9 @@ public class LoginActivity extends AppCompatActivity {
 
         private ManagedChannel mChannel;
 
+        //
+        private LoginReply loginReply;
+
         public GrpcAuthTask (String email, String password) {
             mEmail = email;
             mPassword = password;
@@ -273,9 +276,9 @@ public class LoginActivity extends AppCompatActivity {
                         .setPassword(mPassword)
                         .build();
 
-                LoginReply reply = stub.login(loginRequest);
+                loginReply = stub.login(loginRequest);
                 
-                return reply.getMessage();
+                return loginReply.getToken();
             } catch (Exception e) {
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw);
@@ -295,15 +298,21 @@ public class LoginActivity extends AppCompatActivity {
 
             mAuthTask = null;
 
+            // bevor das muss XMPP login machen!!
             showProgress(false);
             Toast.makeText(LoginActivity.this, result, Toast.LENGTH_LONG).show();
-            
-            if(!result.equals("Login failed")) {
+
+            if(loginReply.getSuccess()) {
                 token = result;
                 Intent profactivity = new Intent(LoginActivity.this,ProfileActivity.class);
                 startActivity(profactivity);
                 finish();
-            } else {
+            } else if(!loginReply.getSuccess()) {
+                Toast.makeText(LoginActivity.this, "Login fehlgeschlagen: " + result, Toast.LENGTH_LONG).show();
+                mPasswordView.requestFocus();
+            }
+             else {
+                Toast.makeText(LoginActivity.this, result, Toast.LENGTH_LONG).show();
                 mPasswordView.requestFocus();
             }
 
