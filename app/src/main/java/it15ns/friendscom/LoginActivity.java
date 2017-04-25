@@ -3,6 +3,10 @@ package it15ns.friendscom;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -14,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -22,18 +27,57 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.initializer.SmackInitializer;
+import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jivesoftware.smack.util.stringencoder.Base64;
+import org.jivesoftware.smack.util.stringencoder.Base64UrlSafeEncoder;
+import org.jivesoftware.smackx.ping.packet.Ping;
+import org.jxmpp.stringprep.XmppStringprepException;
+
+
+import java.io.Console;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.InetAddress;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+
+import de.measite.minidns.hla.ResolutionUnsuccessfulException;
+import io.grpc.Attributes;
+import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.MethodDescriptor;
 import io.grpc.serverPackage.ServerServiceGrpc;
 import io.grpc.serverPackage.HelloRequest;
 import io.grpc.serverPackage.HelloReply;
 import io.grpc.serverPackage.LoginRequest;
 import io.grpc.serverPackage.LoginReply;
+
+import static org.jivesoftware.smackx.filetransfer.FileTransfer.Error.connection;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -48,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
+
     private GrpcAuthTask mAuthTask = null;
 
     // UI references.
@@ -56,38 +101,54 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
 
+    XMPPClient xmppClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        xmppClient= new XMPPClient();
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-
         mPasswordView = (EditText) findViewById(R.id.password);
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+        mEmailView.setText("admin");
+        mPasswordView.setText("12345"); 
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                try {
+                    attemptLogin();
+                } catch (Exception e) {
+                    Toast.makeText(LoginActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        xmppClient.disconnectConnection();
+    }
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
-     */
+**/
+
+    // GRPC
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
         }
-
+        int zahl = R.string.action_sign_in;
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -180,9 +241,11 @@ public class LoginActivity extends AppCompatActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    private class GrpcAuthTask extends AsyncTask<Void, Void, String> {
+    private static String token = "test";
+    private class GrpcAuthTask extends AsyncTask<Void, Void, String>
+    {
         //TODO: IP Adresse des Servers eintragen
-        private String mHost = "192.168.1.24";
+        private String mHost = "10.8.0.11";
         private int mPort = 50051;
 
         private String mPassword;
@@ -200,13 +263,18 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 mChannel = ManagedChannelBuilder.forAddress(mHost, mPort).usePlaintext(true).build();
 
+                CustomCredentials callCredentials = new CustomCredentials(token);
+
                 ServerServiceGrpc.ServerServiceBlockingStub stub = ServerServiceGrpc.newBlockingStub(mChannel);
+                       // .withCallCredentials(callCredentials);
+
                 LoginRequest loginRequest = LoginRequest.newBuilder()
                         .setUser(mEmail)
                         .setPassword(mPassword)
                         .build();
 
                 LoginReply reply = stub.login(loginRequest);
+                
                 return reply.getMessage();
             } catch (Exception e) {
                 StringWriter sw = new StringWriter();
@@ -226,12 +294,20 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             mAuthTask = null;
-            showProgress(false);
 
+            showProgress(false);
             Toast.makeText(LoginActivity.this, result, Toast.LENGTH_LONG).show();
+            
+            if(!result.equals("Login failed")) {
+                token = result;
+                Intent profactivity = new Intent(LoginActivity.this,ProfileActivity.class);
+                startActivity(profactivity);
+                finish();
+            } else {
+                mPasswordView.requestFocus();
+            }
 
             //mPasswordView.setError(getString(R.string.error_incorrect_password));
-            mPasswordView.requestFocus();
         }
     }
 
