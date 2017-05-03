@@ -46,31 +46,9 @@ public class GrpcRunnableFactory {
 
             loginReply = blockingStub.login(loginRequest);
 
+            activity.loginResult(loginReply);
 
-            if(loginReply.getSuccess()) {
-                // save token
-                activity.runOnUiThread(new Runnable() {
-                                  @Override
-                                  public void run() {
-                                      activity.showProgress(false);
-                                  }
-                              });
-
-                Intent profactivity = new Intent(activity,ProfileActivity.class);
-                activity.startActivity(profactivity);
-                return "true";
-            } else {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        activity.showProgress(false);
-                        activity.mPasswordView.setError(activity.getString(R.string.error_incorrect_password));
-                        activity.mPasswordView.requestFocus();
-                    }
-                });
-
-                return "false";
-            }
+            return "";
         }
     }
 }
