@@ -37,7 +37,7 @@ public class GrpcRunnableFactory {
 
         public String attempLogin(ServerServiceGrpc.ServerServiceBlockingStub blockingStub) {
             LoginRequest loginRequest;
-            LoginReply loginReply;
+            final LoginReply loginReply;
 
             loginRequest = LoginRequest.newBuilder()
                     .setUser(username)
@@ -46,7 +46,12 @@ public class GrpcRunnableFactory {
 
             loginReply = blockingStub.login(loginRequest);
 
-            activity.loginResult(loginReply);
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    activity.loginResult(loginReply);
+                }
+            });
 
             return "";
         }

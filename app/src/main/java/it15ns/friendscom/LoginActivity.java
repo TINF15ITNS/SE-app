@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
@@ -122,12 +123,19 @@ public class LoginActivity extends AppCompatActivity {
 
     public void loginResult(LoginReply reply) {
         showProgress(false);
-
+    ;
         if(reply.getSuccess()) {
-            Intent profactivity = new Intent(this,ProfileActivity.class);
-            startActivity(profactivity);
+            try {
+                Intent profactivity = new Intent(this,ProfileActivity.class);
+                startActivity(profactivity);
+            } catch (Exception ex) {
+                Log.d("tag", ex.toString());
+            }
+
         } else {
-            mPasswordView.setError(this.getString(R.string.error_incorrect_password));
+            //.setError(this.getString(R.string.error_incorrect_password));
+            Toast.makeText(LoginActivity.this, R.string.error_incorrect_login, Toast.LENGTH_LONG).show();
+
             mPasswordView.requestFocus();
         }
     }
