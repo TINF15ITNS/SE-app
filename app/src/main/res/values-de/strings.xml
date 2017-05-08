@@ -3,6 +3,7 @@
     <string name="app_name">FriendsCom</string>
     <string name="action_sign_in">Einloggen oder registrieren</string>
     <string name="action_sign_in_short">Einloggen</string>
+    <string name="action_register">Registrieren</string>
     <string name="error_field_required">Dieses Feld is nicht optional</string>
     <string name="error_incorrect_password">Das Passwort ist nicht korrekt</string>
     <string name="error_invalid_email">Die E-Mail Adresse ist nicht gültig</string>
@@ -10,4 +11,5 @@
     <string name="permission_rationale"></string>
     <string name="prompt_email">E-Mail</string>
     <string name="prompt_password">Passwort</string>
+    <string name="prompt_password_repeat">Passwort wiederholen</string>
 </resources>
