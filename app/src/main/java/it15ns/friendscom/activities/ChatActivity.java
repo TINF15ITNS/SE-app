@@ -16,10 +16,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import it15ns.friendscom.R;
 import it15ns.friendscom.adapters.ChatAdapter;
+import it15ns.friendscom.fragments.ChatListFragment;
 import it15ns.friendscom.fragments.NewMessageFragment;
+import it15ns.friendscom.xmpp.XMPPClient;
 
 public class ChatActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -35,6 +38,8 @@ public class ChatActivity extends AppCompatActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         final FragmentManager fragmentManager = getFragmentManager();
+
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,13 +58,7 @@ public class ChatActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        String[] chats = {"Marco", "Daniel"};
-
-
-        ListView chatList = (ListView) findViewById(R.id.chatList);
-        ChatAdapter chatListAdapter = new ChatAdapter(this);
-        chatList.setAdapter(chatListAdapter);
-
+        fragmentManager.beginTransaction().replace(R.id.content_frame, new ChatListFragment()).addToBackStack(null).commit();
         /*chatList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,5 +119,21 @@ public class ChatActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        XMPPClient.getInstance().disconnectConnection();
+        super.onStop();
+    }
+
+    @Override
+    protected void onRestart() {
+        try {
+            XMPPClient.getInstance().disconnectConnection();
+        } catch (Exception ex) {
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG);
+        }
+        super.onRestart();
     }
 }

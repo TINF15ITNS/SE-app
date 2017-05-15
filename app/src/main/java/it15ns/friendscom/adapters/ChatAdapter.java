@@ -6,11 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import it15ns.friendscom.Model.Chat;
+import it15ns.friendscom.Model.ChatHandler;
 import it15ns.friendscom.R;
 
 /**
@@ -19,16 +22,15 @@ import it15ns.friendscom.R;
 
 public class ChatAdapter extends BaseAdapter {
 
-    private List<String> chats;
+    private List<Chat> chats;
     private LayoutInflater inflater;
+    private ChatHandler chatHandler;
 
     public ChatAdapter(Context context) {
         inflater = LayoutInflater.from(context);
-        chats = new ArrayList<>();
-        chats.add("Marco");
-        chats.add("Daniel");
-        chats.add("Johannes");
-        chats.add("Gustav");
+
+        chatHandler = ChatHandler.getInstance();
+        chats = chatHandler.getChats();
     }
 
     @Override
@@ -70,7 +72,7 @@ public class ChatAdapter extends BaseAdapter {
         }
 
         Context context = parent.getContext();
-        String name = (String) getItem(position);
+        String name = chats.get(position).getName();
 
         holder.name.setText(name);
         holder.icon.setImageResource(R.drawable.ic_menu_camera);
