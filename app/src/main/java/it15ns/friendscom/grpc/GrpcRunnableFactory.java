@@ -1,11 +1,11 @@
-package it15ns.friendscom;
-
-import android.content.Context;
-import android.content.Intent;
+package it15ns.friendscom.grpc;
 
 import io.grpc.serverPackage.LoginReply;
 import io.grpc.serverPackage.LoginRequest;
+import io.grpc.serverPackage.RegisterReply;
 import io.grpc.serverPackage.ServerServiceGrpc;
+import it15ns.friendscom.activities.LoginActivity;
+import it15ns.friendscom.activities.RegisterActivity;
 
 /**
  * Created by danie on 02/05/2017.
@@ -17,6 +17,10 @@ public class GrpcRunnableFactory {
 
     public static GrpcLoginRunnable getLoginRunnable(String username, String password, LoginActivity activity) {
         return new GrpcLoginRunnable(username, password, activity);
+    }
+
+    public static GrpcRegisterRunnable getRegisterRunnable(String username, String password, RegisterActivity activity) {
+        return new GrpcRegisterRunnable(username, password, activity);
     }
 
     private static class GrpcLoginRunnable implements GrpcRunnable {
@@ -31,11 +35,11 @@ public class GrpcRunnableFactory {
         }
 
         @Override
-        public String execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
+        public boolean execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
             return attempLogin(blockingStub);
         }
 
-        public String attempLogin(ServerServiceGrpc.ServerServiceBlockingStub blockingStub) {
+        public boolean attempLogin(ServerServiceGrpc.ServerServiceBlockingStub blockingStub) {
             LoginRequest loginRequest;
             final LoginReply loginReply;
 
@@ -53,7 +57,33 @@ public class GrpcRunnableFactory {
                 }
             });
 
-            return "";
+            return true;
+        }
+    }
+
+    private static class GrpcRegisterRunnable implements  GrpcRunnable {
+        private String username;
+        private String password;
+        private RegisterActivity activity;
+
+        GrpcRegisterRunnable(String username, String password, RegisterActivity activity) {
+            this.username = username;
+            this.password = password;
+            this.activity = activity;
+        }
+        @Override
+        public boolean execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
+            //throw new RuntimeException();
+            final RegisterReply reply  =  null;
+
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    activity.registerResult(reply);
+                }
+            });
+            return true;
         }
     }
 }

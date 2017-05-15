@@ -1,24 +1,25 @@
-package it15ns.friendscom;
+package it15ns.friendscom.grpc;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
-import java.io.Console;
 import java.util.concurrent.TimeUnit;
 
-import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.internal.GrpcUtil;
 import io.grpc.serverPackage.ServerServiceGrpc;
 
 /**
  * Created by danie on 02/05/2017.
  */
 
-public class GrpcTask extends AsyncTask<Void, Void, String> {
+public class GrpcTask extends AsyncTask<Void, Void, Boolean> {
     private final GrpcRunnable mGrpc;
+
+    // Für Emulator
     private String mHost = "10.0.2.2";
+
+    // Für VPN
+    //private String mHost = "10.8.0.11";
     private int mPort = 50051;
 
     private String mPassword;
@@ -26,7 +27,8 @@ public class GrpcTask extends AsyncTask<Void, Void, String> {
 
     private ManagedChannel mChannel;
 
-    GrpcTask(GrpcRunnable grpc) {
+    public GrpcTask(GrpcRunnable grpc) {
+
         this.mGrpc = grpc;
     }
 
@@ -35,23 +37,23 @@ public class GrpcTask extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Void... nothing) {
+    protected Boolean doInBackground(Void... nothing) {
         try {
             mChannel = ManagedChannelBuilder.forAddress(mHost, mPort).usePlaintext(true).build();
             ServerServiceGrpc.ServerServiceBlockingStub blockingStub = ServerServiceGrpc.newBlockingStub(mChannel);
             ServerServiceGrpc.ServerServiceStub stub = ServerServiceGrpc.newStub(mChannel);
 
-            String logs = mGrpc.execute(blockingStub, stub);
+            boolean logs = mGrpc.execute(blockingStub, stub);
 
             //Log.d("joup", logs);
             return logs;
         } catch (Exception ex) {
-            return "Failed... : " + ex.getMessage();
+            return false;
         }
     }
 
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(Boolean result) {
         try {
             mChannel.shutdown().awaitTermination(1, TimeUnit.SECONDS);
         } catch (InterruptedException e) {

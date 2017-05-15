@@ -16,4 +16,13 @@
         completions."
     </string>
     <string name="error_incorrect_login">Login fehlgeschlagen</string>
+    <string name="prompt_username">Username</string>
+    <string name="error_invalid_username">The username is too short!</string>
+    <string name="register">Registrieren</string>
+    <string name="title_activity_chat">ChatActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

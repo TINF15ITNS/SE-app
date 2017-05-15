@@ -1,10 +1,9 @@
-package it15ns.friendscom;
+package it15ns.friendscom.xmpp;
 
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -14,6 +13,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.jid.EntityBareJid;
@@ -22,25 +22,45 @@ import org.jxmpp.jid.impl.JidCreate;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.security.InvalidParameterException;
-import java.security.spec.InvalidParameterSpecException;
+import java.util.concurrent.ExecutionException;
+
+import it15ns.friendscom.activities.LoginActivity;
 
 public class XMPPClient {
 
+    private static XMPPClient instance = null;
+
     private static final String DOMAIN = "localhost";
     private static final String HOST = "";
-    private static final String IPADRESS = "192.168.1.24";
+    private static final String IPADRESS = "10.0.2.2";
+    //private static final String IPADRESS = "10.8.0.11";
     private static final int PORT = 5222;
+
     private String username ="";
     private String password = "";
+
     AbstractXMPPConnection connection ;
     ChatManager chatmanager ;
     Chat newChat;
     XMPPConnectionListener connectionListener = new XMPPConnectionListener();
+    XMPPChatListener chatListener = new XMPPChatListener();
+
     private boolean connected;
     private boolean isToasted;
     private boolean chatCreated;
     private boolean loggedIn;
 
+
+    // privater Konstruktor -> Singleton pattern
+    private XMPPClient() {}
+
+    public static XMPPClient getInstance() {
+        if(instance == null) {
+            instance = new XMPPClient();
+            return  instance;
+        } else
+            return instance;
+    }
 
     //Initialize
     public void init(String username,String password ) throws Exception{
@@ -52,6 +72,7 @@ public class XMPPClient {
         XMPPTCPConnectionConfiguration.Builder configBuilder = XMPPTCPConnectionConfiguration.builder()
             .setUsernameAndPassword(username, password)
             .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
+                .setDebuggerEnabled(true)
             .setResource("Android")
             .setXmppDomain(DOMAIN)
             .setPort(PORT);
@@ -67,19 +88,60 @@ public class XMPPClient {
 
         connection = new XMPPTCPConnection(configBuilder.build());
         connection.addConnectionListener(connectionListener);
+
+    }
+
+    public void sendStanze(Stanza stanza) throws SmackException.NotConnectedException, InterruptedException{
+        connection.sendStanza(stanza);
     }
 
     // Disconnect Function
     public void disconnectConnection(){
-        new Thread(new Runnable() {
+        /**new Thread(new Runnable() {
             @Override
             public void run() {
                 connection.disconnect();
             }
-        }).start();
+        }).start();*/
+
+        if(connected)
+            connection.disconnect();
     }
 
-    public void connectConnection()
+    public void connectConnection(final LoginActivity activity) throws ExecutionException, InterruptedException
+    {
+
+        AsyncTask<Void, Void, Boolean> connectionThread = new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... arg0) {
+                // Create a connection
+                try {
+                    connection.connect();
+                    login();
+                    connected = true;
+
+                    return true;
+                } catch (Exception e) {
+                    Log.d("XMPP",e.getMessage() + " Catch connection.connect");
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(final Boolean result) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        activity.xmppLoginFinished(result);
+                    }
+                });
+            }
+        };
+
+        connectionThread.execute();
+    }
+
+    public void connectConnection() throws ExecutionException, InterruptedException
     {
         AsyncTask<Void, Void, Boolean> connectionThread = new AsyncTask<Void, Void, Boolean>() {
             @Override
@@ -90,17 +152,19 @@ public class XMPPClient {
                     login();
                     connected = true;
 
+                    return true;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.d("XMPP",e.getMessage() + " Catch connection.connect");
+                    return false;
                 }
-                return null;
             }
         };
+
         connectionThread.execute();
     }
 
     public boolean sendMsg(String jid, String message) throws Exception{
-        if (connection.isConnected()== true) {
+        if (connection.isConnected()) {
             // Assume we've created an XMPPConnection name "connection"._
             chatmanager = ChatManager.getInstanceFor(connection);
             EntityBareJid jidObject = JidCreate.entityBareFrom(jid);
@@ -111,7 +175,7 @@ public class XMPPClient {
                 newChat.send(message);
                 return true;
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.d("Exeption", e.getMessage());
                 return false;
             }
         } else {
@@ -119,30 +183,53 @@ public class XMPPClient {
         }
     }
 
-    public void login() {
-
-        try {
+    public void login() throws XMPPException, IOException, SmackException, InterruptedException {
             connection.login(username, password);
-            Log.i("LOGIN", "Yey! We're connected to the Xmpp server!");
-        } catch (XMPPException | SmackException | IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-        }
-
     }
-
-
 
     //Connection Listener to check connection state
     public class XMPPConnectionListener implements ConnectionListener {
+
         @Override
         public void connected(final XMPPConnection connection) {
-
             Log.d("xmpp", "Connected!");
             connected = true;
             if (!connection.isAuthenticated()) {
-                login();
+                //login();
             }
+        }
+
+        @Override
+        public void authenticated(XMPPConnection arg0, boolean arg1) {
+            Log.d("xmpp", "Authenticated!");
+            loggedIn = true;
+
+            chatmanager = ChatManager.getInstanceFor(connection);
+            chatmanager.addIncomingListener(chatListener);
+
+            /*
+            chatCreated = false;
+            new Thread(new Runnable() {
+
+            @Override
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+               // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+                }
+            }).start();
+
+            if (isToasted)
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // TODO Auto-generated method stub
+                    }
+                });
+            */
         }
 
         @Override
@@ -220,8 +307,6 @@ public class XMPPClient {
                     public void run() {
                         // TODO Auto-generated method stub
 
-
-
                     }
                 });
             Log.d("xmpp", "ReconnectionSuccessful");
@@ -229,36 +314,6 @@ public class XMPPClient {
 
             chatCreated = false;
             loggedIn = false;
-        }
-
-        @Override
-        public void authenticated(XMPPConnection arg0, boolean arg1) {
-            Log.d("xmpp", "Authenticated!");
-            loggedIn = true;
-
-            chatCreated = false;
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-                }
-            }).start();
-            if (isToasted)
-
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        // TODO Auto-generated method stub
-                    }
-                });
         }
     }
 }

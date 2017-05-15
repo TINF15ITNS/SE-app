@@ -1,4 +1,4 @@
-package it15ns.friendscom;
+package it15ns.friendscom.grpc;
 
 import java.security.Key;
 import java.util.concurrent.Executor;

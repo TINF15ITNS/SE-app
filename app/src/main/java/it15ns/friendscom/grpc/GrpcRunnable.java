@@ -1,4 +1,4 @@
-package it15ns.friendscom;
+package it15ns.friendscom.grpc;
 
 import io.grpc.serverPackage.ServerServiceGrpc;
 
@@ -7,6 +7,6 @@ import io.grpc.serverPackage.ServerServiceGrpc;
  */
 
 public interface GrpcRunnable {
-    String execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub);
+    boolean execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub);
     //String getToken();
 }
