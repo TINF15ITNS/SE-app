@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class ChatAdapter extends BaseAdapter {
 
     public ChatAdapter(Context context) {
         inflater = LayoutInflater.from(context);
+
         chats = new ArrayList<>();
         chats.add("Marco");
         chats.add("Daniel");
