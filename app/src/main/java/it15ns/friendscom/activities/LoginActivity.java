@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         view_progress = findViewById(R.id.login_progress);
         view_login_form = findViewById(R.id.login_form);
 
-                btn_signIn = (Button) findViewById(R.id.sign_in_button);
+        btn_signIn = (Button) findViewById(R.id.sign_in_button);
         btn_signIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
