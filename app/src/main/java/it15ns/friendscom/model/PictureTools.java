@@ -1,4 +1,4 @@
-package it15ns.friendscom;
+package it15ns.friendscom.model;
 
 import android.media.Image;
 

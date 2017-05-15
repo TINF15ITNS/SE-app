@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it15ns.friendscom.Datatypes.ChatMessage;
+import it15ns.friendscom.model.User;
 
 /**
  * Created by valentin on 5/9/17.

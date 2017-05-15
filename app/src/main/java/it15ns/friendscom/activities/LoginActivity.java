@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean isUsernameValid(String username) {
         //TODO: Replace this with your own logic
-        return username.length() > 5;
+        return username.length() > 4;
     }
 
     private boolean isPasswordValid(String password) {
@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
 
      // Wird von der asynchronen grpc login thread aufgerufen
     public void loginResult(LoginReply reply) {
-        String username = text_username.getText().toString().substring(0, 6);
+        String username = text_username.getText().toString();
         String password = text_password.getText().toString();
 
         if(reply.getSuccess()) {
