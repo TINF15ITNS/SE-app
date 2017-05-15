@@ -2,8 +2,7 @@ package it15ns.friendscom.Datatypes;
 
 import java.util.Date;
 
-import it15ns.friendscom.Datatypes.ChatMessage;
-import it15ns.friendscom.User;
+import it15ns.friendscom.model.User;
 
 /**
  * Created by valentin on 5/9/17.

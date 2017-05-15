@@ -1,4 +1,4 @@
-package it15ns.friendscom.Model;
+package it15ns.friendscom.model;
 
 import java.util.ArrayList;
 import java.util.List;

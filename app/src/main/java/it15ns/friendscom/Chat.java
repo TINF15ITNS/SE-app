@@ -8,6 +8,9 @@ import java.util.List;
 
 import it15ns.friendscom.Datatypes.ChatMessage;
 import it15ns.friendscom.Datatypes.Location;
+import it15ns.friendscom.model.Calendar;
+import it15ns.friendscom.model.ToDoList;
+import it15ns.friendscom.model.User;
 
 import android.content.Context;
 import android.graphics.Color;

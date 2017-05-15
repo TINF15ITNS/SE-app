@@ -1,4 +1,4 @@
-package it15ns.friendscom;
+package it15ns.friendscom.model;
 
 import android.media.Image;
 
@@ -6,7 +6,7 @@ import android.media.Image;
  * Created by valentin on 5/9/17.
  */
 
-public class GroupChat extends Chat {
+public class GroupChat extends it15ns.friendscom.Chat {
     private Image groupPicture;
     private String name;
 

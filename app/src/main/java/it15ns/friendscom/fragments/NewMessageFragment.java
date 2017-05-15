@@ -10,15 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import it15ns.friendscom.Model.ChatHandler;
+import it15ns.friendscom.model.ChatHandler;
 import it15ns.friendscom.R;
-import it15ns.friendscom.adapters.ChatAdapter;
 import it15ns.friendscom.xmpp.XMPPClient;
-
-import static android.R.id.message;
 
 /**
  * Created by danie on 12/05/2017.
@@ -52,7 +47,8 @@ public class NewMessageFragment extends Fragment {
                 try {
                     String receiver = text_receiver.getText().toString().contains("@") ? text_receiver.getText().toString() : text_receiver.getText().toString().concat("@localhost");
                     XMPPClient.getInstance().sendMsg(receiver, text_message.getText().toString());
-                    it15ns.friendscom.Model.Chat newChat = new it15ns.friendscom.Model.Chat();
+
+                    it15ns.friendscom.model.Chat newChat = new it15ns.friendscom.model.Chat();
 
 
                     newChat.setName(text_receiver.getText().toString());

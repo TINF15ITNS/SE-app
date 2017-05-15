@@ -1,4 +1,4 @@
-package it15ns.friendscom;
+package it15ns.friendscom.model;
 
 import android.media.Image;
 
@@ -20,7 +20,7 @@ public class User {
     private String surname;
     private Date birthday;
     private List<FriendList> friends;
-    private ChatHandler userChatHandler;
+    private it15ns.friendscom.ChatHandler userChatHandler;
     private String telNumber;
     private String eMail;
     private Image profilePicture;

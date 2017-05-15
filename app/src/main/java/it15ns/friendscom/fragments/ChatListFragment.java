@@ -27,6 +27,8 @@ public class ChatListFragment extends Fragment {
         chatList = (ListView) getView().findViewById(R.id.chatList);
         ChatAdapter chatListAdapter = new ChatAdapter(getView().getContext());
         chatList.setAdapter(chatListAdapter);
+
+
     }
 
     @Override

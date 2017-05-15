@@ -39,8 +39,6 @@ public class ChatActivity extends AppCompatActivity
 
         final FragmentManager fragmentManager = getFragmentManager();
 
-
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,12 +57,6 @@ public class ChatActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         fragmentManager.beginTransaction().replace(R.id.content_frame, new ChatListFragment()).addToBackStack(null).commit();
-        /*chatList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fragmentManager.beginTransaction().replace(R.id.content_frame, new NewMessageFragment()).commit();
-            }
-        });*/
     }
 
     @Override

@@ -1,4 +1,4 @@
-package it15ns.friendscom.Model;
+package it15ns.friendscom.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +8,12 @@ import java.util.List;
  */
 
 public class Chat {
+
     String name;
     List<String>  messages;
 
     public Chat() {
         messages = new ArrayList<String>() ;
-
     }
 
     public void setName(String name) {

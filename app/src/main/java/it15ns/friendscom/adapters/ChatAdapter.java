@@ -6,14 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import it15ns.friendscom.Model.Chat;
-import it15ns.friendscom.Model.ChatHandler;
+import it15ns.friendscom.model.Chat;
+import it15ns.friendscom.model.ChatHandler;
 import it15ns.friendscom.R;
 
 /**

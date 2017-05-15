@@ -42,7 +42,6 @@ public class RegisterActivity extends AppCompatActivity {
         registerView = findViewById(R.id.username_login_form);
         progressView = findViewById(R.id.register_progress);
 
-
         //register button action listener
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
