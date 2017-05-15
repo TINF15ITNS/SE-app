@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="it15ns.friendscom.Chat">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/background_light"
+        android:orientation="vertical"
+        android:gravity="top"
+        android:weightSum="100">
+
+        <TextView
+            android:id="@+id/chatTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chat Partner oder Titel"
+            android:textSize="25dp"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center" />
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="80"
+            android:fillViewport="true"
+            android:layout_gravity="center"
+            >
+
+            <TableLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/chatTableLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1" >
+
+           </TableLayout>
+       </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="20"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="10" >
+
+            <EditText
+                android:id="@+id/chatMsg"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_weight="3"
+                android:hint="Say something:"
+                android:imeOptions="actionSend"
+                android:maxLines="10"
+                android:layout_gravity="bottom"/>
+
+            <Button
+                android:id="@+id/btn_sendMsg"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_weight="7"
+                android:text="Button"
+                android:layout_gravity="bottom"/>
+        </LinearLayout>
+
+    </LinearLayout>
+   </android.support.constraint.ConstraintLayout>
