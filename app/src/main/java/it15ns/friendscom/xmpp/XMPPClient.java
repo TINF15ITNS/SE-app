@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.GridLayout;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -24,7 +25,9 @@ import java.net.InetAddress;
 import java.security.InvalidParameterException;
 import java.util.concurrent.ExecutionException;
 
+import it15ns.friendscom.activities.ChatActivity;
 import it15ns.friendscom.activities.LoginActivity;
+import it15ns.friendscom.fragments.SpecificChatFragment;
 
 public class XMPPClient {
 
@@ -50,7 +53,6 @@ public class XMPPClient {
     private boolean chatCreated;
     private boolean loggedIn;
 
-
     // privater Konstruktor -> Singleton pattern
     private XMPPClient() {}
 
@@ -60,6 +62,14 @@ public class XMPPClient {
             return  instance;
         } else
             return instance;
+    }
+
+    public void setChatActivity(ChatActivity activity) {
+        chatListener.setChatActivity(activity);
+    }
+
+    public void setSpecificChatFragment(SpecificChatFragment fragment) {
+        chatListener.setNotifyFragment(fragment);
     }
 
     //Initialize
@@ -167,6 +177,10 @@ public class XMPPClient {
         if (connection.isConnected()) {
             // Assume we've created an XMPPConnection name "connection"._
             chatmanager = ChatManager.getInstanceFor(connection);
+
+            if(!jid.contains("@"))
+                jid = jid.concat("@localhost");
+
             EntityBareJid jidObject = JidCreate.entityBareFrom(jid);
 
             newChat = chatmanager.chatWith(jidObject);

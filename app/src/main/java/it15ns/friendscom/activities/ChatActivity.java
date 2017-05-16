@@ -35,7 +35,7 @@ public class ChatActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         final FragmentManager fragmentManager = getFragmentManager();
 
@@ -43,6 +43,7 @@ public class ChatActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                fab.hide();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new NewMessageFragment()).addToBackStack(null).commit();
             }
         });
@@ -57,6 +58,8 @@ public class ChatActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         fragmentManager.beginTransaction().replace(R.id.content_frame, new ChatListFragment()).addToBackStack(null).commit();
+
+        XMPPClient.getInstance().setChatActivity(this);
     }
 
     @Override

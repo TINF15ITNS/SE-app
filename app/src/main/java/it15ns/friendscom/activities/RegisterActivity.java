@@ -97,8 +97,8 @@ public class RegisterActivity extends AppCompatActivity {
         showProgress(false);
 
         if(reply.getSuccess()) {
-            Intent profactivity = new Intent(this,ProfileActivity.class);
-            startActivity(profactivity);
+            Intent chatActivity = new Intent(this,ChatActivity.class);
+            startActivity(chatActivity);
         } else {
             showProgress(false);
             Toast.makeText(RegisterActivity.this, "Registrierung fehlgeschlagen", Toast.LENGTH_LONG).show();

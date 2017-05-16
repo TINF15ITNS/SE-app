@@ -1,6 +1,5 @@
-package it15ns.friendscom.Datatypes;
+package it15ns.friendscom.datatypes;
 
-import it15ns.friendscom.*;
 /**
  * Created by valentin on 5/9/17.
  */

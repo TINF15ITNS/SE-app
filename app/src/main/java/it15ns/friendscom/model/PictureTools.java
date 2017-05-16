@@ -12,7 +12,7 @@ public class PictureTools {
         //TODO:
     }
     public static Image pictureFromGallery(){
-        Image img;
+        Image img = null;
         //TODO:
         return img;
     }

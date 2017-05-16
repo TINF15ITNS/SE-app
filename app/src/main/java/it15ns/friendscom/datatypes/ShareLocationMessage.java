@@ -1,4 +1,4 @@
-package it15ns.friendscom.Datatypes;
+package it15ns.friendscom.datatypes;
 
 import it15ns.friendscom.model.User;
 

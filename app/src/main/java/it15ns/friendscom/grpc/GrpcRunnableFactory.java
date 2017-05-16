@@ -79,7 +79,6 @@ public class GrpcRunnableFactory {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
                     activity.registerResult(reply);
                 }
             });

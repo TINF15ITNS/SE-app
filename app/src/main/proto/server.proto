@@ -39,5 +39,6 @@ message RegisterRequest {
 
 message RegisterReply {
   bool success = 1;
+  string token = 2;
 }
 

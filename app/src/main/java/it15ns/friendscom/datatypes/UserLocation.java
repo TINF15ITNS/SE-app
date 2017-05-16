@@ -1,6 +1,4 @@
-package it15ns.friendscom.Datatypes;
-
-import it15ns.friendscom.Datatypes.Location;
+package it15ns.friendscom.datatypes;
 
 /**
  * Created by valentin on 5/9/17.

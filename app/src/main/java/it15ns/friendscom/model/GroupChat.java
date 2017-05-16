@@ -2,16 +2,18 @@ package it15ns.friendscom.model;
 
 import android.media.Image;
 
+import it15ns.friendscom.fragments.SpecificChatFragment;
+
 /**
  * Created by valentin on 5/9/17.
  */
 
-public class GroupChat extends it15ns.friendscom.Chat {
+public class GroupChat extends Chat {
     private Image groupPicture;
     private String name;
 
     public GroupChat(Calendar chatCalendar, Image groupPicture, String name){
-        super(chatCalendar);
+
         this.groupPicture = groupPicture;
         this.name = name;
     }

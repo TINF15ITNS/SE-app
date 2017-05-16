@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="it15ns.friendscom.Chat">
+    tools:context="it15ns.friendscom.fragments.SpecificChatFragment">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -12,7 +12,9 @@
         android:background="@android:color/background_light"
         android:orientation="vertical"
         android:gravity="top"
-        android:weightSum="100">
+        android:weightSum="100"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
 
         <TextView
             android:id="@+id/chatTitle"
@@ -44,7 +46,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="20"
             android:orientation="horizontal"
             android:gravity="center"
@@ -52,7 +54,7 @@
 
             <EditText
                 android:id="@+id/chatMsg"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_weight="3"
                 android:hint="Say something:"
@@ -62,10 +64,10 @@
 
             <Button
                 android:id="@+id/btn_sendMsg"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_weight="7"
-                android:text="Button"
+                android:text="Senden"
                 android:layout_gravity="bottom"/>
         </LinearLayout>
 

@@ -1,26 +1,24 @@
-package it15ns.friendscom;
+package it15ns.friendscom.fragments;
 
 //connected to activity chat
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import it15ns.friendscom.Datatypes.ChatMessage;
-import it15ns.friendscom.Datatypes.Location;
-import it15ns.friendscom.model.Calendar;
-import it15ns.friendscom.model.ToDoList;
-import it15ns.friendscom.model.User;
+import it15ns.friendscom.datatypes.ChatMessage;
+import it15ns.friendscom.model.Chat;
+import it15ns.friendscom.model.ChatHandler;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.support.design.internal.ScrimInsetsFrameLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.format.DateFormat;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -29,43 +27,53 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import it15ns.friendscom.Datatypes.TextMessage;
+import it15ns.friendscom.datatypes.TextMessage;
 import it15ns.friendscom.R;
+import it15ns.friendscom.xmpp.XMPPClient;
 
 /**
  * Created by valentin on 5/9/17.
  */
 
-public class Chat extends AppCompatActivity{
+public class SpecificChatFragment extends Fragment{
+
+    View view;
+    Chat chat;
     //activity attributes
     private Button btn_send;
     private EditText txt_msg;
+    private TextView txt_title;
     private Context ctx_main;
     private TableLayout tbl_msg;
     private ScrollView scroll;
-    //class attributes
-    private List<User> participants;
-    private List<ChatMessage> messages;
-    private List<ToDoList> toDoLists;
-    private Calendar chatCalendar;
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.content_specific_chat, container, false );
+        return view;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-        //get context of activity
-        ctx_main = this;
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        XMPPClient.getInstance().setSpecificChatFragment(this);
+
+        ctx_main = getView().getContext();
+        txt_title = (TextView) getView().findViewById(R.id.chatTitle);
+
         //table layout to display messages
-         tbl_msg = (TableLayout) findViewById(R.id.chatTableLayout);
+        tbl_msg = (TableLayout) getView().findViewById(R.id.chatTableLayout);
         //get text msg
-        txt_msg = (EditText) findViewById(R.id.chatMsg);
+        txt_msg = (EditText) getView().findViewById(R.id.chatMsg);
         //set auto scroll on view
-        scroll = (ScrollView) findViewById(R.id.scrollView);
+        scroll = (ScrollView) getView().findViewById(R.id.scrollView);
         scroll.fullScroll(View.FOCUS_DOWN);
 
         //init send button
-        btn_send = (Button) findViewById(R.id.btn_sendMsg);
+        btn_send = (Button) getView().findViewById(R.id.btn_sendMsg);
+
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,51 +82,64 @@ public class Chat extends AppCompatActivity{
                 }else{
                     sendMessage(new TextMessage(txt_msg.getText().toString()));
                 }
-
             }
         });
+
+        chat = ChatHandler.getInstance().getChat(getArguments().getInt("position"));
+
+        txt_title.setText(chat.getName());
+        for(Object chatMessage: chat.getMessages()) {
+            ChatMessage message = (ChatMessage) chatMessage;
+            addMessage(message);
+        }
     }
 
-    public Chat(){}
-
-    public Chat(Calendar chatCalendar){
-        this.chatCalendar = chatCalendar;
-        this.participants = new ArrayList<User>();
-        this.messages = new ArrayList<ChatMessage>();
-        this.toDoLists = new ArrayList<ToDoList>();
-    }
-
-    public void setChatCalendar(Calendar chatCalendar){
-        this.chatCalendar = chatCalendar;
-    }
-    public Calendar getChatCalendar(){
-        return this.chatCalendar;
-    }
-
-    public void createTextMessage(String stringOfTextBox){
-        //TODO:
-    }
-    public void createTodoListMessage(ToDoList toDoList){
-        //TODO:
-    }
-    public void createSharLocationMessage(Location location){
-        //TODO:
-    }
-    //public void createEventMessage(GoogleCalendarEntry calendarEntry){
-        //TODO:
-    //}
     public boolean isTextBoxEmpty(){
         return txt_msg.getText().toString().isEmpty();
     }
+
+    public void addMessage(ChatMessage message){
+        TextMessage txt = (TextMessage)message;
+        String time = DateFormat.format("dd.MM.yyyy - hh:mm:ss", txt.getDate()).toString();
+        addMsgToTable("Me", time, txt.getMessage());
+    }
+
     public void sendMessage(ChatMessage message){
         //TODO: send message to server
         TextMessage txt = (TextMessage)message;
         String time = DateFormat.format("dd.MM.yyyy - hh:mm:ss", new Date()).toString();
         addMsgToTable("Me", time, txt.getMessage());
+
+        String name = chat.getName();
+        String jid = name.contains("@") ? name : name.concat("@localhost");
+        try {
+            XMPPClient.getInstance().sendMsg(jid, txt.getMessage());
+        } catch (Exception ex) {
+            Log.d("send ex", ex.getMessage().toString());
+        }
+
+        chat.addMessage(new TextMessage(new Date(), name, txt.getMessage()));
         clearTextbox();
     }
+
     public void clearTextbox(){
+
         txt_msg.setText("");
+    }
+
+    public void update() {
+
+        clearTable();
+
+        for(Object chatMessage: chat.getMessages()) {
+            ChatMessage message = (ChatMessage) chatMessage;
+            addMessage(message);
+        }
+    }
+
+    private void clearTable() {
+        tbl_msg.removeAllViews();
+        //TODO:
     }
 
     public void addMsgToTable(String name, String time, String msg){

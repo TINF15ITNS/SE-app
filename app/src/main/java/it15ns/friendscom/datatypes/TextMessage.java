@@ -1,4 +1,4 @@
-package it15ns.friendscom.Datatypes;
+package it15ns.friendscom.datatypes;
 
 import java.util.Date;
 
@@ -16,9 +16,20 @@ public class TextMessage extends ChatMessage {
         this.message = message;
     }
 
+    public TextMessage(Date date, String senderName, String message){
+        super(date, senderName);
+        this.message = message;
+    }
+
+    public TextMessage(String message){
+        super(new Date(), new User());
+        this.message = message;
+    }
+
     public void setMessage(String message){
         this.message = message;
     }
+
     public String getMessage(){
         return this.message;
     }

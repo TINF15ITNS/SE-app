@@ -1,11 +1,13 @@
 package it15ns.friendscom.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -20,15 +22,28 @@ import it15ns.friendscom.adapters.ChatAdapter;
 public class ChatListFragment extends Fragment {
     View view;
     ListView chatList;
+    FragmentManager fragmentManager;
+    SpecificChatFragment specificChatFragment;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        fragmentManager = getFragmentManager();
+
         chatList = (ListView) getView().findViewById(R.id.chatList);
         ChatAdapter chatListAdapter = new ChatAdapter(getView().getContext());
         chatList.setAdapter(chatListAdapter);
-
-
+        chatList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("position", position);
+                specificChatFragment = new SpecificChatFragment();
+                specificChatFragment.setArguments(bundle);
+                fragmentManager.beginTransaction().replace(R.id.content_frame, specificChatFragment).addToBackStack(null).commit();
+            }
+        });
     }
 
     @Override
@@ -49,6 +64,5 @@ public class ChatListFragment extends Fragment {
 
         return view;
     }
-
 
 }

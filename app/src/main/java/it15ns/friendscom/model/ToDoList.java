@@ -3,7 +3,7 @@ package it15ns.friendscom.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import it15ns.friendscom.Datatypes.TodoListEntry;
+import it15ns.friendscom.datatypes.TodoListEntry;
 
 /**
  * Created by valentin on 5/9/17.

@@ -1,4 +1,4 @@
-package it15ns.friendscom.Datatypes;
+package it15ns.friendscom.datatypes;
 
 import java.util.Date;
 
@@ -15,6 +15,14 @@ public class ChatMessage {
     public ChatMessage(Date date, User sender){
         this.date = date;
         this.sender = sender;
+    }
+
+
+    public ChatMessage(Date date, String name){
+        this.date = date;
+        User user = new User();
+        user.setName(name);
+        this.sender = user;
     }
 
     public void setDate(Date date){

@@ -3,8 +3,8 @@ package it15ns.friendscom.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import it15ns.friendscom.Datatypes.Location;
-import it15ns.friendscom.Datatypes.UserLocation;
+import it15ns.friendscom.datatypes.Location;
+import it15ns.friendscom.datatypes.UserLocation;
 
 /**
  * Created by valentin on 5/9/17.
