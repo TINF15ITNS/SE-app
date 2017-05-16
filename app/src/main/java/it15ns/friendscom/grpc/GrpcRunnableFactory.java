@@ -2,7 +2,9 @@ package it15ns.friendscom.grpc;
 
 import io.grpc.serverPackage.LoginReply;
 import io.grpc.serverPackage.LoginRequest;
+import io.grpc.serverPackage.LoginResponse;
 import io.grpc.serverPackage.RegisterReply;
+import io.grpc.serverPackage.RegisterRequest;
 import io.grpc.serverPackage.ServerServiceGrpc;
 import it15ns.friendscom.activities.LoginActivity;
 import it15ns.friendscom.activities.RegisterActivity;
@@ -41,19 +43,21 @@ public class GrpcRunnableFactory {
 
         public boolean attempLogin(ServerServiceGrpc.ServerServiceBlockingStub blockingStub) {
             LoginRequest loginRequest;
-            final LoginReply loginReply;
+            final LoginResponse loginResponse;
 
             loginRequest = LoginRequest.newBuilder()
-                    .setUser(username)
+                    .setNickname(username)
                     .setPassword(password)
                     .build();
 
-            loginReply = blockingStub.login(loginRequest);
+
+            loginResponse = blockingStub.login(loginRequest);
+
 
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    activity.loginResult(loginReply);
+                    activity.loginResult(loginResponse);
                 }
             });
 
@@ -74,12 +78,18 @@ public class GrpcRunnableFactory {
         @Override
         public boolean execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
             //throw new RuntimeException();
-            final RegisterReply reply  =  null;
+            final LoginResponse response;
+            RegisterRequest request = RegisterRequest.newBuilder()
+                    .setNickname(username)
+                    .setPassword(password)
+                    .build();
+
+            response = blockingStub.register(request);
 
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    activity.registerResult(reply);
+                    activity.registerResult(response);
                 }
             });
             return true;

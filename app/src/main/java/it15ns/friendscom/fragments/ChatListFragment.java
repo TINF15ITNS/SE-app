@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import it15ns.friendscom.R;
+import it15ns.friendscom.activities.ChatActivity;
 import it15ns.friendscom.adapters.ChatAdapter;
 
 /**
@@ -24,6 +25,12 @@ public class ChatListFragment extends Fragment {
     ListView chatList;
     FragmentManager fragmentManager;
     SpecificChatFragment specificChatFragment;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ChatActivity.setFab(true);
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -41,6 +48,8 @@ public class ChatListFragment extends Fragment {
                 bundle.putInt("position", position);
                 specificChatFragment = new SpecificChatFragment();
                 specificChatFragment.setArguments(bundle);
+
+                ChatActivity.setFab(false);
                 fragmentManager.beginTransaction().replace(R.id.content_frame, specificChatFragment).addToBackStack(null).commit();
             }
         });
@@ -56,6 +65,7 @@ public class ChatListFragment extends Fragment {
 
         //text_receiver = (EditText) findViewById();
     }
+
 
     @Nullable
     @Override

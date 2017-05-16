@@ -21,7 +21,7 @@ public class ChatMessage {
     public ChatMessage(Date date, String name){
         this.date = date;
         User user = new User();
-        user.setName(name);
+        user.setNickname(name);
         this.sender = user;
     }
 

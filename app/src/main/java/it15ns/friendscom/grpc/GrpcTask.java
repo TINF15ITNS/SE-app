@@ -1,6 +1,7 @@
 package it15ns.friendscom.grpc;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,10 +17,10 @@ public class GrpcTask extends AsyncTask<Void, Void, Boolean> {
     private final GrpcRunnable mGrpc;
 
     // Für Emulator
-    private String mHost = "10.0.2.2";
+    //private String mHost = "10.0.2.2";
 
     // Für VPN
-    //private String mHost = "10.8.0.11";
+    private String mHost = "10.8.0.11";
     private int mPort = 50051;
 
     private String mPassword;
@@ -48,6 +49,7 @@ public class GrpcTask extends AsyncTask<Void, Void, Boolean> {
             //Log.d("joup", logs);
             return logs;
         } catch (Exception ex) {
+            Log.d("GrpcTask", ex.getMessage());
             return false;
         }
     }

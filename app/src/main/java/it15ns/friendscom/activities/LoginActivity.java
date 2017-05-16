@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import io.grpc.serverPackage.LoginReply;
+import io.grpc.serverPackage.LoginResponse;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
 import it15ns.friendscom.grpc.GrpcTask;
 import it15ns.friendscom.R;
@@ -137,12 +138,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
      // Wird von der asynchronen grpc login thread aufgerufen
-    public void loginResult(LoginReply reply) {
+    public void loginResult(LoginResponse response) {
         String username = text_username.getText().toString();
         String password = text_password.getText().toString();
 
-        if(reply.getSuccess()) {
-            String token = reply.getToken();
+        if(response.getSuccess()) {
+            String token = response.getToken();
             try {
                 xmppClient.init(username, token);
                 // start async task

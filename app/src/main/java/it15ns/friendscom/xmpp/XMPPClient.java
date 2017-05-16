@@ -35,8 +35,8 @@ public class XMPPClient {
 
     private static final String DOMAIN = "localhost";
     private static final String HOST = "";
-    private static final String IPADRESS = "10.0.2.2";
-    //private static final String IPADRESS = "10.8.0.11";
+    //private static final String IPADRESS = "10.0.2.2";
+    private static final String IPADRESS = "10.8.0.11";
     private static final int PORT = 5222;
 
     private String username ="";

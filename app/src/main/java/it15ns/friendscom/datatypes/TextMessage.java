@@ -21,8 +21,8 @@ public class TextMessage extends ChatMessage {
         this.message = message;
     }
 
-    public TextMessage(String message){
-        super(new Date(), new User());
+    public TextMessage(String message, User user){
+        super(new Date(), user);
         this.message = message;
     }
 

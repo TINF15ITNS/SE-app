@@ -13,6 +13,7 @@ import android.widget.EditText;
 
 import java.util.Date;
 
+import it15ns.friendscom.activities.ChatActivity;
 import it15ns.friendscom.datatypes.ChatMessage;
 import it15ns.friendscom.datatypes.TextMessage;
 import it15ns.friendscom.model.Chat;
@@ -66,6 +67,7 @@ public class NewMessageFragment extends Fragment {
                 } catch (Exception ex) {
                     Snackbar.make(getView(), ex.toString(), Snackbar.LENGTH_LONG).show();
                 } finally {
+                    ChatActivity.setFab(true);
                     fragmentManager.beginTransaction().replace(R.id.content_frame, new ChatListFragment()).addToBackStack(null).commit();
                 }
             }

@@ -27,6 +27,8 @@ import it15ns.friendscom.xmpp.XMPPClient;
 public class ChatActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +37,7 @@ public class ChatActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
 
         final FragmentManager fragmentManager = getFragmentManager();
 
@@ -43,7 +45,7 @@ public class ChatActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                fab.hide();
+                setFab(false);
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new NewMessageFragment()).addToBackStack(null).commit();
             }
         });
@@ -95,6 +97,13 @@ public class ChatActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public static void setFab(boolean isActive) {
+        if(isActive)
+            fab.show();
+        else
+            fab.hide();
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -123,9 +132,10 @@ public class ChatActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onRestart() {
+    protected void onResume() {
+        super.onResume();
         try {
-            XMPPClient.getInstance().disconnectConnection();
+            XMPPClient.getInstance().connectConnection();
         } catch (Exception ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG);
         }

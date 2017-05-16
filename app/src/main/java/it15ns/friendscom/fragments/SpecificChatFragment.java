@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import it15ns.friendscom.datatypes.TextMessage;
 import it15ns.friendscom.R;
+import it15ns.friendscom.model.User;
 import it15ns.friendscom.xmpp.XMPPClient;
 
 /**
@@ -80,7 +81,9 @@ public class SpecificChatFragment extends Fragment{
                 if(isTextBoxEmpty()){
                     Toast.makeText(ctx_main, "Messagebox is empty", Toast.LENGTH_SHORT);
                 }else{
-                    sendMessage(new TextMessage(txt_msg.getText().toString()));
+                    User user = new User();
+                    user.setNickname("me");
+                    sendMessage(new TextMessage(txt_msg.getText().toString(), user));
                 }
             }
         });
@@ -101,7 +104,7 @@ public class SpecificChatFragment extends Fragment{
     public void addMessage(ChatMessage message){
         TextMessage txt = (TextMessage)message;
         String time = DateFormat.format("dd.MM.yyyy - hh:mm:ss", txt.getDate()).toString();
-        addMsgToTable("Me", time, txt.getMessage());
+        addMsgToTable(message.getSender().getNickname(), time, txt.getMessage());
     }
 
     public void sendMessage(ChatMessage message){
@@ -117,7 +120,7 @@ public class SpecificChatFragment extends Fragment{
         } catch (Exception ex) {
             Log.d("send ex", ex.getMessage().toString());
         }
-
+        name = "Me";
         chat.addMessage(new TextMessage(new Date(), name, txt.getMessage()));
         clearTextbox();
     }
@@ -128,7 +131,6 @@ public class SpecificChatFragment extends Fragment{
     }
 
     public void update() {
-
         clearTable();
 
         for(Object chatMessage: chat.getMessages()) {

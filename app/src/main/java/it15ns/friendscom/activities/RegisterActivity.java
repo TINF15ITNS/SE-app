@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import io.grpc.serverPackage.LoginResponse;
 import io.grpc.serverPackage.RegisterReply;
 import it15ns.friendscom.R;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
@@ -56,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
         text_password.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = text_password.getText().toString();
+        String username = text_username.getText().toString();
         String password = text_password.getText().toString();
 
         boolean cancel = false;
@@ -89,14 +90,15 @@ public class RegisterActivity extends AppCompatActivity {
             // perform the user login attempt.
             showProgress(true);
             // start async background thread for grpc authentication
+
             new GrpcTask(GrpcRunnableFactory.getRegisterRunnable(username, password , this)).execute();
         }
     }
 
-    public void registerResult(RegisterReply reply) {
+    public void registerResult(LoginResponse response) {
         showProgress(false);
 
-        if(reply.getSuccess()) {
+        if(response.getSuccess()) {
             Intent chatActivity = new Intent(this,ChatActivity.class);
             startActivity(chatActivity);
         } else {
@@ -104,7 +106,6 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(RegisterActivity.this, "Registrierung fehlgeschlagen", Toast.LENGTH_LONG).show();
             text_password.requestFocus();
         }
-
     }
 
     private boolean isUsernameValid(String username) {
