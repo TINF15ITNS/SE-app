@@ -6,8 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.sql.Date;
-import java.text.DateFormat;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +28,8 @@ public class SQLiteHandler extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         //glaube des brauchen wir net
+        //da erstellt man eig die tables aber des wollen wir ja net
+        //wollen die ja erst zur laufzeit haben
     }
 
     @Override
@@ -39,13 +40,13 @@ public class SQLiteHandler extends SQLiteOpenHelper{
 
     public void createChatTable(String name){
         SQLiteDatabase db = this.getWritableDatabase(); //open db object
-        db.execSQL("Create Table " + name + "(String sender, Date date, String msg)"); //sql richtig? wollen wir en PK?
+        db.execSQL("Create Table " + name + "(sender varchar(255), date Date, msg varchar(255))"); //sql richtig? wollen wir en PK?
     }
 
     public void addMessageToDB(ChatMessage msg) {
         SQLiteDatabase db = this.getWritableDatabase(); //open db object
         ContentValues values = new ContentValues(); //create values
-        TextMessage txt = (TextMessage)msg;
+        TextMessage txt = (TextMessage)msg; //was wenns keine textmessage ist??
         values.put("sender", msg.getSender().getNickname());    //add values (key, value)
         values.put("date", msg.getDate().toString());
         values.put("msg", txt.getMessage());
@@ -54,18 +55,18 @@ public class SQLiteHandler extends SQLiteOpenHelper{
     }
 
     public List<ChatMessage> getAllMessages(String name) {
-        List<ChatMessage> msgtList = new ArrayList<>();
+        List<ChatMessage> msgList = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + name;  //alle nachrichten der tabelle mim (user/group)Name
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) { //check if its empty
             do {
                 //in DB (sender, date, msg)
-                Date d = new Date(cursor.getString(0).toString());  //TODO: string in date umwandeln, dann läufts :D
-                TextMessage msg = new TextMessage(cursor.getString(1), d, cursor.getString(2));
-                msgtList.add(msg);
+                Date d = new Date(cursor.getString(1).toString());  //TODO: string in date umwandeln, dann läufts :D
+                TextMessage msg = new TextMessage(d, cursor.getString(0), cursor.getString(2)); //constructor (date, sender, msg)
+                msgList.add(msg);
             } while (cursor.moveToNext());
         }
-        return msgtList;    //return list with all msg's
+        return msgList;    //return list with all msg's
     }
 }
