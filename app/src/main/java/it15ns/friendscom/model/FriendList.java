@@ -8,9 +8,36 @@ import java.util.List;
  */
 
 public class FriendList {
+    private static FriendList instance;
     private List<User> friends;
 
-    public FriendList(){
+    private FriendList(){
         this.friends = new ArrayList<User>();
+    }
+
+    public static FriendList getInstance()  {
+        if(instance == null) {
+            instance = new FriendList();
+        }
+
+        return instance;
+    }
+
+    public User getUserforNickname(String nickname) {
+        for(User friend : friends) {
+            if(friend.getNickname() == nickname)
+                return friend;
+        }
+
+        User user = new User();
+        user.setNickname(nickname);
+
+        addUserToFriendList(user);
+
+        return user;
+    }
+
+    public void addUserToFriendList(User user) {
+        friends.add(user);
     }
 }

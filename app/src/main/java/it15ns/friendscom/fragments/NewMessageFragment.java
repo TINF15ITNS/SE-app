@@ -14,11 +14,11 @@ import android.widget.EditText;
 import java.util.Date;
 
 import it15ns.friendscom.activities.ChatActivity;
-import it15ns.friendscom.datatypes.ChatMessage;
 import it15ns.friendscom.datatypes.TextMessage;
 import it15ns.friendscom.model.Chat;
-import it15ns.friendscom.model.ChatHandler;
+import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.R;
+import it15ns.friendscom.model.User;
 import it15ns.friendscom.xmpp.XMPPClient;
 
 /**
@@ -48,20 +48,14 @@ public class NewMessageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                    String receiver = text_receiver.getText().toString().contains("@") ? text_receiver.getText().toString() : text_receiver.getText().toString().concat("@localhost");
-                    XMPPClient.getInstance().sendMsg(receiver, text_message.getText().toString());
+                    String nickname = text_receiver.getText().toString();
+                    String message = text_message.getText().toString();
 
-                    String name = text_receiver.getText().toString();
-                    ChatHandler chatHandler = ChatHandler.getInstance();
-                    Chat chatForMessage;
+                    Handler handler = Handler.getInstance();
+                    User receiver = handler.getUser(nickname);
+                    Chat chat = receiver.getChat();
 
-                    if(chatHandler.chatExists(name)) {
-                        chatForMessage = chatHandler.getChat(name);
-                    } else {
-                        chatForMessage = chatHandler.createNewChat(name);
-                    }
-
-                    chatForMessage.addMessage(new TextMessage(new Date(), name, text_message.getText().toString()));
+                    chat.sendTextMessage(new TextMessage(new Date(), handler.getMe(), message));
 
                     Snackbar.make(getView(), "Versendet!", Snackbar.LENGTH_LONG).show();
                 } catch (Exception ex) {

@@ -15,33 +15,40 @@ import it15ns.friendscom.datatypes.Location;
 public class User {
 
     private String nickname;
-    private String password;
     private String name;
     private String surname;
     private Date birthday;
-    private List<FriendList> friends;
-    private ChatHandler userChatHandler;
     private String telNumber;
     private String eMail;
     private Image profilePicture;
-    private List<Debt> debts;
     private double totalDebtsOut;
     private double totalDebtsIn;
     private Location myLocation;
     private byte shareLocation;
-    //private Calender calender;    //TODO: google calender verstehen
+
+    private List<Debt> debts;
+    private Chat chat;
     private List<ToDoList> toDoLists;
+    //private Calender calender;
 
     public User(){
 
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public User(String nickname) {
+        setNickname(nickname);
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public Chat getChat() {
+        if(chat == null)
+            chat = new Chat(this.getNickname());
+
+        return chat;
+    }
+
+    // Setter für Variablen
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public void setName(String name) {
@@ -54,14 +61,6 @@ public class User {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
-    }
-
-    public void setFriends(List<FriendList> friends) {
-        this.friends = friends;
-    }
-
-    public void setUserChatHandler(ChatHandler userChatHandler) {
-        this.userChatHandler = userChatHandler;
     }
 
     public void setTelNumber(String telNumber) {
@@ -100,10 +99,11 @@ public class User {
         this.toDoLists = toDoLists;
     }
 
-    public String getNickname() {
 
-        return nickname;
-    }
+
+
+    // Getter für Variablen
+    public String getNickname() { return nickname;  }
 
     public String getName() {
         return name;
@@ -115,14 +115,6 @@ public class User {
 
     public Date getBirthday() {
         return birthday;
-    }
-
-    public List<FriendList> getFriends() {
-        return friends;
-    }
-
-    public ChatHandler getUserChatHandler() {
-        return userChatHandler;
     }
 
     public String getTelNumber() {

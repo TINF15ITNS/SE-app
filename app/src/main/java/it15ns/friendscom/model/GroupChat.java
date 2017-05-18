@@ -13,7 +13,7 @@ public class GroupChat extends Chat {
     private String name;
 
     public GroupChat(Calendar chatCalendar, Image groupPicture, String name){
-
+        super(name);
         this.groupPicture = groupPicture;
         this.name = name;
     }

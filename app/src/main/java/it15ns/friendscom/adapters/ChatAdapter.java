@@ -8,10 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Comparator;
 import java.util.List;
 
 import it15ns.friendscom.model.Chat;
-import it15ns.friendscom.model.ChatHandler;
+import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.R;
 
 /**
@@ -22,13 +23,13 @@ public class ChatAdapter extends BaseAdapter {
 
     private List<Chat> chats;
     private LayoutInflater inflater;
-    private ChatHandler chatHandler;
+    private Handler handler;
 
     public ChatAdapter(Context context) {
         inflater = LayoutInflater.from(context);
 
-        chatHandler = ChatHandler.getInstance();
-        chats = chatHandler.getChats();
+        handler = Handler.getInstance();
+        chats = handler.getChats();
     }
 
     @Override

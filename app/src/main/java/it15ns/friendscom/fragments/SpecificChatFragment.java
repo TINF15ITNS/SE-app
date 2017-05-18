@@ -6,7 +6,7 @@ import java.util.Date;
 
 import it15ns.friendscom.datatypes.ChatMessage;
 import it15ns.friendscom.model.Chat;
-import it15ns.friendscom.model.ChatHandler;
+import it15ns.friendscom.model.Handler;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -26,6 +26,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import it15ns.friendscom.datatypes.TextMessage;
 import it15ns.friendscom.R;
@@ -81,18 +83,16 @@ public class SpecificChatFragment extends Fragment{
                 if(isTextBoxEmpty()){
                     Toast.makeText(ctx_main, "Messagebox is empty", Toast.LENGTH_SHORT);
                 }else{
-                    User user = new User();
-                    user.setNickname("me");
-                    sendMessage(new TextMessage(txt_msg.getText().toString(), user));
+                    sendMessage(new TextMessage(txt_msg.getText().toString(), Handler.getInstance().getMe()));
                 }
             }
         });
 
-        chat = ChatHandler.getInstance().getChat(getArguments().getInt("position"));
+        chat = Handler.getInstance().getUserChat(getArguments().getString("nickname"));
 
         txt_title.setText(chat.getName());
-        for(Object chatMessage: chat.getMessages()) {
-            ChatMessage message = (ChatMessage) chatMessage;
+        for(ChatMessage chatMessage: chat.getMessages()) {
+            TextMessage message = (TextMessage) chatMessage;
             addMessage(message);
         }
     }
@@ -101,27 +101,18 @@ public class SpecificChatFragment extends Fragment{
         return txt_msg.getText().toString().isEmpty();
     }
 
-    public void addMessage(ChatMessage message){
-        TextMessage txt = (TextMessage)message;
-        String time = DateFormat.format("dd.MM.yyyy - hh:mm:ss", txt.getDate()).toString();
-        addMsgToTable(message.getSender().getNickname(), time, txt.getMessage());
+    public void addMessage(TextMessage message){
+        String time = DateFormat.format("dd.MM.yyyy - hh:mm:ss", message.getDate()).toString();
+        addMsgToTable(message.getSender().getNickname(), time, message.getMessage());
     }
 
-    public void sendMessage(ChatMessage message){
-        //TODO: send message to server
-        TextMessage txt = (TextMessage)message;
+    public void sendMessage(TextMessage message){
         String time = DateFormat.format("dd.MM.yyyy - hh:mm:ss", new Date()).toString();
-        addMsgToTable("Me", time, txt.getMessage());
+        addMsgToTable("Me", time, message.getMessage());
 
-        String name = chat.getName();
-        String jid = name.contains("@") ? name : name.concat("@localhost");
-        try {
-            XMPPClient.getInstance().sendMsg(jid, txt.getMessage());
-        } catch (Exception ex) {
-            Log.d("send ex", ex.getMessage().toString());
-        }
-        name = "Me";
-        chat.addMessage(new TextMessage(new Date(), name, txt.getMessage()));
+        //versenden der Nachricht
+        chat.sendTextMessage(message);
+
         clearTextbox();
     }
 
@@ -133,8 +124,8 @@ public class SpecificChatFragment extends Fragment{
     public void update() {
         clearTable();
 
-        for(Object chatMessage: chat.getMessages()) {
-            ChatMessage message = (ChatMessage) chatMessage;
+        for(ChatMessage chatMessage: chat.getMessages()) {
+            TextMessage message = (TextMessage) chatMessage;
             addMessage(message);
         }
     }

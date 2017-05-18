@@ -18,6 +18,7 @@ import io.grpc.serverPackage.RegisterReply;
 import it15ns.friendscom.R;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
 import it15ns.friendscom.grpc.GrpcTask;
+import it15ns.friendscom.model.FormTools;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -64,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (!TextUtils.isEmpty(password) && !FormTools.isValidPassword(password)) {
             text_password.setError(getString(R.string.error_invalid_password));
             focusView = text_password;
             cancel = true;
@@ -75,7 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
             text_username.setError(getString(R.string.error_field_required));
             focusView = text_username;
             cancel = true;
-        } else if (!isUsernameValid(username)) {
+        } else if (!FormTools.isValidNickname(username)) {
             text_username.setError(getString(R.string.error_invalid_username));
             focusView = text_username;
             cancel = true;

@@ -7,11 +7,12 @@ import org.jxmpp.jid.EntityBareJid;
 import java.util.Date;
 
 import it15ns.friendscom.activities.ChatActivity;
-import it15ns.friendscom.datatypes.ChatMessage;
 import it15ns.friendscom.datatypes.TextMessage;
 import it15ns.friendscom.fragments.SpecificChatFragment;
 import it15ns.friendscom.model.Chat;
-import it15ns.friendscom.model.ChatHandler;
+import it15ns.friendscom.model.FriendList;
+import it15ns.friendscom.model.Handler;
+import it15ns.friendscom.model.User;
 
 
 /**
@@ -19,22 +20,21 @@ import it15ns.friendscom.model.ChatHandler;
  */
 
 public class XMPPChatListener  implements IncomingChatMessageListener{
+
     SpecificChatFragment fragment;
     ChatActivity activity;
     @Override
     public void newIncomingMessage(EntityBareJid from, Message message, org.jivesoftware.smack.chat2.Chat chat) {
-        ChatHandler chatHandler = ChatHandler.getInstance();
 
-        final String name = from.asEntityBareJidString().substring(0, from.asEntityBareJidString().indexOf("@"));
-        Chat chatForMessage;
+        Handler handler = Handler.getInstance();
 
-        if(chatHandler.chatExists(name)) {
-            chatForMessage = chatHandler.getChat(name);
-        } else {
-            chatForMessage = chatHandler.createNewChat(name);
-        }
+        // jid: daniel@localhost -> nickname: daniel
+        final String nickname = from.asEntityBareJidString().substring(0, from.asEntityBareJidString().indexOf("@"));
+        User sender = handler.getUser(nickname);
 
-        chatForMessage.addMessage(new TextMessage(new Date(), name, message.getBody()));
+        Chat userChat = sender.getChat();
+        TextMessage textMessage = new TextMessage(new Date(), sender, message.getBody());
+        userChat.addMessage(textMessage);
 
         // nofify fragment
         if(fragment != null) {

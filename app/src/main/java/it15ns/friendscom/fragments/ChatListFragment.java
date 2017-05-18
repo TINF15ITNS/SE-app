@@ -15,6 +15,8 @@ import android.widget.ListView;
 import it15ns.friendscom.R;
 import it15ns.friendscom.activities.ChatActivity;
 import it15ns.friendscom.adapters.ChatAdapter;
+import it15ns.friendscom.model.Chat;
+import it15ns.friendscom.model.Handler;
 
 /**
  * Created by danie on 12/05/2017.
@@ -25,6 +27,7 @@ public class ChatListFragment extends Fragment {
     ListView chatList;
     FragmentManager fragmentManager;
     SpecificChatFragment specificChatFragment;
+    Handler handler;
 
     @Override
     public void onResume() {
@@ -37,15 +40,19 @@ public class ChatListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         fragmentManager = getFragmentManager();
-
         chatList = (ListView) getView().findViewById(R.id.chatList);
         ChatAdapter chatListAdapter = new ChatAdapter(getView().getContext());
         chatList.setAdapter(chatListAdapter);
+
+
         chatList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Chat chat = (Chat) parent.getItemAtPosition(position);
+
                 Bundle bundle = new Bundle();
-                bundle.putInt("position", position);
+                bundle.putString("nickname", chat.getName());
+
                 specificChatFragment = new SpecificChatFragment();
                 specificChatFragment.setArguments(bundle);
 

@@ -10,7 +10,9 @@ public class FormTools {
         String ePattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(password);
-        return m.matches();
+
+
+        return password.length() > 4;
         //^                 # start-of-string
         //(?=.*[0-9])       # a digit must occur at least once
         //(?=.*[a-z])       # a lower case letter must occur at least once

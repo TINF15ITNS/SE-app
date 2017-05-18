@@ -19,6 +19,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -35,8 +36,8 @@ public class XMPPClient {
 
     private static final String DOMAIN = "localhost";
     private static final String HOST = "";
-    //private static final String IPADRESS = "10.0.2.2";
-    private static final String IPADRESS = "10.8.0.11";
+    private static final String IPADRESS = "10.0.2.2";
+    //private static final String IPADRESS = "10.8.0.11";
     private static final int PORT = 5222;
 
     private String username ="";
@@ -64,6 +65,7 @@ public class XMPPClient {
             return instance;
     }
 
+    // Um das Fragment upzudaten aus dem ChatListener
     public void setChatActivity(ChatActivity activity) {
         chatListener.setChatActivity(activity);
     }
@@ -101,26 +103,27 @@ public class XMPPClient {
 
     }
 
-    public void sendStanze(Stanza stanza) throws SmackException.NotConnectedException, InterruptedException{
-        connection.sendStanza(stanza);
-    }
-
     // Disconnect Function
     public void disconnectConnection(){
         /**new Thread(new Runnable() {
-            @Override
-            public void run() {
-                connection.disconnect();
-            }
+        @Override
+        public void run() {
+        connection.disconnect();
+        }
         }).start();*/
 
         if(connected)
             connection.disconnect();
     }
 
+    /*
+    public void sendStanze(Stanza stanza) throws SmackException.NotConnectedException, InterruptedException{
+        connection.sendStanza(stanza);
+    }
+    */
+
     public void connectConnection(final LoginActivity activity) throws ExecutionException, InterruptedException
     {
-
         AsyncTask<Void, Void, Boolean> connectionThread = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... arg0) {
@@ -173,19 +176,21 @@ public class XMPPClient {
         connectionThread.execute();
     }
 
-    public boolean sendMsg(String jid, String message) throws Exception{
+    public boolean sendMsg(String nickname, String message) {
         if (connection.isConnected()) {
             // Assume we've created an XMPPConnection name "connection"._
             chatmanager = ChatManager.getInstanceFor(connection);
 
-            if(!jid.contains("@"))
-                jid = jid.concat("@localhost");
+            String jid;
+            if(!nickname.contains("@"))
+                jid = nickname.concat("@localhost");
+            else
+                jid = nickname;
 
-            EntityBareJid jidObject = JidCreate.entityBareFrom(jid);
-
-            newChat = chatmanager.chatWith(jidObject);
-
+            EntityBareJid jidObject;
             try {
+                jidObject = JidCreate.entityBareFrom(jid);
+                newChat = chatmanager.chatWith(jidObject);
                 newChat.send(message);
                 return true;
             } catch (Exception e) {
