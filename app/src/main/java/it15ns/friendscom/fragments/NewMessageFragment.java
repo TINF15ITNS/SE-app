@@ -1,7 +1,7 @@
 package it15ns.friendscom.fragments;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -25,7 +25,7 @@ import it15ns.friendscom.xmpp.XMPPClient;
  * Created by danie on 12/05/2017.
  */
 
-public class NewMessageFragment extends Fragment {
+public class NewMessageFragment extends android.support.v4.app.Fragment {
     View view;
     EditText text_receiver;
     EditText text_message;
@@ -62,7 +62,7 @@ public class NewMessageFragment extends Fragment {
                     Snackbar.make(getView(), ex.toString(), Snackbar.LENGTH_LONG).show();
                 } finally {
                     ChatActivity.setFab(true);
-                    fragmentManager.beginTransaction().replace(R.id.content_frame, new ChatListFragment()).addToBackStack(null).commit();
+                    fragmentManager.beginTransaction().replace(R.id.container, new ChatListFragment()).addToBackStack(null).commit();
                 }
             }
         });

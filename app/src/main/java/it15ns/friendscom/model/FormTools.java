@@ -32,7 +32,7 @@ public class FormTools {
     public static boolean isValidNickname(String nickname){
         //TODO: kp, einfach mehr als 4 zeichen?
         //TODO: bzw evtl. hier server anfragen ob der user vorhanden ist?
-        if(nickname.length() > 4){
+        if(nickname.length() > 3){
             return true;
         }else{
             return false;

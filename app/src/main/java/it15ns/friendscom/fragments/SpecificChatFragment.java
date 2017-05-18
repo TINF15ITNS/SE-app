@@ -11,7 +11,7 @@ import it15ns.friendscom.model.Handler;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.format.DateFormat;
