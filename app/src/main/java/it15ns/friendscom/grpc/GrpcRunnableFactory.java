@@ -46,7 +46,7 @@ public class GrpcRunnableFactory {
             final LoginResponse loginResponse;
 
             loginRequest = LoginRequest.newBuilder()
-                    .setNickname(username)
+                    .setUsername(username)
                     .setPassword(password)
                     .build();
 
@@ -81,7 +81,7 @@ public class GrpcRunnableFactory {
             //throw new RuntimeException();
             final LoginResponse response;
             RegisterRequest request = RegisterRequest.newBuilder()
-                    .setNickname(username)
+                    .setUsername(username)
                     .setPassword(password)
                     .build();
 
