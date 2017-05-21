@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 import it15ns.friendscom.activities.ChatActivity;
 import it15ns.friendscom.activities.LoginActivity;
+import it15ns.friendscom.activities.SpecificChatActivity;
 import it15ns.friendscom.fragments.SpecificChatFragment;
 
 public class XMPPClient {
@@ -70,8 +71,8 @@ public class XMPPClient {
         chatListener.setChatActivity(activity);
     }
 
-    public void setSpecificChatFragment(SpecificChatFragment fragment) {
-        chatListener.setNotifyFragment(fragment);
+    public void setSpecificChatActivity(SpecificChatActivity specificChatActivity) {
+        chatListener.setNotifyActivity(specificChatActivity);
     }
 
     //Initialize

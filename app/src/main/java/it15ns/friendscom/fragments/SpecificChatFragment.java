@@ -61,7 +61,7 @@ public class SpecificChatFragment extends Fragment{
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        XMPPClient.getInstance().setSpecificChatFragment(this);
+        //XMPPClient.getInstance().setSpecificChatFragment(this);
 
         ctx_main = getView().getContext();
         txt_title = (TextView) getView().findViewById(R.id.chatTitle);

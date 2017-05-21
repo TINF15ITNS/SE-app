@@ -1,5 +1,6 @@
 package it15ns.friendscom.activities;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -38,6 +39,8 @@ public class ChatActivity extends AppCompatActivity
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
+    static ChatListFragment chatListFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +49,6 @@ public class ChatActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -67,12 +68,15 @@ public class ChatActivity extends AppCompatActivity
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         final FragmentManager fragmentManager = getSupportFragmentManager();
+        final ChatActivity thisActivity = this;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 setFab(false);
-                fragmentManager.beginTransaction().replace(R.id.container, new NewMessageFragment()).addToBackStack(null).commit();
+                Intent startSpecificChat = new Intent(thisActivity, SpecificChatActivity.class);
+                startActivity(startSpecificChat);
+                //fragmentManager.beginTransaction().replace(R.id.container, new NewMessageFragment()).addToBackStack(null).commit();
             }
         });
 
@@ -80,7 +84,6 @@ public class ChatActivity extends AppCompatActivity
         tabLayout.setupWithViewPager(mViewPager);
 
         //fragmentManager.beginTransaction().replace(R.id.content_frame, new ChatListFragment()).addToBackStack(null).commit();
-
         XMPPClient.getInstance().setChatActivity(this);
     }
 
@@ -122,6 +125,10 @@ public class ChatActivity extends AppCompatActivity
             fab.show();
         else
             fab.hide();
+    }
+
+    public static void update() {
+        chatListFragment.update();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -197,7 +204,10 @@ public class ChatActivity extends AppCompatActivity
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if(position == 0) {
-                return new ChatListFragment();
+                if(chatListFragment== null)
+                    chatListFragment = new ChatListFragment();
+
+                return chatListFragment;
             } else {
                 return PlaceholderFragment.newInstance(position + 1);
             }
@@ -223,11 +233,12 @@ public class ChatActivity extends AppCompatActivity
         }
     }
 
+    /*
     @Override
     protected void onStop() {
         XMPPClient.getInstance().disconnectConnection();
         super.onStop();
-    }
+    }*/
 
     @Override
     protected void onResume() {

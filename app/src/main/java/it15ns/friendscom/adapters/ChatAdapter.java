@@ -20,6 +20,11 @@ import it15ns.friendscom.R;
  */
 
 public class ChatAdapter extends BaseAdapter {
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        chats = handler.getChats();
+    }
 
     private List<Chat> chats;
     private LayoutInflater inflater;

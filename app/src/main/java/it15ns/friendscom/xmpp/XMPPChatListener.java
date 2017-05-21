@@ -7,6 +7,7 @@ import org.jxmpp.jid.EntityBareJid;
 import java.util.Date;
 
 import it15ns.friendscom.activities.ChatActivity;
+import it15ns.friendscom.activities.SpecificChatActivity;
 import it15ns.friendscom.datatypes.TextMessage;
 import it15ns.friendscom.fragments.SpecificChatFragment;
 import it15ns.friendscom.model.Chat;
@@ -21,7 +22,7 @@ import it15ns.friendscom.model.User;
 
 public class XMPPChatListener  implements IncomingChatMessageListener{
 
-    SpecificChatFragment fragment;
+    SpecificChatActivity specificChatActivity;
     ChatActivity activity;
     @Override
     public void newIncomingMessage(EntityBareJid from, Message message, org.jivesoftware.smack.chat2.Chat chat) {
@@ -37,18 +38,18 @@ public class XMPPChatListener  implements IncomingChatMessageListener{
         userChat.addMessage(textMessage);
 
         // nofify fragment
-        if(fragment != null) {
+        if(specificChatActivity != null) {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    fragment.update();
+                    specificChatActivity.update();
                 }
             });
         }
     }
 
-    public void setNotifyFragment(SpecificChatFragment fragment) {
-        this.fragment = fragment;
+    public void setNotifyActivity(SpecificChatActivity specificChatActivity) {
+        this.specificChatActivity = specificChatActivity;
     }
 
     public void setChatActivity(ChatActivity activity) {

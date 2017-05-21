@@ -41,7 +41,7 @@ public class Handler {
 
     public User getMe() {
         //TODO: grpc call
-        return new User("me");
+        return new User("Me");
     }
 
     public void addGroup(Group group) {

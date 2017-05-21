@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="it15ns.friendscom.activities.SpecificChatActivity">
+
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/background_light"
+        android:orientation="vertical"
+        android:gravity="top"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
+
+        <EditText
+            android:id="@+id/chatPartner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="Chat Partner"
+            android:textSize="25dp"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center" />
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="80"
+            android:fillViewport="true"
+            android:layout_gravity="center"
+            >
+
+            <TableLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/chatTableLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1" >
+
+            </TableLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="bottom"
+            android:weightSum="10" >
+
+            <EditText
+                android:id="@+id/chatMsg"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_weight="3"
+                android:hint="Say something:"
+                android:imeOptions="actionSend"
+                android:maxLines="10"
+                android:layout_gravity="bottom"/>
+
+            <Button
+                android:id="@+id/btn_sendMsg"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_weight="7"
+                android:text="Senden"
+                android:layout_gravity="bottom"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

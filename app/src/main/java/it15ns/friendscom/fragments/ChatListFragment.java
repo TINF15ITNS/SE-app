@@ -1,6 +1,7 @@
 package it15ns.friendscom.fragments;
 
 //import android.app.Fragment;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 
 import it15ns.friendscom.R;
 import it15ns.friendscom.activities.ChatActivity;
+import it15ns.friendscom.activities.SpecificChatActivity;
 import it15ns.friendscom.adapters.ChatAdapter;
 import it15ns.friendscom.model.Chat;
 import it15ns.friendscom.model.Handler;
@@ -29,6 +31,7 @@ public class ChatListFragment extends Fragment {
     FragmentManager fragmentManager;
     SpecificChatFragment specificChatFragment;
     Handler handler;
+    ChatAdapter chatListAdapter;
 
     @Override
     public void onResume() {
@@ -42,23 +45,26 @@ public class ChatListFragment extends Fragment {
 
         fragmentManager = getFragmentManager();
         chatList = (ListView) getView().findViewById(R.id.chatList);
-        ChatAdapter chatListAdapter = new ChatAdapter(getView().getContext());
+        chatListAdapter = new ChatAdapter(getView().getContext());
         chatList.setAdapter(chatListAdapter);
-
 
         chatList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Chat chat = (Chat) parent.getItemAtPosition(position);
 
-                Bundle bundle = new Bundle();
-                bundle.putString("nickname", chat.getName());
+                //Bundle bundle = new Bundle();
+                //bundle.putString("nickname", chat.getName());
 
-                specificChatFragment = new SpecificChatFragment();
-                specificChatFragment.setArguments(bundle);
+                //specificChatFragment = new SpecificChatFragment();
+                //specificChatFragment.setArguments(bundle);
 
-                ChatActivity.setFab(false);
-                fragmentManager.beginTransaction().replace(R.id.content_frame, specificChatFragment).addToBackStack(null).commit();
+                Intent startSpecificChat = new Intent(getActivity(), SpecificChatActivity.class);
+                startSpecificChat.putExtra("nickname", chat.getName());
+                startActivity(startSpecificChat);
+
+                //ChatActivity.setFab(false);
+                //fragmentManager.beginTransaction().replace(R.id.content_frame, specificChatFragment).addToBackStack(null).commit();
             }
         });
     }
@@ -72,6 +78,10 @@ public class ChatListFragment extends Fragment {
         Button btn_sent;
 
         //text_receiver = (EditText) findViewById();
+    }
+
+    public void update() {
+        chatListAdapter.notifyDataSetChanged();
     }
 
 

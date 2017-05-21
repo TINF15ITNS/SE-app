@@ -27,10 +27,14 @@
         <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.RegisterActivity" />
         <activity
-            android:windowSoftInputMode="adjustResize"
             android:name=".activities.ChatActivity"
             android:label="@string/title_activity_chat"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".activities.SpecificChatActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
