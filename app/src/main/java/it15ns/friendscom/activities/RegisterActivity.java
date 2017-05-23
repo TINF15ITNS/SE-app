@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import io.grpc.serverPackage.LoginResponse;
-import io.grpc.serverPackage.RegisterReply;
 import it15ns.friendscom.R;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
 import it15ns.friendscom.grpc.GrpcTask;

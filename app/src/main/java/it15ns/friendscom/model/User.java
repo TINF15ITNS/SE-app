@@ -40,9 +40,15 @@ public class User {
     }
 
     public Chat getChat() {
-        if(chat == null)
-            chat = new Chat(this.getNickname());
+        return chat;
+    }
 
+    public boolean hasChat() {
+        return chat != null;
+    }
+
+    public Chat createChat(){
+        chat = new Chat(nickname);
         return chat;
     }
 
@@ -106,7 +112,7 @@ public class User {
     public String getNickname() { return nickname;  }
 
     public String getName() {
-        return name;
+        return name != null ? name : nickname;
     }
 
     public String getSurname() {

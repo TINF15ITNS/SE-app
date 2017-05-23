@@ -103,6 +103,12 @@ public class SpecificChatActivity extends AppCompatActivity {
                 }
         } else {
             txt_chatPartner.setEnabled(true);
+            txt_chatPartner.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    txt_chatPartner.setText("");
+                }
+            });
         }
     }
 

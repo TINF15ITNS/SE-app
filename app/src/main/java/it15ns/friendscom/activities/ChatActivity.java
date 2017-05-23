@@ -29,6 +29,7 @@ import android.widget.Toast;
 import it15ns.friendscom.R;
 import it15ns.friendscom.adapters.ChatAdapter;
 import it15ns.friendscom.fragments.ChatListFragment;
+import it15ns.friendscom.fragments.ContactListFragment;
 import it15ns.friendscom.fragments.NewMessageFragment;
 import it15ns.friendscom.xmpp.XMPPClient;
 
@@ -40,6 +41,7 @@ public class ChatActivity extends AppCompatActivity
     private ViewPager mViewPager;
 
     static ChatListFragment chatListFragment;
+    static ContactListFragment contactListFragment;
 
 
     @Override
@@ -65,24 +67,77 @@ public class ChatActivity extends AppCompatActivity
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        final ChatActivity thisActivity = this;
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        final FragmentManager fragmentManager = getSupportFragmentManager();
-        final ChatActivity thisActivity = this;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                setFab(false);
-                Intent startSpecificChat = new Intent(thisActivity, SpecificChatActivity.class);
-                startActivity(startSpecificChat);
-                //fragmentManager.beginTransaction().replace(R.id.container, new NewMessageFragment()).addToBackStack(null).commit();
-            }
-        });
+        fab.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        setFab(false);
+                        Intent startSpecificChat = new Intent(thisActivity, SpecificChatActivity.class);
+                        startActivity(startSpecificChat);
+                        //fragmentManager.beginTransaction().replace(R.id.container, new NewMessageFragment()).addToBackStack(null).commit();
+                    }
+                }
+        );
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0:
+                        fab.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_dialog_email));
+                        fab.show();
+                        fab.setOnClickListener(
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                        setFab(false);
+                                        Intent startSpecificChat = new Intent(thisActivity, SpecificChatActivity.class);
+                                        startActivity(startSpecificChat);
+                                        //fragmentManager.beginTransaction().replace(R.id.container, new NewMessageFragment()).addToBackStack(null).commit();
+                                    }
+                                }
+                            );
+                        break;
 
+                    case 1:
+                        fab.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_input_add));
+                        fab.show();
+                        fab.setOnClickListener(
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                        setFab(false);
+                                        Intent startSpecificChat = new Intent(thisActivity, ProfileActivity.class);
+                                        startActivity(startSpecificChat);
+                                        //fragmentManager.beginTransaction().replace(R.id.container, new NewMessageFragment()).addToBackStack(null).commit();
+                                    }
+                                }
+                            );
+                        break;
+
+                    case 2: fab.hide();
+
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         //fragmentManager.beginTransaction().replace(R.id.content_frame, new ChatListFragment()).addToBackStack(null).commit();
         XMPPClient.getInstance().setChatActivity(this);
     }
@@ -128,6 +183,7 @@ public class ChatActivity extends AppCompatActivity
     }
 
     public static void update() {
+        contactListFragment.update();
         chatListFragment.update();
     }
 
@@ -203,13 +259,19 @@ public class ChatActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            if(position == 0) {
-                if(chatListFragment== null)
-                    chatListFragment = new ChatListFragment();
+            switch (position){
+                case 0:
+                    if(chatListFragment== null)
+                        chatListFragment = new ChatListFragment();
+                    return chatListFragment;
 
-                return chatListFragment;
-            } else {
-                return PlaceholderFragment.newInstance(position + 1);
+                case 1:
+                    if(contactListFragment== null)
+                        contactListFragment = new ContactListFragment();
+                    return contactListFragment;
+
+                default:
+                    return PlaceholderFragment.newInstance(position + 1);
             }
         }
 

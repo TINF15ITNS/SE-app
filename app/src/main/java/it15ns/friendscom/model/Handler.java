@@ -85,6 +85,27 @@ public class Handler {
         return false;
     }
 
+    public List<User> getUser() {
+        List<User> users =  new ArrayList<>();
+
+        // gehe durch alle user und füge den chat in die queue ein
+        Iterator it = this.users.entrySet().iterator();
+        while (it.hasNext()) {
+            HashMap.Entry pair = (HashMap.Entry)it.next();
+            User user = (User) pair.getValue();
+            users.add(user);
+        }
+
+        // sortieren nach dem neusten Datum
+        users.sort(new Comparator<User>() {
+            @Override
+            public int compare(User user1, User user2) {
+                return user1.getName().compareTo(user2.getName());
+            }
+        });
+
+        return users;
+    }
     // gibt eine Liste aller Chats, dem neustem Daten einer nachricht nach sortiert zurück
     //
     public List<Chat> getChats() {
@@ -95,11 +116,13 @@ public class Handler {
         while (it.hasNext()) {
             HashMap.Entry pair = (HashMap.Entry)it.next();
             User user = (User) pair.getValue();
-            chats.add(user.getChat());
+            if(user.hasChat())
+                chats.add(user.getChat());
         }
 
         for(Group group: groups) {
-            chats.add(group.getChat());
+            if(group.hasChat())
+                chats.add(group.getChat());
         }
 
         // sortieren nach dem neusten Datum
@@ -113,8 +136,13 @@ public class Handler {
         return chats;
     }
 
+    // MEthode für die Specific Chat Activity. Liste der Chats -> nur nickname verfügbar und keine gedanken über user
     public Chat getUserChat(String nickname) {
-        return getUser(nickname).getChat();
+        User user = getUser(nickname);
+        if(user.hasChat())
+            return user.getChat();
+        else
+            return user.createChat();
     }
 
     public void showChat(User user){

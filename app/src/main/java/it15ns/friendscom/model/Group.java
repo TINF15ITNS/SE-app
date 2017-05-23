@@ -32,4 +32,8 @@ public class Group {
     public Chat getChat() {
         return chat;
     }
+
+    public boolean hasChat() {
+        return chat != null;
+    }
 }
