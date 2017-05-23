@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import io.grpc.serverPackage.LoginReply;
+import io.grpc.serverPackage.LoginResponse;
 import io.grpc.serverPackage.LoginResponse;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
 import it15ns.friendscom.grpc.GrpcTask;

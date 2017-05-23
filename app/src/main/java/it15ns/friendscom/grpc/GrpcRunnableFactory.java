@@ -1,9 +1,8 @@
 package it15ns.friendscom.grpc;
 
-import io.grpc.serverPackage.LoginReply;
+import io.grpc.serverPackage.LoginResponse;
 import io.grpc.serverPackage.LoginRequest;
 import io.grpc.serverPackage.LoginResponse;
-import io.grpc.serverPackage.RegisterReply;
 import io.grpc.serverPackage.RegisterRequest;
 import io.grpc.serverPackage.ServerServiceGrpc;
 import it15ns.friendscom.activities.LoginActivity;
