@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ import it15ns.friendscom.R;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
 import it15ns.friendscom.grpc.GrpcTask;
 import it15ns.friendscom.model.FormTools;
+import it15ns.friendscom.xmpp.XMPPClient;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -95,10 +97,32 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    public void registerResult(LoginResponse response) {
-        showProgress(false);
+    public void xmppLoginFinished(boolean success) {
+        if(success) {
+            showProgress(false);
+            Intent chatActivity = new Intent(this,ChatActivity.class);
+            startActivity(chatActivity);
+        } else {
+            showProgress(false);
+            Toast.makeText(RegisterActivity.this, "Es gibt Probleme mit dem Nachrichtenserver!", Toast.LENGTH_LONG).show();
+            text_password.requestFocus();
+        }
+    }
 
+    public void registerResult(LoginResponse response) {
         if(response.getSuccess()) {
+            String token = response.getToken();
+            XMPPClient xmppClient = XMPPClient.getInstance();
+            try {
+                xmppClient.init(text_username.getText().toString(), token);
+                // start async task
+                xmppClient.connectConnection(this);
+            } catch (Exception ex) {
+                Toast.makeText(RegisterActivity.this, "Es gibt Probleme mit dem Nachrichtenserver!", Toast.LENGTH_LONG).show();
+                Log.d("XMPP Error", ex.getMessage());
+            }
+
+            // TODO: Abfangen nach Registrieren --> Direkter Login
             Intent chatActivity = new Intent(this,ChatActivity.class);
             startActivity(chatActivity);
         } else {

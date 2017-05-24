@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 import it15ns.friendscom.activities.ChatActivity;
 import it15ns.friendscom.activities.LoginActivity;
+import it15ns.friendscom.activities.RegisterActivity;
 import it15ns.friendscom.activities.SpecificChatActivity;
 import it15ns.friendscom.fragments.SpecificChatFragment;
 
@@ -122,6 +123,40 @@ public class XMPPClient {
         connection.sendStanza(stanza);
     }
     */
+
+
+    public void connectConnection(final RegisterActivity activity) throws ExecutionException, InterruptedException
+    {
+        AsyncTask<Void, Void, Boolean> connectionThread = new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... arg0) {
+                // Create a connection
+                try {
+                    connection.connect();
+                    login();
+                    connected = true;
+
+                    return true;
+                } catch (Exception e) {
+                    Log.d("XMPP",e.getMessage() + " Catch connection.connect");
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(final Boolean result) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        activity.xmppLoginFinished(result);
+                    }
+                });
+            }
+        };
+
+        connectionThread.execute();
+    }
+
 
     public void connectConnection(final LoginActivity activity) throws ExecutionException, InterruptedException
     {
