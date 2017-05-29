@@ -33,7 +33,12 @@ public class XMPPChatListener  implements IncomingChatMessageListener{
         final String nickname = from.asEntityBareJidString().substring(0, from.asEntityBareJidString().indexOf("@"));
         User sender = handler.getUser(nickname);
 
-        Chat userChat = sender.getChat();
+        Chat userChat;
+        if(sender.hasChat())
+            userChat = sender.getChat();
+        else
+            userChat = sender.createChat();
+
         TextMessage textMessage = new TextMessage(new Date(), sender, message.getBody());
         userChat.addMessage(textMessage);
 

@@ -3,7 +3,9 @@ package it15ns.friendscom.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
+        String token = sharedPrefs.getString("token", "");
 
         xmppClient = XMPPClient.getInstance();
 
@@ -145,6 +150,10 @@ public class LoginActivity extends AppCompatActivity {
 
         if(response.getSuccess()) {
             String token = response.getToken();
+            SharedPreferences sharedPrefs = getSharedPreferences("data", Context.MODE_PRIVATE);
+            sharedPrefs.edit().putString("token", token).commit();
+            sharedPrefs.edit().putString("username", username).commit();
+
             try {
                 xmppClient.init(username, token);
                 // start async task

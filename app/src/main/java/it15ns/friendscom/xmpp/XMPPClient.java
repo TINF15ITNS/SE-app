@@ -15,6 +15,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.jid.EntityBareJid;
@@ -30,9 +31,12 @@ import it15ns.friendscom.activities.ChatActivity;
 import it15ns.friendscom.activities.LoginActivity;
 import it15ns.friendscom.activities.RegisterActivity;
 import it15ns.friendscom.activities.SpecificChatActivity;
+import it15ns.friendscom.activities.SplashActivity;
 import it15ns.friendscom.fragments.SpecificChatFragment;
 
 public class XMPPClient {
+    public static boolean USE_STREAM_MANAGEMENT = false;
+    public static int STREAM_MANAGEMENT_RESUMPTION_TIME = 30;
 
     private static XMPPClient instance = null;
 
@@ -45,7 +49,7 @@ public class XMPPClient {
     private String username ="";
     private String password = "";
 
-    AbstractXMPPConnection connection ;
+    XMPPTCPConnection connection ;
     ChatManager chatmanager ;
     Chat newChat;
     XMPPConnectionListener connectionListener = new XMPPConnectionListener();
@@ -82,9 +86,8 @@ public class XMPPClient {
 
         this.username = username;
         this.password = password;
-
         XMPPTCPConnectionConfiguration.Builder configBuilder = XMPPTCPConnectionConfiguration.builder()
-            .setUsernameAndPassword(username, password)
+            .setUsernameAndPassword(username, this.password)
             .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
                 .setDebuggerEnabled(true)
             .setResource("Android")
@@ -101,6 +104,9 @@ public class XMPPClient {
         }
 
         connection = new XMPPTCPConnection(configBuilder.build());
+        connection.setUseStreamManagement(USE_STREAM_MANAGEMENT);
+        connection.setUseStreamManagementResumption(USE_STREAM_MANAGEMENT);
+        connection.setPreferredResumptionTime(STREAM_MANAGEMENT_RESUMPTION_TIME);
         connection.addConnectionListener(connectionListener);
 
     }
@@ -133,7 +139,12 @@ public class XMPPClient {
                 // Create a connection
                 try {
                     connection.connect();
-                    login();
+
+                    Roster roster = Roster.getInstanceFor(connection);
+                    roster.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
+                    roster.setRosterLoadedAtLogin(true);
+
+                    connection.login();
                     connected = true;
 
                     return true;
@@ -159,6 +170,38 @@ public class XMPPClient {
 
 
     public void connectConnection(final LoginActivity activity) throws ExecutionException, InterruptedException
+    {
+        AsyncTask<Void, Void, Boolean> connectionThread = new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... arg0) {
+                // Create a connection
+                try {
+                    connection.connect();
+                    login();
+                    connected = true;
+
+                    return true;
+                } catch (Exception e) {
+                    Log.d("XMPP",e.getMessage() + " Catch connection.connect");
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(final Boolean result) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        activity.xmppLoginFinished(result);
+                    }
+                });
+            }
+        };
+
+        connectionThread.execute();
+    }
+
+    public void connectConnection(final SplashActivity activity) throws ExecutionException, InterruptedException
     {
         AsyncTask<Void, Void, Boolean> connectionThread = new AsyncTask<Void, Void, Boolean>() {
             @Override
@@ -239,7 +282,7 @@ public class XMPPClient {
     }
 
     public void login() throws XMPPException, IOException, SmackException, InterruptedException {
-            connection.login(username, password);
+            connection.login();
     }
 
     //Connection Listener to check connection state

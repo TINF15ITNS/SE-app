@@ -20,7 +20,7 @@ public class GrpcTask extends AsyncTask<Void, Void, Boolean> {
     private String mHost = "10.0.2.2";
 
     // Für VPN
-    //private String mHost = "10.8.0.11";
+    //private String mHost = "192.168.1.24";
     private int mPort = 50051;
 
     private String mPassword;
