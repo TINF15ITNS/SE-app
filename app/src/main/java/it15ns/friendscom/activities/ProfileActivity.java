@@ -103,7 +103,7 @@ public class ProfileActivity extends AppCompatActivity {
         nickname.setText(user.getNickname());
         name.setText(user.getName());
         surname.setText(user.getSurname());
-        birthday.setText(user.getBirthday().toString());
+        birthday.setText(user.getBirthday() != null ? user.getBirthday().toString() : "");
         telnr.setText(user.getTelNumber());
         email.setText(user.geteMail());
         linear.addView(title);

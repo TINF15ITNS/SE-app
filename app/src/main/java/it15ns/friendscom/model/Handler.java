@@ -3,6 +3,7 @@ package it15ns.friendscom.model;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -97,7 +98,7 @@ public class Handler {
         }
 
         // sortieren nach dem neusten Datum
-        users.sort(new Comparator<User>() {
+        Collections.sort(users, new Comparator<User>() {
             @Override
             public int compare(User user1, User user2) {
                 return user1.getName().compareTo(user2.getName());
@@ -126,7 +127,7 @@ public class Handler {
         }
 
         // sortieren nach dem neusten Datum
-        chats.sort(new Comparator<Chat>() {
+        Collections.sort(chats, new Comparator<Chat>() {
             @Override
             public int compare(Chat chat1, Chat chat2) {
                 return chat1.getNewestDate().compareTo(chat2.getNewestDate());
