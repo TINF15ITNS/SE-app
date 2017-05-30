@@ -1,6 +1,5 @@
 package it15ns.friendscom.fragments;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,7 +18,6 @@ import it15ns.friendscom.model.Chat;
 import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.R;
 import it15ns.friendscom.model.User;
-import it15ns.friendscom.xmpp.XMPPClient;
 
 /**
  * Created by danie on 12/05/2017.
@@ -52,7 +50,7 @@ public class NewMessageFragment extends android.support.v4.app.Fragment {
                     String message = text_message.getText().toString();
 
                     Handler handler = Handler.getInstance();
-                    User receiver = handler.getUser(nickname);
+                    User receiver = handler.getUsers(nickname);
                     Chat chat = receiver.getChat();
 
                     chat.sendTextMessage(new TextMessage(new Date(), handler.getMe(), message));

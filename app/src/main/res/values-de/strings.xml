@@ -12,4 +12,6 @@
     <string name="prompt_email">E-Mail</string>
     <string name="prompt_password">Passwort</string>
     <string name="prompt_password_repeat">Passwort wiederholen</string>
+    <string name="action_logout">Ausloggen</string>
+    <string name="action_settings">Einstellungen</string>
 </resources>

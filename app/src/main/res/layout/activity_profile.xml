@@ -22,7 +22,7 @@
 
         <LinearLayout
             android:id="@+id/linear"
-            android:layout_width="368dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             tools:layout_editor_absoluteX="8dp"
@@ -171,7 +171,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Edit Profile"
-                android:visibility="invisible" />
+                android:visibility="visible" />
 
         </LinearLayout>
 

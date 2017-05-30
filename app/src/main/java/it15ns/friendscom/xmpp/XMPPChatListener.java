@@ -9,9 +9,7 @@ import java.util.Date;
 import it15ns.friendscom.activities.ChatActivity;
 import it15ns.friendscom.activities.SpecificChatActivity;
 import it15ns.friendscom.datatypes.TextMessage;
-import it15ns.friendscom.fragments.SpecificChatFragment;
 import it15ns.friendscom.model.Chat;
-import it15ns.friendscom.model.FriendList;
 import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.model.User;
 
@@ -23,7 +21,7 @@ import it15ns.friendscom.model.User;
 public class XMPPChatListener  implements IncomingChatMessageListener{
 
     SpecificChatActivity specificChatActivity;
-    ChatActivity activity;
+    ChatActivity chatActivity;
     @Override
     public void newIncomingMessage(EntityBareJid from, Message message, org.jivesoftware.smack.chat2.Chat chat) {
 
@@ -31,7 +29,7 @@ public class XMPPChatListener  implements IncomingChatMessageListener{
 
         // jid: daniel@localhost -> nickname: daniel
         final String nickname = from.asEntityBareJidString().substring(0, from.asEntityBareJidString().indexOf("@"));
-        User sender = handler.getUser(nickname);
+        User sender = handler.getUsers(nickname);
 
         Chat userChat;
         if(sender.hasChat())
@@ -42,9 +40,16 @@ public class XMPPChatListener  implements IncomingChatMessageListener{
         TextMessage textMessage = new TextMessage(new Date(), sender, message.getBody());
         userChat.addMessage(textMessage);
 
+        chatActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                chatActivity.update();
+            }
+        });
+
         // nofify fragment
         if(specificChatActivity != null) {
-            activity.runOnUiThread(new Runnable() {
+            chatActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     specificChatActivity.update();
@@ -53,11 +58,11 @@ public class XMPPChatListener  implements IncomingChatMessageListener{
         }
     }
 
-    public void setNotifyActivity(SpecificChatActivity specificChatActivity) {
+    public void setSpecificChatActivity(SpecificChatActivity specificChatActivity) {
         this.specificChatActivity = specificChatActivity;
     }
 
     public void setChatActivity(ChatActivity activity) {
-        this.activity = activity;
+        this.chatActivity = activity;
     }
 }

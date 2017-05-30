@@ -118,12 +118,12 @@ public class SpecificChatActivity extends AppCompatActivity {
 
     public void addMessage(TextMessage message){
         String time = DateFormat.format("dd.MM.yyyy - hh:mm:ss", message.getDate()).toString();
-        addMsgToTable(message.getSender().getNickname(), time, message.getMessage());
+        addMsgToTable(message.getSender().getSurname(), time, message.getMessage());
     }
 
     public void sendMessage(TextMessage message){
         String time = DateFormat.format("dd.MM.yyyy - hh:mm:ss", new Date()).toString();
-        addMsgToTable("Me", time, message.getMessage());
+        addMsgToTable(Handler.getInstance().getMe().getSurname(), time, message.getMessage());
 
         //versenden der Nachricht
         chat.sendTextMessage(message);

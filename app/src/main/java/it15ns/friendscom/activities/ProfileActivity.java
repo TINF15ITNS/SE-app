@@ -1,8 +1,8 @@
 package it15ns.friendscom.activities;
 
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,12 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import java.sql.Date;
 
 import it15ns.friendscom.R;
 import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.model.User;
-import it15ns.friendscom.xmpp.XMPPClient;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -32,6 +32,15 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView birthday_title;
     private TextView telnr_title;
     private TextView email_title;
+
+    private TextView e_title;
+    private TextView e_nickname;
+    private TextView e_name;
+    private TextView e_surname;
+    private TextView e_birthday;
+    private TextView e_telnr;
+    private TextView e_email;
+
     private Button edit;
     private LinearLayout linear;
     private User user;
@@ -63,13 +72,14 @@ public class ProfileActivity extends AppCompatActivity {
         edit = (Button) findViewById(R.id.edit);
 
         Bundle bundle = getIntent().getExtras();
-        String nickname = bundle.getString("nickname");
 
-        user = Handler.getInstance().getUser(nickname);
-
-        //if its my profile im aber to edit my settings
-        if(true)    //TODO: me?
-            edit.setVisibility(View.VISIBLE);
+        if(bundle != null) {
+            edit.setVisibility(View.INVISIBLE);
+            String nickname = bundle.getString("nickname");
+            user = Handler.getInstance().getUsers(nickname);
+        } else {
+            user = Handler.getInstance().getMe();
+        }
         //on click load new layout
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,43 +129,46 @@ public class ProfileActivity extends AppCompatActivity {
         linear.addView(telnr);
         linear.addView(email_title);
         linear.addView(email);
+        linear.addView(edit);
     }
 
     public void loadEditLayout(){
         linear.removeAllViews();
         linear.addView(title);
         linear.addView(nickname_title);
-        EditText nickname_e = new EditText(this);
-        nickname_e.setText(user.getNickname());
-        linear.addView(nickname_e);
+        e_nickname = new EditText(this);
+        e_nickname.setText(user.getNickname());
+        linear.addView(e_nickname);
         linear.addView(name_title);
-        EditText name_e = new EditText(this);
-        name_e.setText(user.getName());
-        linear.addView(name_e);
+        e_name = new EditText(this);
+        e_name.setText(user.getName());
+        linear.addView(e_name);
         linear.addView(surname_title);
-        EditText surname_e = new EditText(this);
-        surname_e.setText(user.getSurname());
-        linear.addView(surname_e);
+        e_surname = new EditText(this);
+        e_surname.setText(user.getSurname());
+        linear.addView(e_surname);
         linear.addView(birthday_title);
-        EditText birthday_e = new EditText(this);
-        birthday_e.setText(user.getBirthday().toString());
-        linear.addView(birthday_e);
+        e_birthday = new EditText(this);
+        e_birthday.setText(user.getBirthday() != null ? user.getBirthday().toString() : "");
+        linear.addView(e_birthday);
         linear.addView(telnr_title);
-        EditText telnr_e = new EditText(this);
-        telnr_e.setText(user.getTelNumber());
-        linear.addView(telnr_e);
+        e_telnr = new EditText(this);
+        e_telnr.setText(user.getTelNumber());
+        linear.addView(e_telnr);
         linear.addView(email_title);
-        EditText email_e = new EditText(this);
-        email_e.setText(user.geteMail());
-        linear.addView(email_e);
+        e_email = new EditText(this);
+        e_email.setText(user.geteMail());
+        linear.addView(e_email);
 
         //edit button to save and exit settings
+
         Button save_btn = new Button(this);
         save_btn.setText("Speichern");
         save_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: tell server to update user data
+                updateLocalUser();
+                Snackbar.make(linear, "Aktualisiert!", Snackbar.LENGTH_LONG).show();
             }
         });
         linear.addView(save_btn);
@@ -168,5 +181,18 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
         linear.addView(exit_btn);
+    }
+
+    private void updateLocalUser() {
+        User me = Handler.getInstance().getMe();
+        me.setName(e_name.getText().toString());
+        me.setSurname(e_surname.getText().toString());
+        if(!e_birthday.getText().toString().equals("")) {
+            me.setBirthday(Date.valueOf(e_birthday.getText().toString()));
+            //TODO:passt der string?
+        }
+        me.setTelNumber(e_telnr.getText().toString());
+        me.seteMail(e_email.getText().toString());
+        Handler.getInstance().setMe(me);
     }
 }

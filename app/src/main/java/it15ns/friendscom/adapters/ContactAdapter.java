@@ -11,7 +11,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import it15ns.friendscom.R;
-import it15ns.friendscom.model.Chat;
 import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.model.User;
 
@@ -23,7 +22,7 @@ public class ContactAdapter extends BaseAdapter {
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-        users = handler.getUser();
+        users = handler.getUsers();
     }
 
     private List<User> users;
@@ -34,7 +33,7 @@ public class ContactAdapter extends BaseAdapter {
         inflater = LayoutInflater.from(context);
 
         handler = Handler.getInstance();
-        users = handler.getUser();
+        users = handler.getUsers();
     }
 
     @Override
@@ -75,7 +74,7 @@ public class ContactAdapter extends BaseAdapter {
         }
 
         Context context = parent.getContext();
-        String name = users.get(position).getName();
+        String name = users.get(position).getSurname();
 
         holder.name.setText(name);
         holder.icon.setImageResource(R.drawable.ic_menu_camera);

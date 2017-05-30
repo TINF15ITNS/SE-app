@@ -7,13 +7,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.ListResourceBundle;
-import java.util.Queue;
 
 import it15ns.friendscom.datatypes.ChatMessage;
-import it15ns.friendscom.fragments.SpecificChatFragment;
 
 /**
  * Created by danie on 15/05/2017.
@@ -42,7 +38,15 @@ public class Handler {
 
     public User getMe() {
         //TODO: grpc call
-        return new User("Me");
+        if(me == null)
+            me = new User("Me");
+
+        return me;
+    }
+
+    public void setMe(User me) {
+        //TODO: grpc call
+        this.me = me;
     }
 
     public void addGroup(Group group) {
@@ -62,7 +66,7 @@ public class Handler {
             users.remove(user.getNickname());
     }
 
-    public User getUser(String nickname) {
+    public User getUsers(String nickname) {
         if(users.containsKey(nickname)) {
             return users.get(nickname);
         } else {
@@ -86,7 +90,7 @@ public class Handler {
         return false;
     }
 
-    public List<User> getUser() {
+    public List<User> getUsers() {
         List<User> users =  new ArrayList<>();
 
         // gehe durch alle user und füge den chat in die queue ein
@@ -139,7 +143,7 @@ public class Handler {
 
     // MEthode für die Specific Chat Activity. Liste der Chats -> nur nickname verfügbar und keine gedanken über user
     public Chat getUserChat(String nickname) {
-        User user = getUser(nickname);
+        User user = getUsers(nickname);
         if(user.hasChat())
             return user.getChat();
         else

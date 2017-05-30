@@ -112,11 +112,11 @@ public class User {
     public String getNickname() { return nickname;  }
 
     public String getName() {
-        return name != null ? name : nickname;
+        return name;
     }
 
     public String getSurname() {
-        return surname;
+        return surname != null ? surname : nickname;
     }
 
     public Date getBirthday() {

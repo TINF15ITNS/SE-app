@@ -34,10 +34,10 @@ public class SplashActivity extends AppCompatActivity {
 
         XMPPClient xmppClient = XMPPClient.getInstance();
 
-        if(token == "") {
+        if(token == "" || username == "") {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-        } else if(username != ""){
+        } else {
             try {
                 xmppClient.init(username, token);
                 // start async task
@@ -59,7 +59,6 @@ public class SplashActivity extends AppCompatActivity {
             Toast.makeText(SplashActivity.this, "Es gibt Probleme mit dem Nachrichtenserver!", Toast.LENGTH_LONG).show();
         }
     }
-
 
     public void showProgress(final boolean show) {
             splash_progress.setVisibility(show ? View.VISIBLE : View.GONE);

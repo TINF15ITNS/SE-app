@@ -4,9 +4,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.GridLayout;
 
-import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
@@ -14,13 +12,11 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -32,7 +28,6 @@ import it15ns.friendscom.activities.LoginActivity;
 import it15ns.friendscom.activities.RegisterActivity;
 import it15ns.friendscom.activities.SpecificChatActivity;
 import it15ns.friendscom.activities.SplashActivity;
-import it15ns.friendscom.fragments.SpecificChatFragment;
 
 public class XMPPClient {
     public static boolean USE_STREAM_MANAGEMENT = false;
@@ -77,7 +72,7 @@ public class XMPPClient {
     }
 
     public void setSpecificChatActivity(SpecificChatActivity specificChatActivity) {
-        chatListener.setNotifyActivity(specificChatActivity);
+        chatListener.setSpecificChatActivity(specificChatActivity);
     }
 
     //Initialize
