@@ -76,7 +76,7 @@ public class ProfileActivity extends AppCompatActivity {
         if(bundle != null) {
             edit.setVisibility(View.INVISIBLE);
             String nickname = bundle.getString("nickname");
-            user = Handler.getInstance().getUsers(nickname);
+            user = Handler.getInstance().getUser(nickname);
         } else {
             user = Handler.getInstance().getMe();
         }

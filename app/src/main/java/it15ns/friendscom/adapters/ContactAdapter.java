@@ -22,7 +22,7 @@ public class ContactAdapter extends BaseAdapter {
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-        users = handler.getUsers();
+        users = handler.getUser();
     }
 
     private List<User> users;
@@ -33,7 +33,7 @@ public class ContactAdapter extends BaseAdapter {
         inflater = LayoutInflater.from(context);
 
         handler = Handler.getInstance();
-        users = handler.getUsers();
+        users = handler.getUser();
     }
 
     @Override

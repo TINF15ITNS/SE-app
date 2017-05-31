@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +26,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import it15ns.friendscom.datatypes.TextMessage;
 import it15ns.friendscom.R;
-import it15ns.friendscom.model.User;
-import it15ns.friendscom.xmpp.XMPPClient;
 
 /**
  * Created by valentin on 5/9/17.
@@ -88,7 +83,7 @@ public class SpecificChatFragment extends Fragment{
             }
         });
 
-        chat = Handler.getInstance().getUserChat(getArguments().getString("nickname"));
+        chat = Handler.getInstance().getChat(getArguments().getString("nickname"));
 
         txt_title.setText(chat.getName());
         for(ChatMessage chatMessage: chat.getMessages()) {

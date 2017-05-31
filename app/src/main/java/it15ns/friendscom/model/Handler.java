@@ -1,7 +1,5 @@
 package it15ns.friendscom.model;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,12 +28,13 @@ public class Handler {
 
     public static Handler getInstance() {
         if(instance==null) {
-            Log.d("waas","geeeeht");
             instance = new Handler();
         }
         return instance;
     }
 
+    // Methoden für the Userverwaltung
+    // Methoden für die verwaltung seines eigenen Benutzers
     public User getMe() {
         //TODO: grpc call
         if(me == null)
@@ -49,14 +48,7 @@ public class Handler {
         this.me = me;
     }
 
-    public void addGroup(Group group) {
-        groups.add(group);
-    }
-
-    public void removeGroup(Group group) {
-        groups.remove(group);
-    }
-
+    // Metoden für die Freundesliste
     public void addUser(User user) {
         users.put(user.getNickname(), user);
     }
@@ -66,7 +58,8 @@ public class Handler {
             users.remove(user.getNickname());
     }
 
-    public User getUsers(String nickname) {
+    // seach for a user using the nickname
+    public User getUser(String nickname) {
         if(users.containsKey(nickname)) {
             return users.get(nickname);
         } else {
@@ -76,21 +69,7 @@ public class Handler {
         }
     }
 
-    public boolean groupExistsForUser(User user) {
-        for(Object groupObject : groups) {
-            Group group = (Group) groupObject;
-            List<User> users = group.getParticipants();
-            for(Object userObject : users) {
-                User participant = (User) userObject;
-                if(participant.getNickname().equals(user.getNickname())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public List<User> getUsers() {
+    public List<User> getUser() {
         List<User> users =  new ArrayList<>();
 
         // gehe durch alle user und füge den chat in die queue ein
@@ -111,8 +90,43 @@ public class Handler {
 
         return users;
     }
+
+    // Methoden für die Gruppenverwaltung
+    public void addGroup(Group group) {
+        groups.add(group);
+    }
+
+    public void removeGroup(Group group) {
+        groups.remove(group);
+    }
+
+    public boolean groupExistsForUser(User user) {
+        for(Object groupObject : groups) {
+            Group group = (Group) groupObject;
+            List<User> users = group.getParticipants();
+            for(Object userObject : users) {
+                User participant = (User) userObject;
+                if(participant.getNickname().equals(user.getNickname())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    // Methoden für das Chat Handling
+
+    // MEthode für die Specific Chat Activity. Liste der Chats -> nur nickname verfügbar und keine gedanken über user
+    public Chat getChat(String nickname) {
+        User user = getUser(nickname);
+        if(user.hasChat())
+            return user.getChat();
+        else
+            return user.createChat();
+    }
+
     // gibt eine Liste aller Chats, dem neustem Daten einer nachricht nach sortiert zurück
-    //
     public List<Chat> getChats() {
         List<Chat> chats =  new ArrayList<>();
 
@@ -141,67 +155,11 @@ public class Handler {
         return chats;
     }
 
-    // MEthode für die Specific Chat Activity. Liste der Chats -> nur nickname verfügbar und keine gedanken über user
-    public Chat getUserChat(String nickname) {
-        User user = getUsers(nickname);
-        if(user.hasChat())
-            return user.getChat();
-        else
-            return user.createChat();
-    }
-
-    public void showChat(User user){
-        //TODO:
-    }
-
-    public void deleteChat(User friend){
-        //TODO:
-    }
-
     public void deleteChatMessages(User friend){
         //TODO:
     }
 
-    public void notifyUserAboutMessage(ChatMessage chatMessage){
+    public void saveMessagesLocally(){
         //TODO:
     }
-
-    public void saveMessageLocally(ChatMessage message){
-        //TODO:
-    }
-
-        /*
-    private boolean chatExists(String friendsName){
-        for(Object chatObject: chats) {
-            Chat chat = (Chat) chatObject;
-            if(chat.getName().equals(friendsName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void createNewChat(User friend){
-        Chat chat = new Chat();
-        chats.add(chat);
-    }
-
-    private Chat createNewChat(String friendsname){
-        Chat chat = new Chat();
-        chat.setName(friendsname);
-        chats.add(chat);
-        return chat;
-    }
-
-    public Chat getChat(String friendsName) {
-        Chat retChat = null;
-        for(Object chatObject: chats) {
-            Chat chat = (Chat) chatObject;
-            if(chat.getName().equals(friendsName)) {
-                retChat = chat;
-            }
-        }          return retChat;
-    }
-
-    */
 }

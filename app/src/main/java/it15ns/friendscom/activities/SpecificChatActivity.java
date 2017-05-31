@@ -22,7 +22,6 @@ import java.util.Date;
 import it15ns.friendscom.R;
 import it15ns.friendscom.datatypes.ChatMessage;
 import it15ns.friendscom.datatypes.TextMessage;
-import it15ns.friendscom.fragments.ChatListFragment;
 import it15ns.friendscom.model.Chat;
 import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.xmpp.XMPPClient;
@@ -76,7 +75,7 @@ public class SpecificChatActivity extends AppCompatActivity {
                     else {
                         String partner = txt_chatPartner.getText().toString();
                         if(!partner.equals("Chat Partner") && partner.length() > 4) {
-                            chat = Handler.getInstance().getUserChat(partner);
+                            chat = Handler.getInstance().getChat(partner);
                             for(ChatMessage chatMessage: chat.getMessages()) {
                                 TextMessage message = (TextMessage) chatMessage;
                                 addMessage(message);
@@ -96,7 +95,7 @@ public class SpecificChatActivity extends AppCompatActivity {
                 txt_chatPartner.setText(nickname);
                 txt_chatPartner.setEnabled(false);
 
-                chat = Handler.getInstance().getUserChat(nickname);
+                chat = Handler.getInstance().getChat(nickname);
                 for(ChatMessage chatMessage: chat.getMessages()) {
                     TextMessage message = (TextMessage) chatMessage;
                     addMessage(message);

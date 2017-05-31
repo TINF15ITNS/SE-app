@@ -50,7 +50,7 @@ public class NewMessageFragment extends android.support.v4.app.Fragment {
                     String message = text_message.getText().toString();
 
                     Handler handler = Handler.getInstance();
-                    User receiver = handler.getUsers(nickname);
+                    User receiver = handler.getUser(nickname);
                     Chat chat = receiver.getChat();
 
                     chat.sendTextMessage(new TextMessage(new Date(), handler.getMe(), message));
