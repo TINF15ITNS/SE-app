@@ -58,16 +58,34 @@ public class SpecificChatActivity extends AppCompatActivity {
         ctx_main = this;
         txt_title = (TextView) findViewById(R.id.chatTitle);
 
-        //table layout to display messages
-        chat = ChatHandler.getChat("daniel");
-        messageAdapter = new MessageAdapter(this, chat);
-        messageList = (ListView) findViewById(R.id.chatTableLayout);
-        messageList.setAdapter(messageAdapter);
         //get text msg
         txt_msg = (EditText) findViewById(R.id.chatMsg);
         //set auto scroll on view
         scroll = (ScrollView) findViewById(R.id.scrollView);
         scroll.fullScroll(View.FOCUS_DOWN);
+        if(getIntent().getExtras() != null) {
+            String nickname = getIntent().getExtras().getString("nickname");
+            txt_chatPartner.setText(nickname);
+            txt_chatPartner.setEnabled(false);
+
+            setTitle(nickname);
+            chat = ChatHandler.getChat(nickname);
+            messageAdapter = new MessageAdapter(this, chat);
+            messageList = (ListView) findViewById(R.id.chatTableLayout);
+            messageList.setAdapter(messageAdapter);
+            //for(ChatMessage chatMessage: chat.getMessages()) {
+            //    TextMessage message = (TextMessage) chatMessage;
+                //addMessage(message);
+            //}
+        } else {
+            txt_chatPartner.setEnabled(true);
+            txt_chatPartner.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    txt_chatPartner.setText("");
+                }
+            });
+        }
 
         //init send button
         btn_send = (Button) findViewById(R.id.btn_sendMsg);
@@ -87,10 +105,11 @@ public class SpecificChatActivity extends AppCompatActivity {
                         String partner = txt_chatPartner.getText().toString();
                         if(!partner.equals("Chat Partner") && partner.length() > 4) {
                             chat = ChatHandler.getChat(partner);
-                            for(ChatMessage chatMessage: chat.getMessages()) {
-                                TextMessage textMessage = (TextMessage) chatMessage;
-                                addMessage(textMessage);
-                            }
+
+                            messageAdapter = new MessageAdapter(ctx_main, chat);
+                            messageList = (ListView) findViewById(R.id.chatTableLayout);
+                            messageList.setAdapter(messageAdapter);
+
                             sendMessage(message);
                             txt_chatPartner.setEnabled(false);
                         } else {
@@ -100,27 +119,6 @@ public class SpecificChatActivity extends AppCompatActivity {
                 }
             }
         });
-
-        if(getIntent().getExtras() != null) {
-                String nickname = getIntent().getExtras().getString("nickname");
-                txt_chatPartner.setText(nickname);
-                txt_chatPartner.setEnabled(false);
-
-                setTitle(nickname);
-                chat = ChatHandler.getChat(nickname);
-                for(ChatMessage chatMessage: chat.getMessages()) {
-                    TextMessage message = (TextMessage) chatMessage;
-                    addMessage(message);
-                }
-        } else {
-            txt_chatPartner.setEnabled(true);
-            txt_chatPartner.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    txt_chatPartner.setText("");
-                }
-            });
-        }
     }
 
     public boolean isTextBoxEmpty(){
@@ -159,7 +157,6 @@ public class SpecificChatActivity extends AppCompatActivity {
         messageAdapter.notifyDataSetChanged();
         //versenden der Nachricht
 
-
         clearTextbox();
     }
 
@@ -169,16 +166,11 @@ public class SpecificChatActivity extends AppCompatActivity {
     }
 
     public void update() {
-        clearTable();
-
-        for(ChatMessage chatMessage: chat.getMessages()) {
-            TextMessage message = (TextMessage) chatMessage;
-            addMessage(message);
-        }
+        messageAdapter.notifyDataSetChanged();
     }
 
     private void clearTable() {
-        messageList.removeAllViews();
+        //messageList.removeAllViews();
         //TODO:
     }
 

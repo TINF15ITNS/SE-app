@@ -29,7 +29,7 @@ public class ChatListFragment extends Fragment {
     View view;
     ListView chatList;
     FragmentManager fragmentManager;
-    SpecificChatFragment specificChatFragment;
+    SpecificChatFragment_deprecated specificChatFragment;
     Handler handler;
     ChatAdapter chatListAdapter;
 
@@ -56,7 +56,7 @@ public class ChatListFragment extends Fragment {
                 //Bundle bundle = new Bundle();
                 //bundle.putString("nickname", chat.getName());
 
-                //specificChatFragment = new SpecificChatFragment();
+                //specificChatFragment = new SpecificChatFragment_deprecated();
                 //specificChatFragment.setArguments(bundle);
 
                 Intent startSpecificChat = new Intent(getActivity(), SpecificChatActivity.class);

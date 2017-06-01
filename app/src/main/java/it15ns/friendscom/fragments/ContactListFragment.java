@@ -18,10 +18,7 @@ import android.widget.ListView;
 import it15ns.friendscom.R;
 import it15ns.friendscom.activities.ChatActivity;
 import it15ns.friendscom.activities.ProfileActivity;
-import it15ns.friendscom.activities.SpecificChatActivity;
-import it15ns.friendscom.adapters.ChatAdapter;
 import it15ns.friendscom.adapters.ContactAdapter;
-import it15ns.friendscom.model.Chat;
 import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.model.User;
 
@@ -33,7 +30,7 @@ public class ContactListFragment extends Fragment {
     View view;
     ListView contactList;
     FragmentManager fragmentManager;
-    SpecificChatFragment specificChatFragment;
+    SpecificChatFragment_deprecated specificChatFragment;
     Handler handler;
     ContactAdapter contactAdapter;
 
@@ -60,7 +57,7 @@ public class ContactListFragment extends Fragment {
                 //Bundle bundle = new Bundle();
                 //bundle.putString("nickname", chat.getName());
 
-                //specificChatFragment = new SpecificChatFragment();
+                //specificChatFragment = new SpecificChatFragment_deprecated();
                 //specificChatFragment.setArguments(bundle);
 
                 Intent startSpecificProfile = new Intent(getActivity(), ProfileActivity.class);

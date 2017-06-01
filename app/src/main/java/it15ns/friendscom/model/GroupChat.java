@@ -2,8 +2,6 @@ package it15ns.friendscom.model;
 
 import android.media.Image;
 
-import it15ns.friendscom.fragments.SpecificChatFragment;
-
 /**
  * Created by valentin on 5/9/17.
  */

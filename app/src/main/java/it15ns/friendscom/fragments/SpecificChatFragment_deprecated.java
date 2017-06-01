@@ -34,7 +34,7 @@ import it15ns.friendscom.handler.LocalUserHandler;
  * Created by valentin on 5/9/17.
  */
 
-public class SpecificChatFragment extends Fragment{
+public class SpecificChatFragment_deprecated extends Fragment{
 
     View view;
     Chat chat;

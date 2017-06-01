@@ -27,8 +27,8 @@ public class Chat {
     }
 
     public void sendTextMessage(TextMessage textMessage){
-        XMPPClient.sendMsg(nickname, textMessage.getMessage());
         messages.add(textMessage);
+        XMPPClient.sendMsg(nickname, textMessage.getMessage());
     }
 
     public Date getNewestDate() {

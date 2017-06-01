@@ -2,6 +2,7 @@ package it15ns.friendscom.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,29 +61,36 @@ public class MessageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
+        ChatMessage chatMessage = chatMessages.get(position);
+
         // falls nötig, convertView bauen
-        if (convertView == null) {
+        //if (convertView == null) {
             // Layoutdatei entfalten
-            convertView = inflater.inflate(R.layout.message_incomming, parent, false);
+            if(chatMessage.getSender() == LocalUserHandler.getLocalUser())
+                convertView = inflater.inflate(R.layout.message_incomming, parent, false);
+            else
+                convertView = inflater.inflate(R.layout.message_outgoing, parent, false);
             // Holder erzeugen
             holder = new ViewHolder();
             holder.message = (TextView) convertView.findViewById(R.id.text1);
-            holder.time = (TextView) convertView
-                    .findViewById(R.id.text2);
+            holder.time = (TextView) convertView.findViewById(R.id.text2);
 
             convertView.setTag(holder);
-        } else {
+
+        /*} else {
             // Holder bereits vorhanden
             holder = (ViewHolder) convertView.getTag();
-        }
-        ChatMessage chatMessage = chatMessages.get(position);
+        }*/
+
+
         //TODO:chat instance of group chat?
 
         if(chatMessage instanceof TextMessage){
             TextMessage textMessage = (TextMessage) chatMessage;
 
             holder.message.setText(textMessage.getMessage());
-            holder.time.setText(textMessage.getDate().toString());
+            String time = DateFormat.format("hh:mm", textMessage.getDate()).toString();
+            holder.time.setText(time);
         }
 
 
@@ -96,6 +104,5 @@ public class MessageAdapter extends BaseAdapter {
 
     static class ViewHolder {
         TextView message, time;
-
     }
 }

@@ -83,8 +83,8 @@ public class ContactAdapter extends BaseAdapter {
         holder.name.setText(name);
 
         TextDrawable drawable = TextDrawable.builder().beginConfig()
-                .width(100)  // width in px
-                .height(100) // height in px
+                .width(150)  // width in px
+                .height(150) // height in px
                 .endConfig()
                 .buildRound(name.substring(0,2).toUpperCase(), Color.parseColor("#007ac1"));
         holder.icon.setImageDrawable(drawable);
