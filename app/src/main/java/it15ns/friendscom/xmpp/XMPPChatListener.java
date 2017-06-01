@@ -9,6 +9,7 @@ import java.util.Date;
 import it15ns.friendscom.activities.ChatActivity;
 import it15ns.friendscom.activities.SpecificChatActivity;
 import it15ns.friendscom.datatypes.TextMessage;
+import it15ns.friendscom.handler.UserHandler;
 import it15ns.friendscom.model.Chat;
 import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.model.User;
@@ -25,11 +26,11 @@ public class XMPPChatListener  implements IncomingChatMessageListener{
     @Override
     public void newIncomingMessage(EntityBareJid from, Message message, org.jivesoftware.smack.chat2.Chat chat) {
 
-        Handler handler = Handler.getInstance();
+
 
         // jid: daniel@localhost -> nickname: daniel
         final String nickname = from.asEntityBareJidString().substring(0, from.asEntityBareJidString().indexOf("@"));
-        User sender = handler.getUser(nickname);
+        User sender = UserHandler.getUser(nickname);
 
         Chat userChat;
         if(sender.hasChat())

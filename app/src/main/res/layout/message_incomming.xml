@@ -5,18 +5,11 @@
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:padding="6dp">
 
-    <ImageView android:id="@+id/icon"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="6dp"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
-
     <TextView android:id="@+id/text1"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_marginTop="4dp"
         android:layout_marginLeft="5dp"
-        android:layout_toEndOf="@id/icon"
+        android:background="@drawable/incoming_bubble"
         android:textColor="#000"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -24,8 +17,9 @@
     <TextView android:id="@+id/text2"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_below="@id/text1"
-        android:layout_alignStart="@id/text1"
-        android:layout_width="match_parent"
+        android:layout_alignRight="@+id/text1"
+        android:layout_width="wrap_content"
+        android:text="12:15Uhr"
         android:layout_height="wrap_content" />
 
 </RelativeLayout>

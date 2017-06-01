@@ -2,17 +2,18 @@ package it15ns.friendscom.activities;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
-import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,10 +21,12 @@ import android.widget.Toast;
 import java.util.Date;
 
 import it15ns.friendscom.R;
+import it15ns.friendscom.adapters.MessageAdapter;
 import it15ns.friendscom.datatypes.ChatMessage;
 import it15ns.friendscom.datatypes.TextMessage;
+import it15ns.friendscom.handler.ChatHandler;
+import it15ns.friendscom.handler.LocalUserHandler;
 import it15ns.friendscom.model.Chat;
-import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.xmpp.XMPPClient;
 
 public class SpecificChatActivity extends AppCompatActivity {
@@ -34,15 +37,17 @@ public class SpecificChatActivity extends AppCompatActivity {
     private EditText txt_msg;
     private TextView txt_title;
     private Context ctx_main;
-    private TableLayout tbl_msg;
+    private ListView messageList;
     private ScrollView scroll;
+
+    private MessageAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_specific_chat);
 
-        XMPPClient.getInstance().setSpecificChatActivity(this);
+        XMPPClient.setSpecificChatActivity(this);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
@@ -54,7 +59,10 @@ public class SpecificChatActivity extends AppCompatActivity {
         txt_title = (TextView) findViewById(R.id.chatTitle);
 
         //table layout to display messages
-        tbl_msg = (TableLayout) findViewById(R.id.chatTableLayout);
+        chat = ChatHandler.getChat("daniel");
+        messageAdapter = new MessageAdapter(this, chat);
+        messageList = (ListView) findViewById(R.id.chatTableLayout);
+        messageList.setAdapter(messageAdapter);
         //get text msg
         txt_msg = (EditText) findViewById(R.id.chatMsg);
         //set auto scroll on view
@@ -67,20 +75,23 @@ public class SpecificChatActivity extends AppCompatActivity {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isTextBoxEmpty()){
+                TextMessage message = new TextMessage(txt_msg.getText().toString(), LocalUserHandler.getLocalUser());
+                message.setDate(new Date());
 
+                if(isTextBoxEmpty()){
+                    Snackbar.make(v.getRootView(), "Nachricht leer!", Snackbar.LENGTH_LONG);
                 }else{
                     if(chat != null)
-                        sendMessage(new TextMessage(txt_msg.getText().toString(), Handler.getInstance().getMe()));
+                        sendMessage(message);
                     else {
                         String partner = txt_chatPartner.getText().toString();
                         if(!partner.equals("Chat Partner") && partner.length() > 4) {
-                            chat = Handler.getInstance().getChat(partner);
+                            chat = ChatHandler.getChat(partner);
                             for(ChatMessage chatMessage: chat.getMessages()) {
-                                TextMessage message = (TextMessage) chatMessage;
-                                addMessage(message);
+                                TextMessage textMessage = (TextMessage) chatMessage;
+                                addMessage(textMessage);
                             }
-                            sendMessage(new TextMessage(txt_msg.getText().toString(), Handler.getInstance().getMe()));
+                            sendMessage(message);
                             txt_chatPartner.setEnabled(false);
                         } else {
                             Toast.makeText(ctx_main, "Probleme mit dem Namen des Chatpartners", Toast.LENGTH_SHORT);
@@ -95,7 +106,8 @@ public class SpecificChatActivity extends AppCompatActivity {
                 txt_chatPartner.setText(nickname);
                 txt_chatPartner.setEnabled(false);
 
-                chat = Handler.getInstance().getChat(nickname);
+                setTitle(nickname);
+                chat = ChatHandler.getChat(nickname);
                 for(ChatMessage chatMessage: chat.getMessages()) {
                     TextMessage message = (TextMessage) chatMessage;
                     addMessage(message);
@@ -115,17 +127,38 @@ public class SpecificChatActivity extends AppCompatActivity {
         return txt_msg.getText().toString().isEmpty();
     }
 
-    public void addMessage(TextMessage message){
+    public void addMessage(ChatMessage message){
         String time = DateFormat.format("dd.MM.yyyy - hh:mm:ss", message.getDate()).toString();
-        addMsgToTable(message.getSender().getSurname(), time, message.getMessage());
+
+        //display message in table layout
+        TableRow row = new TableRow(ctx_main);
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+        row.setLayoutParams(lp);
+
+        TextView tv = new TextView(ctx_main);
+        tv.setTextSize(20);
+
+        if(message.getSender() == LocalUserHandler.getLocalUser()){
+            tv.setTextColor(Color.parseColor("#ffffff"));   //dark blue
+        }else{
+            tv.setTextColor(Color.parseColor("#000"));   //dark red
+
+        }
+
+        tv.setBackground(getResources().getDrawable(R.drawable.incoming_bubble));
+        tv.setPadding(10,10,10,10);
+        TextMessage textMessage = (TextMessage) message;
+        tv.setText(textMessage.getMessage());
+        row.addView(tv);
+        messageList.addView(row);
     }
 
     public void sendMessage(TextMessage message){
-        String time = DateFormat.format("dd.MM.yyyy - hh:mm:ss", new Date()).toString();
-        addMsgToTable(Handler.getInstance().getMe().getSurname(), time, message.getMessage());
-
-        //versenden der Nachricht
+        //addMessage(message);
         chat.sendTextMessage(message);
+        messageAdapter.notifyDataSetChanged();
+        //versenden der Nachricht
+
 
         clearTextbox();
     }
@@ -145,29 +178,8 @@ public class SpecificChatActivity extends AppCompatActivity {
     }
 
     private void clearTable() {
-        tbl_msg.removeAllViews();
+        messageList.removeAllViews();
         //TODO:
-    }
-
-    public void addMsgToTable(String name, String time, String msg){
-        //display message in table layout
-        TableRow row = new TableRow(ctx_main);
-        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-        row.setLayoutParams(lp);
-        //convert ChatMessage to TextMessage
-
-        TextView tv = new TextView(ctx_main);
-        tv.setTextSize(20);
-
-        if(name.equals("Me")){
-            tv.setTextColor(Color.argb(255, 14, 26, 84));   //dark blue
-        }else{
-            tv.setTextColor(Color.argb(255, 100, 0, 0));   //dark red
-        }
-
-        tv.setText(Html.fromHtml("<b>" + name + ": </b>" + time + "<br>" + msg));
-        row.addView(tv);
-        tbl_msg.addView(row);
     }
 
     @Override
@@ -192,7 +204,7 @@ public class SpecificChatActivity extends AppCompatActivity {
     /*
     @Override
     protected void onStop() {
-        XMPPClient.getInstance().disconnectConnection();
+        XMPPClient.disconnect();
         super.onStop();
     }*/
 
@@ -200,7 +212,7 @@ public class SpecificChatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         try {
-            XMPPClient.getInstance().connectConnection();
+            XMPPClient.connect();
         } catch (Exception ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG);
         }

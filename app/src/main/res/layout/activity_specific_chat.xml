@@ -15,6 +15,15 @@
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
+    <EditText
+        android:id="@+id/chatPartner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:text="Chat Partner"
+        android:textSize="25dp"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -22,18 +31,11 @@
         android:background="@android:color/background_light"
         android:orientation="vertical"
         android:gravity="top"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         tools:layout_editor_absoluteY="8dp"
         tools:layout_editor_absoluteX="8dp">
 
-        <EditText
-            android:id="@+id/chatPartner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:text="Chat Partner"
-            android:textSize="25dp"
-            android:textColor="@android:color/black"
-            android:layout_gravity="center" />
 
         <ScrollView
             android:id="@+id/scrollView"
@@ -44,14 +46,15 @@
             android:layout_gravity="center"
             >
 
-            <TableLayout
+            <ListView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/chatTableLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:stretchColumns="1" >
 
-            </TableLayout>
+            </ListView>
         </ScrollView>
 
         <LinearLayout

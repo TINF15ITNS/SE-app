@@ -14,7 +14,9 @@ import android.widget.TextView;
 import java.sql.Date;
 
 import it15ns.friendscom.R;
+import it15ns.friendscom.handler.UserHandler;
 import it15ns.friendscom.model.Handler;
+import it15ns.friendscom.handler.LocalUserHandler;
 import it15ns.friendscom.model.User;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -76,10 +78,15 @@ public class ProfileActivity extends AppCompatActivity {
         if(bundle != null) {
             edit.setVisibility(View.INVISIBLE);
             String nickname = bundle.getString("nickname");
-            user = Handler.getInstance().getUser(nickname);
+            user = UserHandler.getUser(nickname);
+            setTitle(user.getSurname());
+
         } else {
-            user = Handler.getInstance().getMe();
+            user = LocalUserHandler.getLocalUser();
+            setTitle("Einstellungen");
         }
+
+
         //on click load new layout
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,14 +116,18 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void loadUser(){
         linear.removeAllViews();
-        title.setText("Alle Informationen zu " + user.getName() + ". \n" + (user.hasChat() ? "Ihr habt schon gechatet" : "Ihr habt noch nie gechatet"));
+        if(user != LocalUserHandler.getLocalUser()) {
+            title.setText((user.hasChat() ? "Ihr habt schon gechattet" : "Ihr habt noch nie gechattet"));
+            linear.addView(title);
+        }
+
         nickname.setText(user.getNickname());
         name.setText(user.getName());
         surname.setText(user.getSurname());
         birthday.setText(user.getBirthday() != null ? user.getBirthday().toString() : "");
         telnr.setText(user.getTelNumber());
         email.setText(user.geteMail());
-        linear.addView(title);
+
         linear.addView(nickname_title);
         linear.addView(nickname);
         linear.addView(name_title);
@@ -136,9 +147,10 @@ public class ProfileActivity extends AppCompatActivity {
         linear.removeAllViews();
         linear.addView(title);
         linear.addView(nickname_title);
-        e_nickname = new EditText(this);
-        e_nickname.setText(user.getNickname());
-        linear.addView(e_nickname);
+        //e_nickname = new EditText(this);
+        //e_nickname.setText(user.getNickname());
+        //linear.addView(e_nickname);
+        linear.addView(nickname);
         linear.addView(name_title);
         e_name = new EditText(this);
         e_name.setText(user.getName());
@@ -184,15 +196,14 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void updateLocalUser() {
-        User me = Handler.getInstance().getMe();
-        me.setName(e_name.getText().toString());
-        me.setSurname(e_surname.getText().toString());
+        user.setName(e_name.getText().toString());
+        user.setSurname(e_surname.getText().toString());
         if(!e_birthday.getText().toString().equals("")) {
-            me.setBirthday(Date.valueOf(e_birthday.getText().toString()));
+            user.setBirthday(Date.valueOf(e_birthday.getText().toString()));
             //TODO:passt der string?
         }
-        me.setTelNumber(e_telnr.getText().toString());
-        me.seteMail(e_email.getText().toString());
-        Handler.getInstance().setMe(me);
+        user.setTelNumber(e_telnr.getText().toString());
+        user.setMail(e_email.getText().toString());
+        LocalUserHandler.setLocalUser(user);
     }
 }

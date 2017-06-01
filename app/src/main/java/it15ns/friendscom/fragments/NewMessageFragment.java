@@ -14,6 +14,8 @@ import java.util.Date;
 
 import it15ns.friendscom.activities.ChatActivity;
 import it15ns.friendscom.datatypes.TextMessage;
+import it15ns.friendscom.handler.LocalUserHandler;
+import it15ns.friendscom.handler.UserHandler;
 import it15ns.friendscom.model.Chat;
 import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.R;
@@ -49,11 +51,10 @@ public class NewMessageFragment extends android.support.v4.app.Fragment {
                     String nickname = text_receiver.getText().toString();
                     String message = text_message.getText().toString();
 
-                    Handler handler = Handler.getInstance();
-                    User receiver = handler.getUser(nickname);
+                    User receiver = UserHandler.getUser(nickname);
                     Chat chat = receiver.getChat();
 
-                    chat.sendTextMessage(new TextMessage(new Date(), handler.getMe(), message));
+                    chat.sendTextMessage(new TextMessage(new Date(), LocalUserHandler.getLocalUser(), message));
 
                     Snackbar.make(getView(), "Versendet!", Snackbar.LENGTH_LONG).show();
                 } catch (Exception ex) {

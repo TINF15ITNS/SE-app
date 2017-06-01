@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import io.grpc.serverPackage.LoginResponse;
-import io.grpc.serverPackage.LoginResponse;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
 import it15ns.friendscom.grpc.GrpcTask;
 import it15ns.friendscom.R;
@@ -37,8 +36,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button btn_register;
     private Button btn_signIn;
 
-    private static XMPPClient xmppClient;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +43,6 @@ public class LoginActivity extends AppCompatActivity {
 
         SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
         String token = sharedPrefs.getString("token", "");
-
-        xmppClient = XMPPClient.getInstance();
 
         // Set up the login form.
         text_username = (EditText) findViewById(R.id.username);
@@ -155,9 +150,9 @@ public class LoginActivity extends AppCompatActivity {
             sharedPrefs.edit().putString("username", username).commit();
 
             try {
-                xmppClient.init(username, token);
+                XMPPClient.init(username, token);
                 // start async task
-                xmppClient.connectConnection(this);
+                XMPPClient.connect(this);
             } catch (Exception ex) {
                 Toast.makeText(LoginActivity.this, "Es gibt Probleme mit dem Nachrichtenserver!", Toast.LENGTH_LONG).show();
                 Log.d("XMPP Error", ex.getMessage());

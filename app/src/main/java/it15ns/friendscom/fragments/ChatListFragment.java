@@ -60,7 +60,7 @@ public class ChatListFragment extends Fragment {
                 //specificChatFragment.setArguments(bundle);
 
                 Intent startSpecificChat = new Intent(getActivity(), SpecificChatActivity.class);
-                startSpecificChat.putExtra("nickname", chat.getName());
+                startSpecificChat.putExtra("nickname", chat.getNickname());
                 startActivity(startSpecificChat);
 
                 //ChatActivity.setFab(false);

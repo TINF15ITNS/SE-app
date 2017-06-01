@@ -119,11 +119,10 @@ public class RegisterActivity extends AppCompatActivity {
             sharedPrefs.edit().putString("token", token).commit();
             sharedPrefs.edit().putString("username", username).commit();
 
-            XMPPClient xmppClient = XMPPClient.getInstance();
             try {
-                xmppClient.init(text_username.getText().toString(), token);
+                XMPPClient.init(text_username.getText().toString(), token);
                 // start async task
-                xmppClient.connectConnection(this);
+                XMPPClient.connect(this);
             } catch (Exception ex) {
                 Toast.makeText(RegisterActivity.this, "Es gibt Probleme mit dem Nachrichtenserver!", Toast.LENGTH_LONG).show();
                 Log.d("XMPP Error", ex.getMessage());

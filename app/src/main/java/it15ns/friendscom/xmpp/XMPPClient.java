@@ -30,10 +30,10 @@ import it15ns.friendscom.activities.SpecificChatActivity;
 import it15ns.friendscom.activities.SplashActivity;
 
 public class XMPPClient {
+    private static XMPPClient instance = new XMPPClient();
+
     public static boolean USE_STREAM_MANAGEMENT = false;
     public static int STREAM_MANAGEMENT_RESUMPTION_TIME = 30;
-
-    private static XMPPClient instance = null;
 
     private static final String DOMAIN = "localhost";
     private static final String HOST = "";
@@ -58,31 +58,23 @@ public class XMPPClient {
     // privater Konstruktor -> Singleton pattern
     private XMPPClient() {}
 
-    public static XMPPClient getInstance() {
-        if(instance == null) {
-            instance = new XMPPClient();
-            return  instance;
-        } else
-            return instance;
-    }
-
     // Um das Fragment upzudaten aus dem ChatListener
-    public void setChatActivity(ChatActivity activity) {
-        chatListener.setChatActivity(activity);
+    public static void setChatActivity(ChatActivity activity) {
+        instance.chatListener.setChatActivity(activity);
     }
 
-    public void setSpecificChatActivity(SpecificChatActivity specificChatActivity) {
-        chatListener.setSpecificChatActivity(specificChatActivity);
+    public static void setSpecificChatActivity(SpecificChatActivity specificChatActivity) {
+        instance.chatListener.setSpecificChatActivity(specificChatActivity);
     }
 
     //Initialize
-    public void init(String username,String password ) throws Exception{
+    public static void init(String username,String password ) throws Exception{
         Log.i("XMPP", "Initializing!");
 
-        this.username = username;
-        this.password = password;
+        instance.username = username;
+        instance.password = password;
         XMPPTCPConnectionConfiguration.Builder configBuilder = XMPPTCPConnectionConfiguration.builder()
-            .setUsernameAndPassword(username, this.password)
+            .setUsernameAndPassword(username, instance.password)
             .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
                 .setDebuggerEnabled(true)
             .setResource("Android")
@@ -98,25 +90,17 @@ public class XMPPClient {
             throw new InvalidParameterException();
         }
 
-        connection = new XMPPTCPConnection(configBuilder.build());
-        connection.setUseStreamManagement(USE_STREAM_MANAGEMENT);
-        connection.setUseStreamManagementResumption(USE_STREAM_MANAGEMENT);
-        connection.setPreferredResumptionTime(STREAM_MANAGEMENT_RESUMPTION_TIME);
-        connection.addConnectionListener(connectionListener);
-
+        instance.connection = new XMPPTCPConnection(configBuilder.build());
+        instance.connection.setUseStreamManagement(USE_STREAM_MANAGEMENT);
+        instance.connection.setUseStreamManagementResumption(USE_STREAM_MANAGEMENT);
+        instance.connection.setPreferredResumptionTime(STREAM_MANAGEMENT_RESUMPTION_TIME);
+        instance.connection.addConnectionListener(instance.connectionListener);
     }
 
     // Disconnect Function
-    public void disconnectConnection(){
-        /**new Thread(new Runnable() {
-        @Override
-        public void run() {
-        connection.disconnect();
-        }
-        }).start();*/
-
-        if(connected)
-            connection.disconnect();
+    public static void disconnect(){
+        if(instance.connected)
+            instance.connection.disconnect();
     }
 
     /*
@@ -126,21 +110,21 @@ public class XMPPClient {
     */
 
 
-    public void connectConnection(final RegisterActivity activity) throws ExecutionException, InterruptedException
+    public static void connect(final RegisterActivity activity) throws ExecutionException, InterruptedException
     {
         AsyncTask<Void, Void, Boolean> connectionThread = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... arg0) {
                 // Create a connection
                 try {
-                    connection.connect();
+                    instance.connection.connect();
 
-                    Roster roster = Roster.getInstanceFor(connection);
+                    Roster roster = Roster.getInstanceFor(instance.connection);
                     roster.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
                     roster.setRosterLoadedAtLogin(true);
 
-                    connection.login();
-                    connected = true;
+                    instance.connection.login();
+                    instance.connected = true;
 
                     return true;
                 } catch (Exception e) {
@@ -164,16 +148,16 @@ public class XMPPClient {
     }
 
 
-    public void connectConnection(final LoginActivity activity) throws ExecutionException, InterruptedException
+    public static void connect(final LoginActivity activity) throws ExecutionException, InterruptedException
     {
         AsyncTask<Void, Void, Boolean> connectionThread = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... arg0) {
                 // Create a connection
                 try {
-                    connection.connect();
+                    instance.connection.connect();
                     login();
-                    connected = true;
+                    instance.connected = true;
 
                     return true;
                 } catch (Exception e) {
@@ -196,16 +180,16 @@ public class XMPPClient {
         connectionThread.execute();
     }
 
-    public void connectConnection(final SplashActivity activity) throws ExecutionException, InterruptedException
+    public static void connect(final SplashActivity activity) throws ExecutionException, InterruptedException
     {
         AsyncTask<Void, Void, Boolean> connectionThread = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... arg0) {
                 // Create a connection
                 try {
-                    connection.connect();
+                    instance.connection.connect();
                     login();
-                    connected = true;
+                    instance.connected = true;
 
                     return true;
                 } catch (Exception e) {
@@ -228,16 +212,16 @@ public class XMPPClient {
         connectionThread.execute();
     }
 
-    public void connectConnection() throws ExecutionException, InterruptedException
+    public static void connect() throws ExecutionException, InterruptedException
     {
         AsyncTask<Void, Void, Boolean> connectionThread = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... arg0) {
                 // Create a connection
                 try {
-                    connection.connect();
+                    instance.connection.connect();
                     login();
-                    connected = true;
+                    instance.connected = true;
 
                     return true;
                 } catch (Exception e) {
@@ -250,10 +234,10 @@ public class XMPPClient {
         connectionThread.execute();
     }
 
-    public boolean sendMsg(String nickname, String message) {
-        if (connection.isConnected()) {
+    public static boolean sendMsg(String nickname, String message) {
+        if (instance.connection.isConnected()) {
             // Assume we've created an XMPPConnection name "connection"._
-            chatmanager = ChatManager.getInstanceFor(connection);
+            instance.chatmanager = ChatManager.getInstanceFor(instance.connection);
 
             String jid;
             if(!nickname.contains("@"))
@@ -264,8 +248,8 @@ public class XMPPClient {
             EntityBareJid jidObject;
             try {
                 jidObject = JidCreate.entityBareFrom(jid);
-                newChat = chatmanager.chatWith(jidObject);
-                newChat.send(message);
+                instance.newChat = instance.chatmanager.chatWith(jidObject);
+                instance.newChat.send(message);
                 return true;
             } catch (Exception e) {
                 Log.d("Exeption", e.getMessage());
@@ -276,8 +260,8 @@ public class XMPPClient {
         }
     }
 
-    public void login() throws XMPPException, IOException, SmackException, InterruptedException {
-            connection.login();
+    public static void login() throws XMPPException, IOException, SmackException, InterruptedException {
+        instance.connection.login();
     }
 
     //Connection Listener to check connection state

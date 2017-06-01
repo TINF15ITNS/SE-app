@@ -37,6 +37,7 @@ public class ChatActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        setTitle("Chat");
         // set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -76,7 +77,7 @@ public class ChatActivity extends AppCompatActivity
         tabLayout.addOnTabSelectedListener(this);
 
         // set the chatActivity to be notifyied by the xmpp client
-        XMPPClient.getInstance().setChatActivity(this);
+        XMPPClient.setChatActivity(this);
     }
 
     public static void setFab(boolean isActive) {
@@ -112,10 +113,12 @@ public class ChatActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
-            XMPPClient.getInstance().disconnectConnection();
+            XMPPClient.disconnect();
             SharedPreferences sharedPrefs = getSharedPreferences("data", Context.MODE_PRIVATE);
             sharedPrefs.edit().putString("token", "").commit();
             sharedPrefs.edit().putString("username", "").commit();
+
+            //TODO: flash alle speicher
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -131,13 +134,13 @@ public class ChatActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_todo) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_debts) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_driveby) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_settings) {
 
         }
 
@@ -214,7 +217,7 @@ public class ChatActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         try {
-            XMPPClient.getInstance().connectConnection();
+            XMPPClient.connect();
         } catch (Exception ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG);
         }

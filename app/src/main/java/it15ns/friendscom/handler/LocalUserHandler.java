@@ -1,7 +1,9 @@
-package it15ns.friendscom.model;
+package it15ns.friendscom.handler;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import it15ns.friendscom.model.User;
 
 /**
  * Created by valentin on 5/9/17.

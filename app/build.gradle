@@ -81,5 +81,10 @@ dependencies {
     compile 'io.grpc:grpc-stub:1.2.0'
     compile 'javax.annotation:javax.annotation-api:1.2'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+
+    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+
+
     testCompile 'junit:junit:4.12'
 }

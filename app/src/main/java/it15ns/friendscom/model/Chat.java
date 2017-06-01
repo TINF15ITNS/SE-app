@@ -19,22 +19,24 @@ import it15ns.friendscom.xmpp.XMPPClient;
 
 public class Chat {
     private Queue<ChatMessage> messages;
-    XMPPClient xmppClient;
     String nickname;
 
     public Chat(String nickname) {
         messages = new LinkedList<ChatMessage>() ;
-        xmppClient = XMPPClient.getInstance();
         this.nickname = nickname;
     }
 
     public void sendTextMessage(TextMessage textMessage){
-        xmppClient.sendMsg(nickname, textMessage.getMessage());
+        XMPPClient.sendMsg(nickname, textMessage.getMessage());
         messages.add(textMessage);
     }
 
     public Date getNewestDate() {
         return messages.peek().getDate();
+    }
+
+    public ChatMessage getNewestMessage() {
+        return messages.peek();
     }
 
     // wird vom XMPPChatListener aufgerufen
@@ -47,12 +49,18 @@ public class Chat {
         this.messages = messages;
     }
 
-    public String getName() {
+    public String getNickname() {
         return nickname;
     }
 
     public Queue<ChatMessage> getMessages() {
         return messages;
+    }
+    public List<ChatMessage> getMessagesList() {
+        List<ChatMessage> list;
+        list = new ArrayList<>(messages);
+
+        return list;
     }
     /*
     public void createTodoListMessage(ToDoList toDoList){

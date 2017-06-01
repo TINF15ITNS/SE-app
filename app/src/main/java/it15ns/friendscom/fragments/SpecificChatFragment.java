@@ -6,7 +6,7 @@ import java.util.Date;
 
 import it15ns.friendscom.datatypes.ChatMessage;
 import it15ns.friendscom.model.Chat;
-import it15ns.friendscom.model.Handler;
+import it15ns.friendscom.handler.ChatHandler;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import it15ns.friendscom.datatypes.TextMessage;
 import it15ns.friendscom.R;
+import it15ns.friendscom.handler.LocalUserHandler;
 
 /**
  * Created by valentin on 5/9/17.
@@ -78,14 +79,14 @@ public class SpecificChatFragment extends Fragment{
                 if(isTextBoxEmpty()){
                     Toast.makeText(ctx_main, "Messagebox is empty", Toast.LENGTH_SHORT);
                 }else{
-                    sendMessage(new TextMessage(txt_msg.getText().toString(), Handler.getInstance().getMe()));
+                    sendMessage(new TextMessage(txt_msg.getText().toString(), LocalUserHandler.getLocalUser()));
                 }
             }
         });
 
-        chat = Handler.getInstance().getChat(getArguments().getString("nickname"));
+        chat = ChatHandler.getChat(getArguments().getString("nickname"));
 
-        txt_title.setText(chat.getName());
+        txt_title.setText(chat.getNickname());
         for(ChatMessage chatMessage: chat.getMessages()) {
             TextMessage message = (TextMessage) chatMessage;
             addMessage(message);

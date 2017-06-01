@@ -13,7 +13,6 @@ import it15ns.friendscom.datatypes.Location;
  */
 
 public class User {
-
     private String nickname;
     private String name;
     private String surname;
@@ -73,7 +72,7 @@ public class User {
         this.telNumber = telNumber;
     }
 
-    public void seteMail(String eMail) {
+    public void setMail(String eMail) {
         this.eMail = eMail;
     }
 

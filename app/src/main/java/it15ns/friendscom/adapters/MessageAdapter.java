@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -14,40 +13,43 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import java.util.List;
 
 import it15ns.friendscom.R;
-import it15ns.friendscom.handler.ChatHandler;
+import it15ns.friendscom.datatypes.ChatMessage;
+import it15ns.friendscom.datatypes.TextMessage;
+import it15ns.friendscom.handler.LocalUserHandler;
 import it15ns.friendscom.handler.UserHandler;
-import it15ns.friendscom.model.Handler;
+import it15ns.friendscom.model.Chat;
 import it15ns.friendscom.model.User;
-
-import static it15ns.friendscom.R.id.nickname;
 
 /**
  * Created by danie on 15/05/2017.
  */
 
-public class ContactAdapter extends BaseAdapter {
+public class MessageAdapter extends BaseAdapter {
+
+    private List<ChatMessage> chatMessages;
+    private LayoutInflater inflater;
+    private Chat chat;
+
+    public MessageAdapter(Context context, Chat chat) {
+        inflater = LayoutInflater.from(context);
+        this.chat = chat;
+        this.chatMessages = chat.getMessagesList();
+    }
+
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-        users = UserHandler.getSortedUsers();
-    }
-
-    private List<User> users;
-    private LayoutInflater inflater;
-
-    public ContactAdapter(Context context) {
-        inflater = LayoutInflater.from(context);
-        users = UserHandler.getSortedUsers();
+        this.chatMessages = chat.getMessagesList();
     }
 
     @Override
     public int getCount() {
-        return users.size();
+        return chatMessages.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return users.get(position);
+        return chatMessages.get(position);
     }
 
     @Override
@@ -61,42 +63,39 @@ public class ContactAdapter extends BaseAdapter {
         // falls nötig, convertView bauen
         if (convertView == null) {
             // Layoutdatei entfalten
-            convertView = inflater.inflate(R.layout.contact_icon_text,
-                    parent, false);
+            convertView = inflater.inflate(R.layout.message_incomming, parent, false);
             // Holder erzeugen
             holder = new ViewHolder();
-            holder.name =
-                    (TextView) convertView.findViewById(R.id.text1);
-
-            holder.icon = (ImageView) convertView.findViewById(R.id.icon);
+            holder.message = (TextView) convertView.findViewById(R.id.text1);
+            holder.time = (TextView) convertView
+                    .findViewById(R.id.text2);
 
             convertView.setTag(holder);
         } else {
             // Holder bereits vorhanden
             holder = (ViewHolder) convertView.getTag();
         }
+        ChatMessage chatMessage = chatMessages.get(position);
+        //TODO:chat instance of group chat?
+
+        if(chatMessage instanceof TextMessage){
+            TextMessage textMessage = (TextMessage) chatMessage;
+
+            holder.message.setText(textMessage.getMessage());
+            holder.time.setText(textMessage.getDate().toString());
+        }
 
 
-        User user = users.get(position);
-        String name = user.getSurname();
-
-        holder.name.setText(name);
-
-        TextDrawable drawable = TextDrawable.builder().beginConfig()
-                .width(100)  // width in px
-                .height(100) // height in px
-                .endConfig()
-                .buildRound(name.substring(0,2).toUpperCase(), Color.parseColor("#007ac1"));
-        holder.icon.setImageDrawable(drawable);
 
         if (++position >= getCount()) {
             position = 0;
         }
+
         return convertView;
     }
 
     static class ViewHolder {
-        TextView name;
-        ImageView icon;
+        TextView message, time;
+
     }
 }
