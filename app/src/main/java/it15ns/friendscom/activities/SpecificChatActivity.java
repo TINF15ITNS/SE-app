@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TableRow;
@@ -63,16 +62,20 @@ public class SpecificChatActivity extends AppCompatActivity {
         //set auto scroll on view
         scroll = (ScrollView) findViewById(R.id.scrollView);
         scroll.fullScroll(View.FOCUS_DOWN);
+
         if(getIntent().getExtras() != null) {
             String nickname = getIntent().getExtras().getString("nickname");
             txt_chatPartner.setText(nickname);
             txt_chatPartner.setEnabled(false);
 
             setTitle(nickname);
-            chat = ChatHandler.getChat(nickname);
+            chat = ChatHandler.getChat(nickname, this);
             messageAdapter = new MessageAdapter(this, chat);
             messageList = (ListView) findViewById(R.id.chatTableLayout);
             messageList.setAdapter(messageAdapter);
+
+            scrollMassageListToBottom();
+
             //for(ChatMessage chatMessage: chat.getMessages()) {
             //    TextMessage message = (TextMessage) chatMessage;
                 //addMessage(message);
@@ -104,7 +107,7 @@ public class SpecificChatActivity extends AppCompatActivity {
                     else {
                         String partner = txt_chatPartner.getText().toString();
                         if(!partner.equals("Chat Partner") && partner.length() > 4) {
-                            chat = ChatHandler.getChat(partner);
+                            chat = ChatHandler.getChat(partner, getApplicationContext());
 
                             messageAdapter = new MessageAdapter(ctx_main, chat);
                             messageList = (ListView) findViewById(R.id.chatTableLayout);
@@ -153,20 +156,30 @@ public class SpecificChatActivity extends AppCompatActivity {
 
     public void sendMessage(TextMessage message){
         //addMessage(message);
-        chat.sendTextMessage(message);
-        messageAdapter.notifyDataSetChanged();
+        chat.sendTextMessage(message, this);
+        update();
         //versenden der Nachricht
 
         clearTextbox();
     }
 
     public void clearTextbox(){
-
         txt_msg.setText("");
     }
 
     public void update() {
         messageAdapter.notifyDataSetChanged();
+        scrollMassageListToBottom();
+    }
+
+    private void scrollMassageListToBottom() {
+        messageList.post(new Runnable() {
+            @Override
+            public void run() {
+                // Select the last row so it will scroll into view...
+                messageList.setSelection(messageAdapter.getCount() - 1);
+            }
+        });
     }
 
     private void clearTable() {
@@ -178,7 +191,7 @@ public class SpecificChatActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                ChatActivity.update();
+                MainActivity.update();
                 finish();
                 return true;
         }
@@ -188,7 +201,7 @@ public class SpecificChatActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        ChatActivity.update();
+        MainActivity.update();
         finish();
     }
 

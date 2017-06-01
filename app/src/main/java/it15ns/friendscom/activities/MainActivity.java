@@ -24,7 +24,7 @@ import it15ns.friendscom.R;
 import it15ns.friendscom.adapters.SectionsPagerAdapter;
 import it15ns.friendscom.xmpp.XMPPClient;
 
-public class ChatActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, TabLayout.OnTabSelectedListener {
 
     private static FloatingActionButton fab;
@@ -53,7 +53,7 @@ public class ChatActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Setup des FloatingActionButtons
-        final ChatActivity thisActivity = this;
+        final MainActivity thisActivity = this;
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(
                 new View.OnClickListener() {

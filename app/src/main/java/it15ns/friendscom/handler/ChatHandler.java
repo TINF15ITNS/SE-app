@@ -1,5 +1,7 @@
 package it15ns.friendscom.handler;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,22 +25,22 @@ public class ChatHandler {
     // Methoden für das Chat Handling
 
     // MEthode für die Specific Chat Activity. Liste der Chats -> nur nickname verfügbar und keine gedanken über user
-    public static Chat getChat(String nickname) {
-        User user = UserHandler.getUser(nickname);
-        if(user.hasChat())
+    public static Chat getChat(String nickname, Context context) {
+        User user = UserHandler.getUser(nickname, context);
+        if(user.hasChat(context))
             return user.getChat();
         else
-            return user.createChat();
+            return user.createChat(context);
     }
 
     // gibt eine Liste aller Chats, dem neustem Daten einer nachricht nach sortiert zurück
-    public static List<Chat> getChats() {
+    public static List<Chat> getChats(Context context) {
         List<Chat> chats =  new ArrayList<>();
 
         // gehe durch alle user und füge den chat in die queue ein
-        for(User user: UserHandler.getUsers())
+        for(User user: UserHandler.getUsers(context))
         {
-            if(user.hasChat())
+            if(user.hasChat(context))
                 chats.add(user.getChat());
         }
 
@@ -51,7 +53,7 @@ public class ChatHandler {
         Collections.sort(chats, new Comparator<Chat>() {
             @Override
             public int compare(Chat chat1, Chat chat2) {
-                return chat1.getNewestDate().compareTo(chat2.getNewestDate());
+                return chat2.getNewestDate().compareTo(chat1.getNewestDate());
             }
         });
 

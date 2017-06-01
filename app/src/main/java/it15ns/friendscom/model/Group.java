@@ -1,5 +1,7 @@
 package it15ns.friendscom.model;
 
+import android.content.Context;
+
 import java.util.List;
 
 import it15ns.friendscom.datatypes.Debt;
@@ -21,8 +23,8 @@ public class Group {
 
     }
 
-    public void createChat() {
-        chat = new Chat("kk");
+    public void createChat(Context context) {
+        chat = new Chat("kk", context);
     }
 
     public List<User> getParticipants() {

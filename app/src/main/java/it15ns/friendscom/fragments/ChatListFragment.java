@@ -15,11 +15,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import it15ns.friendscom.R;
-import it15ns.friendscom.activities.ChatActivity;
+import it15ns.friendscom.activities.MainActivity;
 import it15ns.friendscom.activities.SpecificChatActivity;
 import it15ns.friendscom.adapters.ChatAdapter;
 import it15ns.friendscom.model.Chat;
-import it15ns.friendscom.model.Handler;
 
 /**
  * Created by danie on 12/05/2017.
@@ -30,13 +29,12 @@ public class ChatListFragment extends Fragment {
     ListView chatList;
     FragmentManager fragmentManager;
     SpecificChatFragment_deprecated specificChatFragment;
-    Handler handler;
     ChatAdapter chatListAdapter;
 
     @Override
     public void onResume() {
         super.onResume();
-        ChatActivity.setFab(true);
+        MainActivity.setFab(true);
     }
 
     @Override
@@ -63,7 +61,7 @@ public class ChatListFragment extends Fragment {
                 startSpecificChat.putExtra("nickname", chat.getNickname());
                 startActivity(startSpecificChat);
 
-                //ChatActivity.setFab(false);
+                //MainActivity.setFab(false);
                 //fragmentManager.beginTransaction().replace(R.id.content_frame, specificChatFragment).addToBackStack(null).commit();
             }
         });

@@ -23,7 +23,7 @@ import java.net.InetAddress;
 import java.security.InvalidParameterException;
 import java.util.concurrent.ExecutionException;
 
-import it15ns.friendscom.activities.ChatActivity;
+import it15ns.friendscom.activities.MainActivity;
 import it15ns.friendscom.activities.LoginActivity;
 import it15ns.friendscom.activities.RegisterActivity;
 import it15ns.friendscom.activities.SpecificChatActivity;
@@ -59,8 +59,8 @@ public class XMPPClient {
     private XMPPClient() {}
 
     // Um das Fragment upzudaten aus dem ChatListener
-    public static void setChatActivity(ChatActivity activity) {
-        instance.chatListener.setChatActivity(activity);
+    public static void setChatActivity(MainActivity activity) {
+        instance.chatListener.setMainActivity(activity);
     }
 
     public static void setSpecificChatActivity(SpecificChatActivity specificChatActivity) {

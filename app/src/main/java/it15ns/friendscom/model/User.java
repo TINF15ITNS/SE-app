@@ -1,5 +1,6 @@
 package it15ns.friendscom.model;
 
+import android.content.Context;
 import android.media.Image;
 
 import java.util.Date;
@@ -7,6 +8,8 @@ import java.util.List;
 
 import it15ns.friendscom.datatypes.Debt;
 import it15ns.friendscom.datatypes.Location;
+import it15ns.friendscom.handler.ChatHandler;
+import it15ns.friendscom.handler.SQLiteHandler;
 
 /**
  * Created by valentin on 5/9/17.
@@ -30,10 +33,6 @@ public class User {
     private List<ToDoList> toDoLists;
     //private Calender calender;
 
-    public User(){
-
-    }
-
     public User(String nickname) {
         setNickname(nickname);
     }
@@ -42,12 +41,18 @@ public class User {
         return chat;
     }
 
-    public boolean hasChat() {
-        return chat != null;
+    public boolean hasChat(Context context) {
+        SQLiteHandler sqLiteHandler = new SQLiteHandler(context);
+        if(sqLiteHandler.isTableExists(nickname)) {
+            if(chat == null)
+                chat = new Chat(nickname, context);
+            return true;
+        }
+        return false;
     }
 
-    public Chat createChat(){
-        chat = new Chat(nickname);
+    public Chat createChat(Context context){
+        chat = new Chat(nickname, context);
         return chat;
     }
 

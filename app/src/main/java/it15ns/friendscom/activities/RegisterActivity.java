@@ -102,7 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void xmppLoginFinished(boolean success) {
         if(success) {
             showProgress(false);
-            Intent chatActivity = new Intent(this,ChatActivity.class);
+            Intent chatActivity = new Intent(this,MainActivity.class);
             startActivity(chatActivity);
         } else {
             showProgress(false);
@@ -129,7 +129,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             // TODO: Abfangen nach Registrieren --> Direkter Login
-            Intent chatActivity = new Intent(this,ChatActivity.class);
+            Intent chatActivity = new Intent(this,MainActivity.class);
             startActivity(chatActivity);
         } else {
             showProgress(false);

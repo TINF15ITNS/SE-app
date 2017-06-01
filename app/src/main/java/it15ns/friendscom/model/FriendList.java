@@ -1,5 +1,7 @@
 package it15ns.friendscom.model;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +25,13 @@ public class FriendList {
         return instance;
     }
 
-    public User getUserforNickname(String nickname) {
+    public User getUserforNickname(String nickname, Context context) {
         for(User friend : friends) {
             if(friend.getNickname() == nickname)
                 return friend;
         }
 
-        User user = new User();
+        User user = new User(nickname);
         user.setNickname(nickname);
 
         addUserToFriendList(user);

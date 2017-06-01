@@ -6,12 +6,11 @@ import org.jxmpp.jid.EntityBareJid;
 
 import java.util.Date;
 
-import it15ns.friendscom.activities.ChatActivity;
+import it15ns.friendscom.activities.MainActivity;
 import it15ns.friendscom.activities.SpecificChatActivity;
 import it15ns.friendscom.datatypes.TextMessage;
 import it15ns.friendscom.handler.UserHandler;
 import it15ns.friendscom.model.Chat;
-import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.model.User;
 
 
@@ -22,7 +21,7 @@ import it15ns.friendscom.model.User;
 public class XMPPChatListener  implements IncomingChatMessageListener{
 
     SpecificChatActivity specificChatActivity;
-    ChatActivity chatActivity;
+    MainActivity mainActivity;
     @Override
     public void newIncomingMessage(EntityBareJid from, Message message, org.jivesoftware.smack.chat2.Chat chat) {
 
@@ -30,27 +29,27 @@ public class XMPPChatListener  implements IncomingChatMessageListener{
 
         // jid: daniel@localhost -> nickname: daniel
         final String nickname = from.asEntityBareJidString().substring(0, from.asEntityBareJidString().indexOf("@"));
-        User sender = UserHandler.getUser(nickname);
+        User sender = UserHandler.getUser(nickname, mainActivity);
 
         Chat userChat;
-        if(sender.hasChat())
+        if(sender.hasChat(mainActivity))
             userChat = sender.getChat();
         else
-            userChat = sender.createChat();
+            userChat = sender.createChat(mainActivity);
 
         TextMessage textMessage = new TextMessage(new Date(), sender, message.getBody());
         userChat.addMessage(textMessage);
 
-        chatActivity.runOnUiThread(new Runnable() {
+        mainActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                chatActivity.update();
+                mainActivity.update();
             }
         });
 
         // nofify fragment
         if(specificChatActivity != null) {
-            chatActivity.runOnUiThread(new Runnable() {
+            mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     specificChatActivity.update();
@@ -63,7 +62,7 @@ public class XMPPChatListener  implements IncomingChatMessageListener{
         this.specificChatActivity = specificChatActivity;
     }
 
-    public void setChatActivity(ChatActivity activity) {
-        this.chatActivity = activity;
+    public void setMainActivity(MainActivity activity) {
+        this.mainActivity = activity;
     }
 }

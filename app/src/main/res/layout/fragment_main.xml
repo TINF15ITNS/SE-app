@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="it15ns.friendscom.activities.ChatActivity$PlaceholderFragment">
+    tools:context="it15ns.friendscom.activities.MainActivity$PlaceholderFragment">
 
     <TextView
         android:id="@+id/section_label"

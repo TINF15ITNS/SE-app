@@ -1,5 +1,6 @@
 package it15ns.friendscom.model;
 
+import android.content.Context;
 import android.media.Image;
 
 /**
@@ -10,8 +11,8 @@ public class GroupChat extends Chat {
     private Image groupPicture;
     private String name;
 
-    public GroupChat(Calendar chatCalendar, Image groupPicture, String name){
-        super(name);
+    public GroupChat(Calendar chatCalendar, Image groupPicture, String name, Context context){
+        super(name, context);
         this.groupPicture = groupPicture;
         this.name = name;
     }

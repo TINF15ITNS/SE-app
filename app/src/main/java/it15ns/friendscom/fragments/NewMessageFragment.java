@@ -12,12 +12,11 @@ import android.widget.EditText;
 
 import java.util.Date;
 
-import it15ns.friendscom.activities.ChatActivity;
+import it15ns.friendscom.activities.MainActivity;
 import it15ns.friendscom.datatypes.TextMessage;
 import it15ns.friendscom.handler.LocalUserHandler;
 import it15ns.friendscom.handler.UserHandler;
 import it15ns.friendscom.model.Chat;
-import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.R;
 import it15ns.friendscom.model.User;
 
@@ -51,16 +50,16 @@ public class NewMessageFragment extends android.support.v4.app.Fragment {
                     String nickname = text_receiver.getText().toString();
                     String message = text_message.getText().toString();
 
-                    User receiver = UserHandler.getUser(nickname);
+                    User receiver = UserHandler.getUser(nickname, getContext());
                     Chat chat = receiver.getChat();
 
-                    chat.sendTextMessage(new TextMessage(new Date(), LocalUserHandler.getLocalUser(), message));
+                    chat.sendTextMessage(new TextMessage(new Date(), LocalUserHandler.getLocalUser(), message), getContext());
 
                     Snackbar.make(getView(), "Versendet!", Snackbar.LENGTH_LONG).show();
                 } catch (Exception ex) {
                     Snackbar.make(getView(), ex.toString(), Snackbar.LENGTH_LONG).show();
                 } finally {
-                    ChatActivity.setFab(true);
+                    MainActivity.setFab(true);
                     fragmentManager.beginTransaction().replace(R.id.container, new ChatListFragment()).addToBackStack(null).commit();
                 }
             }

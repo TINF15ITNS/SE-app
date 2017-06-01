@@ -1,5 +1,7 @@
 package it15ns.friendscom.datatypes;
 
+import android.content.Context;
+
 import java.util.Date;
 
 import it15ns.friendscom.model.User;
@@ -16,8 +18,8 @@ public class TextMessage extends ChatMessage {
         this.message = message;
     }
 
-    public TextMessage(Date date, String senderName, String message){
-        super(date, senderName);
+    public TextMessage(Date date, String senderName, String message, Context context){
+        super(date, senderName, context);
         this.message = message;
     }
 

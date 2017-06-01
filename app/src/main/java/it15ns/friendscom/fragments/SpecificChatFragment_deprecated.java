@@ -84,7 +84,7 @@ public class SpecificChatFragment_deprecated extends Fragment{
             }
         });
 
-        chat = ChatHandler.getChat(getArguments().getString("nickname"));
+        chat = ChatHandler.getChat(getArguments().getString("nickname"), getContext());
 
         txt_title.setText(chat.getNickname());
         for(ChatMessage chatMessage: chat.getMessages()) {
@@ -107,7 +107,7 @@ public class SpecificChatFragment_deprecated extends Fragment{
         addMsgToTable("Me", time, message.getMessage());
 
         //versenden der Nachricht
-        chat.sendTextMessage(message);
+        chat.sendTextMessage(message, getContext());
 
         clearTextbox();
     }

@@ -15,7 +15,6 @@ import java.sql.Date;
 
 import it15ns.friendscom.R;
 import it15ns.friendscom.handler.UserHandler;
-import it15ns.friendscom.model.Handler;
 import it15ns.friendscom.handler.LocalUserHandler;
 import it15ns.friendscom.model.User;
 
@@ -78,7 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
         if(bundle != null) {
             edit.setVisibility(View.INVISIBLE);
             String nickname = bundle.getString("nickname");
-            user = UserHandler.getUser(nickname);
+            user = UserHandler.getUser(nickname, this);
             setTitle(user.getSurname());
 
         } else {
@@ -117,7 +116,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void loadUser(){
         linear.removeAllViews();
         if(user != LocalUserHandler.getLocalUser()) {
-            title.setText((user.hasChat() ? "Ihr habt schon gechattet" : "Ihr habt noch nie gechattet"));
+            title.setText((user.hasChat(this) ? "Ihr habt schon gechattet" : "Ihr habt noch nie gechattet"));
             linear.addView(title);
         }
 

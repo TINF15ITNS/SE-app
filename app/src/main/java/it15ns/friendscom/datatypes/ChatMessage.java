@@ -1,7 +1,12 @@
 package it15ns.friendscom.datatypes;
 
+import android.content.Context;
+import android.os.UserManager;
+
 import java.util.Date;
 
+import it15ns.friendscom.handler.LocalUserHandler;
+import it15ns.friendscom.handler.UserHandler;
 import it15ns.friendscom.model.User;
 
 /**
@@ -18,11 +23,9 @@ public class ChatMessage {
     }
 
 
-    public ChatMessage(Date date, String name){
+    public ChatMessage(Date date, String name, Context context){
         this.date = date;
-        User user = new User();
-        user.setNickname(name);
-        this.sender = user;
+        this.sender = UserHandler.getUser(name, context);
     }
 
     public void setDate(Date date){

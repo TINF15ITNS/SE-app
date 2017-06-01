@@ -28,18 +28,21 @@ import it15ns.friendscom.model.User;
  */
 
 public class ChatAdapter extends BaseAdapter {
-    @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-        chats = ChatHandler.getChats();
-    }
 
     private List<Chat> chats;
     private LayoutInflater inflater;
+    private Context context;
 
     public ChatAdapter(Context context) {
+        this.context = context;
         inflater = LayoutInflater.from(context);
-        chats = ChatHandler.getChats();
+        chats = ChatHandler.getChats(context);
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        chats = ChatHandler.getChats(context);
     }
 
     @Override
@@ -82,13 +85,13 @@ public class ChatAdapter extends BaseAdapter {
         //TODO:chat instance of group chat?
 
         String nickname = chat.getNickname();
-        User user = UserHandler.getUser(nickname);
+        User user = UserHandler.getUser(nickname, context);
 
         holder.name.setText(user.getSurname());
 
         TextDrawable drawable = TextDrawable.builder().beginConfig()
-                .width(150)  // width in px
-                .height(150) // height in px
+                .width(130)  // width in px
+                .height(130) // height in px
                 .endConfig()
                 .buildRound(nickname.substring(0,2).toUpperCase(), Color.parseColor("#007ac1"));
         holder.icon.setImageDrawable(drawable);
@@ -98,8 +101,6 @@ public class ChatAdapter extends BaseAdapter {
             TextMessage message = (TextMessage) chat.getNewestMessage();
             if(message.getSender() == LocalUserHandler.getLocalUser())
                 text = "Ich: ";
-            else
-                text = message.getSender().getSurname();
 
             text += message.getMessage();
         }
