@@ -29,7 +29,6 @@ public class ContactListFragment extends Fragment {
     View view;
     ListView contactList;
     FragmentManager fragmentManager;
-    SpecificChatFragment_deprecated specificChatFragment;
     ContactAdapter contactAdapter;
 
     @Override

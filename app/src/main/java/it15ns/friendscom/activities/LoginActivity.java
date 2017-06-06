@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         String token = sharedPrefs.getString("token", "");
 
         // Set up the login form.
-        text_username = (EditText) findViewById(R.id.username);
+        text_username = (EditText) findViewById(R.id.nickname);
         text_password = (EditText) findViewById(R.id.password);
         view_progress = findViewById(R.id.login_progress);
         view_login_form = findViewById(R.id.login_form);

@@ -28,7 +28,6 @@ public class ChatListFragment extends Fragment {
     View view;
     ListView chatList;
     FragmentManager fragmentManager;
-    SpecificChatFragment_deprecated specificChatFragment;
     ChatAdapter chatListAdapter;
 
     @Override

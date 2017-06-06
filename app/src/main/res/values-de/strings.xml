@@ -14,4 +14,5 @@
     <string name="prompt_password_repeat">Passwort wiederholen</string>
     <string name="action_logout">Ausloggen</string>
     <string name="action_settings">Einstellungen</string>
+    <string name="seach_profile">Name</string>
 </resources>

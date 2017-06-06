@@ -25,7 +25,7 @@ import it15ns.friendscom.xmpp.XMPPClient;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText text_username;
+    private EditText text_nickname;
     private EditText text_password;
     private EditText text_password2;
 
@@ -40,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         //get Items
-        text_username = (EditText)findViewById(R.id.username);
+        text_nickname = (EditText)findViewById(R.id.nickname);
         text_password = (EditText)findViewById(R.id.password);
         text_password2 = (EditText)findViewById(R.id.password2);
         btn_register = (Button)findViewById(R.id.register_button);
@@ -57,11 +57,11 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void attemptRegister() {
-        text_username.setError(null);
+        text_nickname.setError(null);
         text_password.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = text_username.getText().toString();
+        String username = text_nickname.getText().toString();
         String password = text_password.getText().toString();
 
         boolean cancel = false;
@@ -76,12 +76,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(username)) {
-            text_username.setError(getString(R.string.error_field_required));
-            focusView = text_username;
+            text_nickname.setError(getString(R.string.error_field_required));
+            focusView = text_nickname;
             cancel = true;
         } else if (!FormTools.isValidNickname(username)) {
-            text_username.setError(getString(R.string.error_invalid_username));
-            focusView = text_username;
+            text_nickname.setError(getString(R.string.error_invalid_username));
+            focusView = text_nickname;
             cancel = true;
         }
 
@@ -113,14 +113,14 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void registerResult(LoginResponse response) {
         if(response.getSuccess()) {
-            String username = text_username.getText().toString();
+            String username = text_nickname.getText().toString();
             String token = response.getToken();
             SharedPreferences sharedPrefs = getSharedPreferences("data", Context.MODE_PRIVATE);
             sharedPrefs.edit().putString("token", token).commit();
             sharedPrefs.edit().putString("username", username).commit();
 
             try {
-                XMPPClient.init(text_username.getText().toString(), token);
+                XMPPClient.init(text_nickname.getText().toString(), token);
                 // start async task
                 XMPPClient.connect(this);
             } catch (Exception ex) {
