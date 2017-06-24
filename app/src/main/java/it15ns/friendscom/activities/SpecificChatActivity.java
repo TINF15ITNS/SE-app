@@ -205,7 +205,6 @@ public class SpecificChatActivity extends AppCompatActivity {
         finish();
     }
 
-
     /*
     @Override
     protected void onStop() {

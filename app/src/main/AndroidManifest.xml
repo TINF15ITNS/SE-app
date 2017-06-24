@@ -41,7 +41,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.SearchProfileActivity"
+        <activity
+            android:name=".activities.SearchProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

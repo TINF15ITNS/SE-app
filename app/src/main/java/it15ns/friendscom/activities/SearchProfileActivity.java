@@ -1,14 +1,17 @@
 package it15ns.friendscom.activities;
 
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,11 +62,31 @@ public class SearchProfileActivity extends AppCompatActivity implements View.OnC
     }
 
     public void searchResult(SearchUserResponse response) {
-        List<User> users = new ArrayList<>();
-        for (String nickname : response.getNicknameResultList()) {
-            users.add(new User(nickname));
+        if (response.getSuccess()) {
+            List<User> users = new ArrayList<>();
+            for (String nickname : response.getNicknameResultList()) {
+                users.add(new User(nickname));
+            }
+
+            searchProfileAdapter.setResult(users);
+        } else {
+            searchProfileAdapter.setResult(new ArrayList<User>());
+            Toast.makeText(SearchProfileActivity.this, "Nichts gefunden", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
         }
 
-        searchProfileAdapter.setResult(users);
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
