@@ -44,6 +44,7 @@ public class GrpcTask extends AsyncTask<Void, Void, Boolean> {
             ServerServiceGrpc.ServerServiceBlockingStub blockingStub = ServerServiceGrpc.newBlockingStub(mChannel);
             ServerServiceGrpc.ServerServiceStub stub = ServerServiceGrpc.newStub(mChannel);
 
+
             boolean logs = mGrpc.execute(blockingStub, stub);
 
             //Log.d("joup", logs);

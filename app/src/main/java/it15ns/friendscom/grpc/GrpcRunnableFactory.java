@@ -31,16 +31,3 @@ public class GrpcRunnableFactory {
         return new SearchProfileRunnable(searchstring, activity);
     }
 }
-
-/**
- *
- CallCredentials credentials = null;
-
- if(mGrpc.getToken() == "")
- {
-
- } else {
- credentials = new CustomCredentials(mGrpc.getToken());
- }
- */
-

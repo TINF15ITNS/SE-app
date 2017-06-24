@@ -26,7 +26,7 @@ public class CustomCredentials implements CallCredentials
     {
         try {
             Metadata header = new Metadata();
-            Metadata.Key<String> headerKey = Metadata.Key.of("'token'", Metadata.ASCII_STRING_MARSHALLER);
+            Metadata.Key<String> headerKey = Metadata.Key.of("token", Metadata.ASCII_STRING_MARSHALLER);
             header.put(headerKey, token);
             applier.apply(header);
         } catch (Throwable e) {

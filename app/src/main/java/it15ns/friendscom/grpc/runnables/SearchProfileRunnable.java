@@ -4,10 +4,14 @@ import io.grpc.serverPackage.LoginResponse;
 import io.grpc.serverPackage.RegisterRequest;
 import io.grpc.serverPackage.SearchForProfileRequest;
 import io.grpc.serverPackage.SearchForProfileResponse;
+import io.grpc.serverPackage.SearchUserRequest;
+import io.grpc.serverPackage.SearchUserResponse;
 import io.grpc.serverPackage.ServerServiceGrpc;
 import it15ns.friendscom.activities.RegisterActivity;
 import it15ns.friendscom.activities.SearchProfileActivity;
+import it15ns.friendscom.grpc.CustomCredentials;
 import it15ns.friendscom.grpc.GrpcRunnable;
+import it15ns.friendscom.handler.LocalUserHandler;
 
 /**
  * Created by danie on 05.06.2017.
@@ -24,14 +28,14 @@ public class SearchProfileRunnable implements GrpcRunnable {
 
     @Override
     public boolean execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
-        //throw new RuntimeException();
-        final SearchForProfileResponse response;
 
-        SearchForProfileRequest request = SearchForProfileRequest.newBuilder()
-                .setNickname(searchString)
+        final SearchUserResponse response;
+        SearchUserRequest request = SearchUserRequest.newBuilder()
+                .setQuery(searchString)
                 .build();
 
-        response = blockingStub.searchForProfile(request);
+        String token = LocalUserHandler.getToken();
+        response = blockingStub.withCallCredentials(new CustomCredentials(token)).searchUser(request);
 
         activity.runOnUiThread(new Runnable() {
             @Override

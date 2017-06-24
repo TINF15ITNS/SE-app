@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.grpc.serverPackage.SearchForProfileResponse;
+import io.grpc.serverPackage.SearchUserResponse;
 import it15ns.friendscom.R;
 import it15ns.friendscom.adapters.SearchProfileAdapter;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
@@ -57,9 +58,9 @@ public class SearchProfileActivity extends AppCompatActivity implements View.OnC
         new GrpcTask(GrpcRunnableFactory.getSearchProfileRunnable(searchString, this)).execute();
     }
 
-    public void searchResult(SearchForProfileResponse response) {
+    public void searchResult(SearchUserResponse response) {
         List<User> users = new ArrayList<>();
-        for (String nickname : response.getUuidResultList()) {
+        for (String nickname : response.getNicknameResultList()) {
             users.add(new User(nickname));
         }
 

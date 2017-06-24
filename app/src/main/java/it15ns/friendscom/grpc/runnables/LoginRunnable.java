@@ -35,9 +35,7 @@ public class LoginRunnable implements GrpcRunnable {
                 .setPassword(password)
                 .build();
 
-
         loginResponse = blockingStub.login(loginRequest);
-
 
         activity.runOnUiThread(new Runnable() {
             @Override

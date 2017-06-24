@@ -12,7 +12,7 @@ import it15ns.friendscom.model.User;
 public class LocalUserHandler {
     private static LocalUserHandler instance  = new LocalUserHandler();
 
-    private static String token = "";
+    private String token = "";
     private User localUser;
 
     private LocalUserHandler() {
@@ -47,6 +47,6 @@ public class LocalUserHandler {
     }
 
     public static String getToken() {
-        return token;
+        return instance.token;
     }
 }

@@ -40,6 +40,8 @@ public class SplashActivity extends AppCompatActivity {
                 XMPPClient.connect(this);
             } catch (Exception ex) {
                 Toast.makeText(SplashActivity.this, "Es gibt Probleme mit dem Nachrichtenserver!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
                 Log.d("XMPP Error", ex.getMessage());
             }
         }
