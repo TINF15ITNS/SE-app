@@ -2,20 +2,24 @@ package it15ns.friendscom.handler;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.design.widget.Snackbar;
 
+import io.grpc.serverPackage.GetUserDetailsResponse;
+import it15ns.friendscom.grpc.GrpcInvoker;
 import it15ns.friendscom.model.User;
 
 /**
  * Created by valentin on 5/9/17.
  */
 
-public class LocalUserHandler {
+public class LocalUserHandler implements GrpcInvoker{
     private static LocalUserHandler instance  = new LocalUserHandler();
 
     private String token = "";
     private User localUser;
 
     private LocalUserHandler() {
+
         localUser = new User("Me");
     }
 
@@ -48,5 +52,9 @@ public class LocalUserHandler {
 
     public static String getToken() {
         return instance.token;
+    }
+
+    public void requestComplete(Object response) {
+        GetUserDetailsResponse response_ = (GetUserDetailsResponse) response;
     }
 }

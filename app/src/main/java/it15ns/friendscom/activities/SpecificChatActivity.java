@@ -185,6 +185,7 @@ public class SpecificChatActivity extends AppCompatActivity {
     private void clearTable() {
         //messageList.removeAllViews();
         //TODO:
+
     }
 
     @Override
