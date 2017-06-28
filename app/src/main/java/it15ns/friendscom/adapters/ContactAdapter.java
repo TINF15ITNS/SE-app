@@ -84,6 +84,7 @@ public class ContactAdapter extends BaseAdapter {
                 .height(130) // height in px
                 .endConfig()
                 .buildRound(name.substring(0,2).toUpperCase(), Color.parseColor("#007ac1"));
+
         holder.icon.setImageDrawable(drawable);
 
         if (++position >= getCount()) {

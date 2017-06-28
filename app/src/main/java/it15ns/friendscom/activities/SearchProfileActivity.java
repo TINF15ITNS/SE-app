@@ -1,22 +1,20 @@
 package it15ns.friendscom.activities;
 
-import android.support.design.widget.Snackbar;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import io.grpc.serverPackage.SearchForProfileResponse;
 import io.grpc.serverPackage.SearchUserResponse;
 import it15ns.friendscom.R;
 import it15ns.friendscom.adapters.SearchProfileAdapter;
@@ -51,6 +49,28 @@ public class SearchProfileActivity extends AppCompatActivity implements View.OnC
 
         searchResult = (ListView) findViewById(R.id.seachResult);
         searchResult.setAdapter(searchProfileAdapter);
+        searchResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SearchProfileActivity.this);
+                builder.setMessage("Möchten sie diesen Account in ihre Freundesliste hinzufügen?")
+                        .setTitle("Hinzufügen");
+
+                final User user = (User) parent.getItemAtPosition(position);
+
+                builder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toast.makeText(SearchProfileActivity.this,user.getNickname(), Toast.LENGTH_LONG).show();
+                    }
+                });
+                builder.setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
 
         btnSeach.setOnClickListener(this);
     }

@@ -13,7 +13,11 @@ import android.widget.TextView;
 
 import java.sql.Date;
 
+import io.grpc.serverPackage.Response;
 import it15ns.friendscom.R;
+import it15ns.friendscom.grpc.GrpcRunnable;
+import it15ns.friendscom.grpc.GrpcRunnableFactory;
+import it15ns.friendscom.grpc.GrpcTask;
 import it15ns.friendscom.handler.UserHandler;
 import it15ns.friendscom.handler.LocalUserHandler;
 import it15ns.friendscom.model.User;
@@ -204,5 +208,15 @@ public class ProfileActivity extends AppCompatActivity {
         user.setTelNumber(e_telnr.getText().toString());
         user.setMail(e_email.getText().toString());
         LocalUserHandler.setLocalUser(user);
+
+        new GrpcTask(GrpcRunnableFactory.getUpdateProfileRunnable(user, this)).execute();
+    }
+
+    public void updateResult(Response response) {
+        if(response.getSuccess() == true)
+            Snackbar.make(linear, "Erfolgreich", Snackbar.LENGTH_LONG).show();
+        else
+            Snackbar.make(linear, "Es sind Probleme aufgetreten", Snackbar.LENGTH_LONG).show();
+
     }
 }

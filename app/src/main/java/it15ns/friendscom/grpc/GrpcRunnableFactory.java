@@ -5,11 +5,14 @@ import io.grpc.serverPackage.LoginRequest;
 import io.grpc.serverPackage.RegisterRequest;
 import io.grpc.serverPackage.ServerServiceGrpc;
 import it15ns.friendscom.activities.LoginActivity;
+import it15ns.friendscom.activities.ProfileActivity;
 import it15ns.friendscom.activities.RegisterActivity;
 import it15ns.friendscom.activities.SearchProfileActivity;
 import it15ns.friendscom.grpc.runnables.LoginRunnable;
 import it15ns.friendscom.grpc.runnables.RegisterRunnable;
 import it15ns.friendscom.grpc.runnables.SearchProfileRunnable;
+import it15ns.friendscom.grpc.runnables.UpdateProfileRunnable;
+import it15ns.friendscom.model.User;
 
 /**
  * Created by danie on 02/05/2017.
@@ -29,5 +32,9 @@ public class GrpcRunnableFactory {
 
     public static SearchProfileRunnable getSearchProfileRunnable(String searchstring, SearchProfileActivity activity) {
         return new SearchProfileRunnable(searchstring, activity);
+    }
+
+    public static UpdateProfileRunnable getUpdateProfileRunnable(User user, ProfileActivity activity) {
+        return new UpdateProfileRunnable(user, activity);
     }
 }
