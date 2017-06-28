@@ -89,7 +89,6 @@ public class ProfileActivity extends AppCompatActivity {
             setTitle("Einstellungen");
         }
 
-
         //on click load new layout
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
