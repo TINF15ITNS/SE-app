@@ -20,8 +20,9 @@ public class GetUserDetailsRunnable implements GrpcRunnable {
     private String nickname;
     private GrpcInvoker receiver;
 
-    public GetUserDetailsRunnable(String nicknam) {
+    public GetUserDetailsRunnable(String nickname, GrpcInvoker invoker) {
         this.nickname = nickname;
+        receiver = invoker;
     }
 
     @Override

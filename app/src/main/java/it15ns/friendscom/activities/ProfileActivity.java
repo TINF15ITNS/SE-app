@@ -17,6 +17,7 @@ import io.grpc.serverPackage.Response;
 import it15ns.friendscom.R;
 import it15ns.friendscom.grpc.GrpcRunnable;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
+import it15ns.friendscom.grpc.GrpcSyncTask;
 import it15ns.friendscom.grpc.GrpcTask;
 import it15ns.friendscom.handler.UserHandler;
 import it15ns.friendscom.handler.LocalUserHandler;
@@ -49,6 +50,8 @@ public class ProfileActivity extends AppCompatActivity {
     private Button edit;
     private LinearLayout linear;
     private User user;
+    // user to store temporarily the changes made by the user
+    private User tempUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +86,6 @@ public class ProfileActivity extends AppCompatActivity {
             String nickname = bundle.getString("nickname");
             user = UserHandler.getUser(nickname, this);
             setTitle(user.getSurname());
-
         } else {
             user = LocalUserHandler.getLocalUser();
             setTitle("Einstellungen");
@@ -182,7 +184,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 updateLocalUser();
-                Snackbar.make(linear, "Aktualisiert!", Snackbar.LENGTH_LONG).show();
             }
         });
         linear.addView(save_btn);
@@ -198,22 +199,24 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void updateLocalUser() {
-        user.setName(e_name.getText().toString());
-        user.setSurname(e_surname.getText().toString());
-        if(!e_birthday.getText().toString().equals("")) {
-            user.setBirthday(Date.valueOf(e_birthday.getText().toString()));
+        tempUser = new User(user.getNickname());
+        tempUser.setName(e_name.getText().toString());
+        tempUser.setSurname(e_surname.getText().toString());
+        if (!e_birthday.getText().toString().equals("")) {
+            tempUser.setBirthday(Date.valueOf(e_birthday.getText().toString()));
             //TODO:passt der string?
         }
-        user.setTelNumber(e_telnr.getText().toString());
-        user.setMail(e_email.getText().toString());
-        LocalUserHandler.setLocalUser(user);
-
-        new GrpcTask(GrpcRunnableFactory.getUpdateProfileRunnable(user, this)).execute();
+        tempUser.setTelNumber(e_telnr.getText().toString());
+        tempUser.setMail(e_email.getText().toString());
+        new GrpcSyncTask(GrpcRunnableFactory.getUpdateProfileRunnable(tempUser, this)).run();
     }
 
     public void updateResult(Response response) {
-        if(response.getSuccess() == true)
+        if(response.getSuccess() == true) {
+            user = tempUser;
+            LocalUserHandler.setLocalUser(tempUser);
             Snackbar.make(linear, "Erfolgreich", Snackbar.LENGTH_LONG).show();
+        }
         else
             Snackbar.make(linear, "Es sind Probleme aufgetreten", Snackbar.LENGTH_LONG).show();
 

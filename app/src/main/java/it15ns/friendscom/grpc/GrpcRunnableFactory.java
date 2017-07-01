@@ -8,6 +8,7 @@ import it15ns.friendscom.activities.LoginActivity;
 import it15ns.friendscom.activities.ProfileActivity;
 import it15ns.friendscom.activities.RegisterActivity;
 import it15ns.friendscom.activities.SearchProfileActivity;
+import it15ns.friendscom.grpc.runnables.GetUserDetailsRunnable;
 import it15ns.friendscom.grpc.runnables.LoginRunnable;
 import it15ns.friendscom.grpc.runnables.RegisterRunnable;
 import it15ns.friendscom.grpc.runnables.SearchProfileRunnable;
@@ -36,5 +37,9 @@ public class GrpcRunnableFactory {
 
     public static UpdateProfileRunnable getUpdateProfileRunnable(User user, ProfileActivity activity) {
         return new UpdateProfileRunnable(user, activity);
+    }
+
+    public static GetUserDetailsRunnable getGetUserDetailsRunnable(String nickname, GrpcInvoker invoker) {
+        return new GetUserDetailsRunnable(nickname, invoker);
     }
 }

@@ -20,6 +20,7 @@ import it15ns.friendscom.R;
 import it15ns.friendscom.adapters.SearchProfileAdapter;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
 import it15ns.friendscom.grpc.GrpcTask;
+import it15ns.friendscom.handler.UserHandler;
 import it15ns.friendscom.model.User;
 
 public class SearchProfileActivity extends AppCompatActivity implements View.OnClickListener {
@@ -60,6 +61,8 @@ public class SearchProfileActivity extends AppCompatActivity implements View.OnC
 
                 builder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        UserHandler.addUser(user);
+                        MainActivity.update();
                         Toast.makeText(SearchProfileActivity.this,user.getNickname(), Toast.LENGTH_LONG).show();
                     }
                 });

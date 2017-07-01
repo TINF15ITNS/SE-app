@@ -21,6 +21,7 @@ import io.grpc.serverPackage.LoginResponse;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
 import it15ns.friendscom.grpc.GrpcTask;
 import it15ns.friendscom.R;
+import it15ns.friendscom.handler.LocalUserHandler;
 import it15ns.friendscom.model.FormTools;
 import it15ns.friendscom.xmpp.XMPPClient;
 
@@ -167,6 +168,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void xmppLoginFinished(boolean success) {
         if(success) {
+            LocalUserHandler.init(this);
+
             showProgress(false);
             Intent chatActivity = new Intent(this,MainActivity.class);
             startActivity(chatActivity);
