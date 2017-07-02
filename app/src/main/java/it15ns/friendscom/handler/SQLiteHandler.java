@@ -56,6 +56,7 @@ public class SQLiteHandler extends SQLiteOpenHelper{
     }
 
     public void deleteAllTables() {
+        SQLiteDatabase db = this.getWritableDatabase(); //open db object
         // query to obtain the names of all tables in your database
         Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
         List<String> tables = new ArrayList<>();

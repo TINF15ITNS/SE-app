@@ -17,15 +17,23 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import io.grpc.serverPackage.SearchUserResponse;
 import it15ns.friendscom.R;
 import it15ns.friendscom.adapters.MessageAdapter;
 import it15ns.friendscom.datatypes.ChatMessage;
 import it15ns.friendscom.datatypes.TextMessage;
+import it15ns.friendscom.grpc.GrpcRunnableFactory;
+import it15ns.friendscom.grpc.GrpcSyncTask;
+import it15ns.friendscom.grpc.GrpcTask;
+import it15ns.friendscom.grpc.runnables.SyncSearchProfileRunnable;
 import it15ns.friendscom.handler.ChatHandler;
 import it15ns.friendscom.handler.LocalUserHandler;
 import it15ns.friendscom.model.Chat;
+import it15ns.friendscom.model.User;
 import it15ns.friendscom.xmpp.XMPPClient;
 
 public class SpecificChatActivity extends AppCompatActivity {
@@ -107,16 +115,21 @@ public class SpecificChatActivity extends AppCompatActivity {
                     else {
                         String partner = txt_chatPartner.getText().toString();
                         if(!partner.equals("Chat Partner") && partner.length() > 4) {
-                            chat = ChatHandler.getChat(partner, getApplicationContext());
+                            SearchUserResponse response = (SearchUserResponse) GrpcSyncTask.execute(new SyncSearchProfileRunnable(partner));
+                            if(response.getSuccess()) {
+                                chat = ChatHandler.getChat(partner, getApplicationContext());
 
-                            messageAdapter = new MessageAdapter(ctx_main, chat);
-                            messageList = (ListView) findViewById(R.id.chatTableLayout);
-                            messageList.setAdapter(messageAdapter);
+                                messageAdapter = new MessageAdapter(ctx_main, chat);
+                                messageList = (ListView) findViewById(R.id.chatTableLayout);
+                                messageList.setAdapter(messageAdapter);
 
-                            sendMessage(message);
-                            txt_chatPartner.setEnabled(false);
+                                sendMessage(message);
+                                txt_chatPartner.setEnabled(false);
+                            }else {
+                                Toast.makeText(SpecificChatActivity.this, "Account nicht gefunden", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
-                            Toast.makeText(ctx_main, "Probleme mit dem Namen des Chatpartners", Toast.LENGTH_SHORT);
+                            Toast.makeText(SpecificChatActivity.this, "Probleme mit dem Namen des Chatpartners", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }

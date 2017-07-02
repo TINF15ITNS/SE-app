@@ -149,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences sharedPrefs = getSharedPreferences("data", Context.MODE_PRIVATE);
             sharedPrefs.edit().putString("token", token).commit();
             sharedPrefs.edit().putString("username", username).commit();
-
+            LocalUserHandler.setToken(token);
             try {
                 XMPPClient.init(username, token);
                 // start async task

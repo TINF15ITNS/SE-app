@@ -56,7 +56,6 @@ public class UserHandler {
             return true;
         } else
             return false;
-
     }
 
     public static User createUser(String nickname, Context context) {
@@ -157,5 +156,9 @@ public class UserHandler {
         }
 
         return user;
+    }
+
+    public static void flashInstance() {
+        instance = new UserHandler();
     }
 }

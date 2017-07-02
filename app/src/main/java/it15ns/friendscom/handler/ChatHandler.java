@@ -16,8 +16,6 @@ import it15ns.friendscom.model.User;
  */
 
 public class ChatHandler {
-    private static ChatHandler instance;
-
     private ChatHandler() {}
 
     // Methoden für das Chat Handling
@@ -69,5 +67,6 @@ public class ChatHandler {
     public static void saveMessagesLocally(){
         //TODO:
     }
+
 
 }

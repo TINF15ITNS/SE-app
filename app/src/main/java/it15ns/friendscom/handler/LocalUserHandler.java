@@ -47,7 +47,11 @@ public class LocalUserHandler {
         sharedPrefs.edit().putString("token", "").commit();
         sharedPrefs.edit().putString("username", "").commit();
 
-        // TODO: flash db
+        SQLiteHandler sqLiteHandler = new SQLiteHandler(context);
+        sqLiteHandler.deleteAllTables();
+        UserHandler.flashInstance();
+        GroupHandler.flashInstance();
+        LocalUserHandler.flashInstance();
         Response response = (Response) GrpcSyncTask.execute(new DeleteProfileRunnable(password));
         return response.getSuccess();
     }
@@ -57,8 +61,11 @@ public class LocalUserHandler {
         SharedPreferences sharedPrefs = context.getSharedPreferences("data", Context.MODE_PRIVATE);
         sharedPrefs.edit().putString("token", "").commit();
         sharedPrefs.edit().putString("username", "").commit();
-
-        // TODO: flash
+        UserHandler.flashInstance();
+        GroupHandler.flashInstance();
+        LocalUserHandler.flashInstance();
+        SQLiteHandler sqLiteHandler = new SQLiteHandler(context);
+        sqLiteHandler.deleteAllTables();
     }
 
     public static User getLocalUser(Context context) {
@@ -89,11 +96,17 @@ public class LocalUserHandler {
          return instance.localUser;
     }
 
+    public static void flashInstance() {
+        instance = new LocalUserHandler();
+    }
     // Getter und Setter
     public static void setLocalUser(User localUser){
         instance.localUser = localUser;
     }
     public static String getToken() {
         return instance.token;
+    }
+    public static void setToken(String token) {
+        instance.token = token;
     }
 }

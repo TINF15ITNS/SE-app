@@ -30,4 +30,8 @@ public class GroupHandler {
     public static List<Group> getGroups() {
         return instance.groups;
     }
+
+    public static void flashInstance() {
+        instance = new GroupHandler();
+    }
 }
