@@ -7,6 +7,6 @@ import io.grpc.serverPackage.ServerServiceGrpc;
  */
 
 public interface GrpcRunnable {
-    boolean execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub);
+    Object execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub);
     //String getToken();
 }

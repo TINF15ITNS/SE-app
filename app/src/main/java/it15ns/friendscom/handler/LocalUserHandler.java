@@ -6,85 +6,94 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import java.sql.Date;
+import java.util.Calendar;
 
 import io.grpc.serverPackage.GetUserDetailsResponse;
+import io.grpc.serverPackage.Response;
 import it15ns.friendscom.grpc.GrpcInvoker;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
 import it15ns.friendscom.grpc.GrpcSyncTask;
 import it15ns.friendscom.grpc.GrpcTask;
+import it15ns.friendscom.grpc.runnables.DeleteProfileRunnable;
+import it15ns.friendscom.grpc.runnables.GetUserDetailsRunnable;
 import it15ns.friendscom.model.User;
+import it15ns.friendscom.xmpp.XMPPClient;
 
 /**
  * Created by valentin on 5/9/17.
  */
 
-public class LocalUserHandler implements GrpcInvoker{
-    private static LocalUserHandler instance  = new LocalUserHandler();
+public class LocalUserHandler {
 
+    private static LocalUserHandler instance  = new LocalUserHandler();
     private String token = "";
     private User localUser;
 
-    private LocalUserHandler() {
-        localUser = new User("Me");
-    }
-
-    private LocalUserHandler(User localUser){
-        this.localUser = localUser;
-    }
-
-    public static void init(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences("data", Context.MODE_PRIVATE);
-        String username = sharedPrefs.getString("username", "");
-
-        new GrpcSyncTask(GrpcRunnableFactory.getGetUserDetailsRunnable(username, instance)).run();
-    }
+    private LocalUserHandler() {}
 
     public static boolean isLoggedIn(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences("data", Context.MODE_PRIVATE);
         instance.token = sharedPrefs.getString("token", "");
-        String username = sharedPrefs.getString("username", "");
 
-        if(!username.equals("") && instance.getLocalUser().getNickname().equals("Me")) {
-            instance.getLocalUser().setNickname(username);
-        }
-
-        if(instance.getToken() == "" || instance.getLocalUser().getNickname() == "")
+        if(instance.getToken() == "")
             return false;
 
         return true;
+    }
+
+    public static boolean deleteProfile(Context context, String password) {
+        XMPPClient.disconnect();
+        SharedPreferences sharedPrefs = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+        sharedPrefs.edit().putString("token", "").commit();
+        sharedPrefs.edit().putString("username", "").commit();
+
+        // TODO: flash db
+        Response response = (Response) GrpcSyncTask.execute(new DeleteProfileRunnable(password));
+        return response.getSuccess();
+    }
+
+    public static void logoutProfile(Context context) {
+        XMPPClient.disconnect();
+        SharedPreferences sharedPrefs = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+        sharedPrefs.edit().putString("token", "").commit();
+        sharedPrefs.edit().putString("username", "").commit();
+
+        // TODO: flash
+    }
+
+    public static User getLocalUser(Context context) {
+         if(instance.localUser == null) {
+             SharedPreferences sharedPrefs = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+             String username = sharedPrefs.getString("username", "");
+             instance.localUser = new User(username);
+
+             GetUserDetailsResponse user = (GetUserDetailsResponse) GrpcSyncTask.execute(new GetUserDetailsRunnable(username));
+             if(user.getSuccess() == true)  {
+                 instance.localUser.setName(user.getName());
+                 instance.localUser.setSurname(user.getSurname());
+                 instance.localUser.setTelNumber(user.getPhone());
+                 instance.localUser.setMail(user.getEmail());
+                 try {
+                     Calendar calendar = Calendar.getInstance();
+                     long timeInMillis = user.getBirthday();
+                     calendar.setTimeInMillis(timeInMillis);
+                     instance.localUser.setBirthday(calendar);
+                 } catch (Exception ex) {
+                     Log.d("LocalUserHandler", "Birthday not valid: " + ex.getMessage() );
+                 }
+             } else {
+                 Log.d("LocalUserHandler", "Cant get user details");
+             }
+         }
+
+         return instance.localUser;
     }
 
     // Getter und Setter
     public static void setLocalUser(User localUser){
         instance.localUser = localUser;
     }
-    public static User getLocalUser() {
-         return instance.localUser;
-    }
-
     public static String getToken() {
         return instance.token;
-    }
-
-    public void requestComplete(Object response) {
-        GetUserDetailsResponse user = (GetUserDetailsResponse) response;
-        if(user.getSuccess() == true)  {
-            instance.localUser.setName(user.getName());
-            instance.localUser.setSurname(user.getSurname());
-            instance.localUser.setTelNumber(user.getPhone());
-            instance.localUser.setMail(user.getEmail());
-            try {
-                Date birthday = Date.valueOf(user.getBirthday());
-                instance.localUser.setBirthday(birthday);
-            } catch (Exception ex) {
-                Log.d("LocalUserHandler", "Birthday not valid: " + ex.getMessage() );
-            }
-        } else {
-            Log.d("LocalUserHandler", "Cant get user details");
-        }
-
-
-
-
     }
 }

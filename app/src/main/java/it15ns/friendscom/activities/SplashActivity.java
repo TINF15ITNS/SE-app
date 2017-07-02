@@ -35,8 +35,7 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(intent);
         } else {
             try {
-                LocalUserHandler.init(this);
-                XMPPClient.init(LocalUserHandler.getLocalUser().getNickname(), LocalUserHandler.getToken());
+                XMPPClient.init(LocalUserHandler.getLocalUser(this).getNickname(), LocalUserHandler.getToken());
                 // start async task
                 XMPPClient.connect(this);
             } catch (Exception ex) {
@@ -56,6 +55,8 @@ public class SplashActivity extends AppCompatActivity {
         } else {
             showProgress(false);
             Toast.makeText(SplashActivity.this, "Es gibt Probleme mit dem Nachrichtenserver!", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         }
     }
 

@@ -99,7 +99,7 @@ public class ChatAdapter extends BaseAdapter {
         String text = "";
         if(chat.getNewestMessage() instanceof TextMessage){
             TextMessage message = (TextMessage) chat.getNewestMessage();
-            if(message.getSender() == LocalUserHandler.getLocalUser())
+            if(message.getSender() == LocalUserHandler.getLocalUser(context))
                 text = "Ich: ";
 
             text += message.getMessage();

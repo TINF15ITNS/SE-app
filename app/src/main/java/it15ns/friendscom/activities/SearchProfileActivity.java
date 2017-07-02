@@ -15,11 +15,16 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.grpc.serverPackage.AddFriendToFriendlistRequest;
+import io.grpc.serverPackage.Response;
 import io.grpc.serverPackage.SearchUserResponse;
 import it15ns.friendscom.R;
 import it15ns.friendscom.adapters.SearchProfileAdapter;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
+import it15ns.friendscom.grpc.GrpcSyncTask;
 import it15ns.friendscom.grpc.GrpcTask;
+import it15ns.friendscom.grpc.runnables.AddToFriendlistRunnable;
 import it15ns.friendscom.handler.UserHandler;
 import it15ns.friendscom.model.User;
 
@@ -61,9 +66,14 @@ public class SearchProfileActivity extends AppCompatActivity implements View.OnC
 
                 builder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        UserHandler.addUser(user);
-                        MainActivity.update();
-                        Toast.makeText(SearchProfileActivity.this,user.getNickname(), Toast.LENGTH_LONG).show();
+
+                        if(UserHandler.addUser(user)) {
+                            MainActivity.update();
+                            Toast.makeText(SearchProfileActivity.this,user.getNickname() + " hinzugefügt!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(SearchProfileActivity.this,"Es ist ein Fehler aufgetreten!", Toast.LENGTH_LONG).show();
+                        }
+
                     }
                 });
                 builder.setNegativeButton("Nein", new DialogInterface.OnClickListener() {

@@ -30,11 +30,13 @@ public class MessageAdapter extends BaseAdapter {
     private List<ChatMessage> chatMessages;
     private LayoutInflater inflater;
     private Chat chat;
+    private Context context;
 
     public MessageAdapter(Context context, Chat chat) {
         inflater = LayoutInflater.from(context);
         this.chat = chat;
         this.chatMessages = chat.getMessagesList();
+        this.context = context;
     }
 
     @Override
@@ -66,7 +68,7 @@ public class MessageAdapter extends BaseAdapter {
         // falls nötig, convertView bauen
         //if (convertView == null) {
             // Layoutdatei entfalten
-            if(chatMessage.getSender() == LocalUserHandler.getLocalUser())
+            if(chatMessage.getSender() == LocalUserHandler.getLocalUser(context))
                 convertView = inflater.inflate(R.layout.message_incomming, parent, false);
             else
                 convertView = inflater.inflate(R.layout.message_outgoing, parent, false);

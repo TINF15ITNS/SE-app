@@ -53,7 +53,7 @@ public class NewMessageFragment extends android.support.v4.app.Fragment {
                     User receiver = UserHandler.getUser(nickname, getContext());
                     Chat chat = receiver.getChat();
 
-                    chat.sendTextMessage(new TextMessage(new Date(), LocalUserHandler.getLocalUser(), message), getContext());
+                    chat.sendTextMessage(new TextMessage(new Date(), LocalUserHandler.getLocalUser(getContext()), message), getContext());
 
                     Snackbar.make(getView(), "Versendet!", Snackbar.LENGTH_LONG).show();
                 } catch (Exception ex) {

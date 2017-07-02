@@ -26,11 +26,11 @@ public class UpdateProfileRunnable implements GrpcRunnable {
     }
 
     @Override
-    public boolean execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
+    public Object execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
 
         final Response response;
         UpdateProfileRequest request = UpdateProfileRequest.newBuilder()
-                .setBirthday(localUser.getBirthday() != null ? localUser.getBirthday().toString() : "0")
+                .setBirthday(localUser.getBirthday() != null ? localUser.getBirthday().getTimeInMillis() : 0)
                 .setEmail(localUser.geteMail())
                 .setName(localUser.getName())
                 .setPhone(localUser.getTelNumber())

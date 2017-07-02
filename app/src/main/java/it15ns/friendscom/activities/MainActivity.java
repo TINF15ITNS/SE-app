@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import it15ns.friendscom.R;
 import it15ns.friendscom.adapters.SectionsPagerAdapter;
+import it15ns.friendscom.handler.LocalUserHandler;
 import it15ns.friendscom.xmpp.XMPPClient;
 
 public class MainActivity extends AppCompatActivity
@@ -113,10 +114,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
-            XMPPClient.disconnect();
-            SharedPreferences sharedPrefs = getSharedPreferences("data", Context.MODE_PRIVATE);
-            sharedPrefs.edit().putString("token", "").commit();
-            sharedPrefs.edit().putString("username", "").commit();
+            LocalUserHandler.logoutProfile(this);
 
             //TODO: flash alle speicher
             Intent intent = new Intent(this, LoginActivity.class);

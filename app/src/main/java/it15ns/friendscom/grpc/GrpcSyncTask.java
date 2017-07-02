@@ -14,37 +14,24 @@ import io.grpc.serverPackage.ServerServiceGrpc;
  */
 
 public class GrpcSyncTask {
-    private final GrpcRunnable mGrpc;
-
     // Für Emulator
-    private String mHost = "10.0.2.2";
-
+    private static String mHost = "10.0.2.2";
     // Für VPN
-    //private String mHost = "192.168.1.24";
-    private int mPort = 50051;
+    //private static String mHost = "192.168.1.43";
+    private static int mPort = 50051;
 
-    private String mPassword;
-    private String mEmail;
+    private static ManagedChannel mChannel;
 
-    private ManagedChannel mChannel;
-
-    public GrpcSyncTask(GrpcRunnable grpc) {
-        this.mGrpc = grpc;
-    }
-
-    public boolean run() {
+    public static Object execute(GrpcRunnable runnable) {
         try {
             mChannel = ManagedChannelBuilder.forAddress(mHost, mPort).usePlaintext(true).build();
             ServerServiceGrpc.ServerServiceBlockingStub blockingStub = ServerServiceGrpc.newBlockingStub(mChannel);
             ServerServiceGrpc.ServerServiceStub stub = ServerServiceGrpc.newStub(mChannel);
 
-
-            boolean logs = mGrpc.execute(blockingStub, stub);
-
+            Object response = runnable.execute(blockingStub, stub);
             mChannel.shutdown().awaitTermination(1, TimeUnit.SECONDS);
 
-            //Log.d("joup", logs);
-            return logs;
+            return response;
         } catch (Exception ex) {
             Log.d("GrpcTask", ex.getMessage());
             return false;

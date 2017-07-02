@@ -1,5 +1,6 @@
 package it15ns.friendscom.grpc.runnables;
 
+import io.grpc.serverPackage.ByNicknameRequest;
 import io.grpc.serverPackage.GetUserDetailsRequest;
 import io.grpc.serverPackage.GetUserDetailsResponse;
 import io.grpc.serverPackage.SearchUserRequest;
@@ -18,26 +19,18 @@ import it15ns.friendscom.handler.LocalUserHandler;
 
 public class GetUserDetailsRunnable implements GrpcRunnable {
     private String nickname;
-    private GrpcInvoker receiver;
 
-    public GetUserDetailsRunnable(String nickname, GrpcInvoker invoker) {
+    public GetUserDetailsRunnable(String nickname) {
         this.nickname = nickname;
-        receiver = invoker;
     }
 
     @Override
-    public boolean execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
-
-        final GetUserDetailsResponse response;
-        GetUserDetailsRequest request = GetUserDetailsRequest.newBuilder()
-                .setUserNickname(nickname)
+    public Object execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
+        ByNicknameRequest request = ByNicknameRequest.newBuilder()
+                .setNickname(nickname)
                 .build();
 
         String token = LocalUserHandler.getToken();
-        response = blockingStub.withCallCredentials(new CustomCredentials(token)).getUserDetails(request);
-
-        receiver.requestComplete(response);
-
-        return true;
+        return blockingStub.withCallCredentials(new CustomCredentials(token)).getUserDetails(request);
     }
 }

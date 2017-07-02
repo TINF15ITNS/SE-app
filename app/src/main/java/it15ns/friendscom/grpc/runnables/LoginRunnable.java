@@ -22,7 +22,7 @@ public class LoginRunnable implements GrpcRunnable {
     }
 
     @Override
-    public boolean execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
+    public Object execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
         return attempLogin(blockingStub);
     }
 

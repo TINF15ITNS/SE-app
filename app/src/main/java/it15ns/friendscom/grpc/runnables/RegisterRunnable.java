@@ -22,7 +22,7 @@ public class RegisterRunnable implements GrpcRunnable {
     }
 
     @Override
-    public boolean execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
+    public Object execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
         //throw new RuntimeException();
         final LoginResponse response;
         RegisterRequest request = RegisterRequest.newBuilder()

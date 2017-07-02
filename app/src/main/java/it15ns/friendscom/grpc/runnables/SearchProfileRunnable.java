@@ -27,7 +27,7 @@ public class SearchProfileRunnable implements GrpcRunnable {
     }
 
     @Override
-    public boolean execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
+    public Object execute(ServerServiceGrpc.ServerServiceBlockingStub blockingStub, ServerServiceGrpc.ServerServiceStub stub) {
 
         final SearchUserResponse response;
         SearchUserRequest request = SearchUserRequest.newBuilder()

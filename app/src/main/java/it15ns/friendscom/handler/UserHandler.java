@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -12,18 +13,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import io.grpc.serverPackage.GetFriendListResponse;
 import io.grpc.serverPackage.GetUserDetailsResponse;
+import io.grpc.serverPackage.Response;
 import it15ns.friendscom.grpc.GrpcInvoker;
 import it15ns.friendscom.grpc.GrpcRunnableFactory;
 import it15ns.friendscom.grpc.GrpcSyncTask;
 import it15ns.friendscom.grpc.GrpcTask;
+import it15ns.friendscom.grpc.runnables.AddToFriendlistRunnable;
+import it15ns.friendscom.grpc.runnables.GetFriendlistRunnable;
+import it15ns.friendscom.grpc.runnables.GetUserDetailsRunnable;
+import it15ns.friendscom.grpc.runnables.RemoveFromFriendlistRunnable;
 import it15ns.friendscom.model.User;
 
 /**
  * Created by danie on 31/05/2017.
  */
 
-public class UserHandler implements GrpcInvoker {
+public class UserHandler {
     private static UserHandler instance = new UserHandler();
     private static SQLiteHandler sqLiteHandler;
     private HashMap<String, User> users;
@@ -33,13 +40,23 @@ public class UserHandler implements GrpcInvoker {
     }
 
     // Metoden für die Freundesliste
-    public static void addUser(User user) {
-        instance.users.put(user.getNickname(), user);
+    public static boolean addUser(User user) {
+        Response response = (Response) GrpcSyncTask.execute(new AddToFriendlistRunnable(user.getNickname()));
+        if(response.getSuccess()) {
+            instance.users.put(user.getNickname(), user);
+            return true;
+        } else
+            return false;
     }
 
-    public static void removeUser(User user) {
-        if(instance.users.containsKey(user.getNickname()))
+    public static boolean removeUser(User user) {
+        Response response = (Response) GrpcSyncTask.execute(new RemoveFromFriendlistRunnable(user.getNickname()));
+        if(response.getSuccess()) {
             instance.users.remove(user.getNickname());
+            return true;
+        } else
+            return false;
+
     }
 
     public static User createUser(String nickname, Context context) {
@@ -50,8 +67,8 @@ public class UserHandler implements GrpcInvoker {
 
     // seach for a user using the nickname
     public static User getUser(String nickname, Context context) {
-        if(nickname.equals(LocalUserHandler.getLocalUser().getNickname())) {
-            return LocalUserHandler.getLocalUser();
+        if(nickname.equals(LocalUserHandler.getLocalUser(context).getNickname())) {
+            return LocalUserHandler.getLocalUser(context);
         }
 
         if(instance.users == null) {
@@ -113,27 +130,32 @@ public class UserHandler implements GrpcInvoker {
         sqLiteHandler = new SQLiteHandler(context);
         instance.users = new HashMap<>();
         instance.users = sqLiteHandler.getAllUsers(context);
-        for (User user: getUsers(context)) {
-            new GrpcSyncTask(GrpcRunnableFactory.getGetUserDetailsRunnable(user.getNickname(), UserHandler.instance)).run();
+        GetFriendListResponse response = (GetFriendListResponse) GrpcSyncTask.execute(new GetFriendlistRunnable(LocalUserHandler.getLocalUser(context).getNickname()));
+        if(response.getSuccess() == true) {
+            for (String nickname:response.getFriendListList()) {
+                if(!instance.users.containsKey(nickname))
+                    createUser(nickname, context);
+            }
         }
     }
 
-    @Override
-    public void requestComplete(Object response) {
-        GetUserDetailsResponse user = (GetUserDetailsResponse) response;
-        if(user.getSuccess() == true)  {
-
-            User localUser = instance.users.get(user.getNickname());
-            localUser.setName(user.getName());
-            localUser.setSurname(user.getSurname());
-            localUser.setTelNumber(user.getPhone());
-            localUser.setMail(user.getEmail());
+    public static User getUserDetails(String nickname) {
+        User user = instance.users.get(nickname);
+        GetUserDetailsResponse response = (GetUserDetailsResponse) GrpcSyncTask.execute(new GetUserDetailsRunnable(user.getNickname()));
+        if(response.getSuccess() == true)  {
+            user.setName(response.getName());
+            user.setSurname(response.getSurname());
+            user.setTelNumber(response.getPhone());
+            user.setMail(response.getEmail());
             try {
-                Date birthday = Date.valueOf(user.getBirthday());
-                localUser.setBirthday(birthday);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(response.getBirthday());
+                user.setBirthday(calendar);
             } catch (Exception ex) {
                 Log.d("LocalUserHandler", "Birthday not valid: " + ex.getMessage() );
             }
         }
+
+        return user;
     }
 }

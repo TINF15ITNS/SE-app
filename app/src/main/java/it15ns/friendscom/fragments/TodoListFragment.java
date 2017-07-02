@@ -25,7 +25,7 @@ import it15ns.friendscom.model.User;
  * Created by danie on 12/05/2017.
  */
 
-public class ContactListFragment extends Fragment {
+public class TodoListFragment extends Fragment {
     View view;
     ListView contactList;
     FragmentManager fragmentManager;

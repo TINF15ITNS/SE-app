@@ -168,8 +168,6 @@ public class LoginActivity extends AppCompatActivity {
 
     public void xmppLoginFinished(boolean success) {
         if(success) {
-            LocalUserHandler.init(this);
-
             showProgress(false);
             Intent chatActivity = new Intent(this,MainActivity.class);
             startActivity(chatActivity);

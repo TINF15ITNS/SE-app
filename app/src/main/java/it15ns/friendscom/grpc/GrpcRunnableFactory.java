@@ -39,7 +39,7 @@ public class GrpcRunnableFactory {
         return new UpdateProfileRunnable(user, activity);
     }
 
-    public static GetUserDetailsRunnable getGetUserDetailsRunnable(String nickname, GrpcInvoker invoker) {
-        return new GetUserDetailsRunnable(nickname, invoker);
+    public static GetUserDetailsRunnable getGetUserDetailsRunnable(String nickname) {
+        return new GetUserDetailsRunnable(nickname);
     }
 }

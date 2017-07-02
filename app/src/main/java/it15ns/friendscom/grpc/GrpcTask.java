@@ -18,6 +18,7 @@ public class GrpcTask extends AsyncTask<Void, Void, Boolean> {
 
     // Für Emulator
     private String mHost = "10.0.2.2";
+    //private String mHost = "192.168.1.43";
 
     // Für VPN
     //private String mHost = "192.168.1.24";
@@ -29,7 +30,6 @@ public class GrpcTask extends AsyncTask<Void, Void, Boolean> {
     private ManagedChannel mChannel;
 
     public GrpcTask(GrpcRunnable grpc) {
-
         this.mGrpc = grpc;
     }
 
@@ -45,7 +45,7 @@ public class GrpcTask extends AsyncTask<Void, Void, Boolean> {
             ServerServiceGrpc.ServerServiceStub stub = ServerServiceGrpc.newStub(mChannel);
 
 
-            boolean logs = mGrpc.execute(blockingStub, stub);
+            boolean logs = (boolean) mGrpc.execute(blockingStub, stub);
 
             //Log.d("joup", logs);
             return logs;

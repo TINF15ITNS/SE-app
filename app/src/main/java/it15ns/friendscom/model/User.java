@@ -3,8 +3,7 @@ package it15ns.friendscom.model;
 import android.content.Context;
 import android.media.Image;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import it15ns.friendscom.datatypes.Debt;
 import it15ns.friendscom.datatypes.Location;
@@ -19,7 +18,7 @@ public class User {
     private String nickname;
     private String name;
     private String surname;
-    private Date birthday;
+    private java.util.Calendar birthday;
     private String telNumber;
     private String eMail;
     private Image profilePicture;
@@ -69,7 +68,7 @@ public class User {
         this.surname = surname;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(java.util.Calendar birthday) {
         this.birthday = birthday;
     }
 
@@ -123,7 +122,7 @@ public class User {
         return surname != null ? surname : nickname;
     }
 
-    public Date getBirthday() {
+    public java.util.Calendar getBirthday() {
         return birthday;
     }
 

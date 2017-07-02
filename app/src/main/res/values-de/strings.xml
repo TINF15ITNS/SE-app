@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FriendsCom</string>
-    <string name="action_sign_in">Einloggen oder registrieren</string>
+    <string name="action_sign_in">Einloggen</string>
     <string name="action_sign_in_short">Einloggen</string>
     <string name="action_register">Registrieren</string>
     <string name="error_field_required">Dieses Feld is nicht optional</string>

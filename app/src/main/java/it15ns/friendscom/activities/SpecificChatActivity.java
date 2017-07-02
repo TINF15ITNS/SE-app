@@ -96,7 +96,7 @@ public class SpecificChatActivity extends AppCompatActivity {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextMessage message = new TextMessage(txt_msg.getText().toString(), LocalUserHandler.getLocalUser());
+                TextMessage message = new TextMessage(txt_msg.getText().toString(), LocalUserHandler.getLocalUser(getApplicationContext()));
                 message.setDate(new Date());
 
                 if(isTextBoxEmpty()){
@@ -139,7 +139,7 @@ public class SpecificChatActivity extends AppCompatActivity {
         TextView tv = new TextView(ctx_main);
         tv.setTextSize(20);
 
-        if(message.getSender() == LocalUserHandler.getLocalUser()){
+        if(message.getSender() == LocalUserHandler.getLocalUser(this)){
             tv.setTextColor(Color.parseColor("#ffffff"));   //dark blue
         }else{
             tv.setTextColor(Color.parseColor("#000"));   //dark red

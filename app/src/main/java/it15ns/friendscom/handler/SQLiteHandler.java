@@ -55,6 +55,23 @@ public class SQLiteHandler extends SQLiteOpenHelper{
         return false;
     }
 
+    public void deleteAllTables() {
+        // query to obtain the names of all tables in your database
+        Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+        List<String> tables = new ArrayList<>();
+
+// iterate over the result set, adding every table name to a list
+        while (c.moveToNext()) {
+            tables.add(c.getString(0));
+        }
+
+// call DROP TABLE on every table name
+        for (String table : tables) {
+            String dropQuery = "DROP TABLE IF EXISTS " + table;
+            db.execSQL(dropQuery);
+        }
+    }
+
     public void createChatTable(String nickname){
         SQLiteDatabase db = this.getWritableDatabase(); //open db object
         db.execSQL("Create Table " + nickname + "(sender varchar(255), date int, msg varchar(255))"); //sql richtig? wollen wir en PK?
