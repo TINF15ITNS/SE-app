@@ -1,5 +1,7 @@
 package it15ns.friendscom.xmpp;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,9 +21,15 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.security.InvalidParameterException;
+import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.util.concurrent.ExecutionException;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import it15ns.friendscom.activities.MainActivity;
 import it15ns.friendscom.activities.LoginActivity;
@@ -37,9 +45,11 @@ public class XMPPClient {
 
     private static final String DOMAIN = "localhost";
     private static final String HOST = "";
-    private static final String IPADRESS = "10.0.2.2";
+    //private static final String IPADRESS = "10.0.2.2";
 
     //private static final String IPADRESS = "192.168.1.43";
+    private static final String IPADRESS = "141.72.191.147";
+
     private static final int PORT = 5222;
 
     private String username ="";
@@ -69,17 +79,35 @@ public class XMPPClient {
     }
 
     //Initialize
-    public static void init(String username,String password ) throws Exception{
+    public static void init(String username, String password, Context ctx) throws Exception{
         Log.i("XMPP", "Initializing!");
+
+        Resources res = ctx.getResources();
+        String packageName = ctx.getApplicationContext().getPackageName();
+        int id = res.getIdentifier("raw/trusted_keys", "raw", packageName);
+        InputStream ins = res.openRawResource(id);
+
+        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+        ks.load(ins,"P@ssw0rd".toCharArray());
+
+        TrustManagerFactory tmf =
+                TrustManagerFactory
+                        .getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        tmf.init(ks);
+
+        SSLContext sslctx = SSLContext.getInstance("TLS");
+        sslctx.init(null, tmf.getTrustManagers(), new SecureRandom());
 
         instance.username = username;
         instance.password = password;
         XMPPTCPConnectionConfiguration.Builder configBuilder = XMPPTCPConnectionConfiguration.builder()
             .setUsernameAndPassword(username, instance.password)
-            .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
-                .setDebuggerEnabled(true)
+            .setSecurityMode(ConnectionConfiguration.SecurityMode.required)
+            .setDebuggerEnabled(true)
             .setResource("Android")
-            .setXmppDomain(DOMAIN)
+            .setCustomSSLContext(sslctx)
+            //.setXmppDomain(DOMAIN)
+             .setXmppDomain(IPADRESS)
             .setPort(PORT);
 
         if(HOST != "") {

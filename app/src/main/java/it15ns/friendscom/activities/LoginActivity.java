@@ -151,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
             sharedPrefs.edit().putString("username", username).commit();
             LocalUserHandler.setToken(token);
             try {
-                XMPPClient.init(username, token);
+                XMPPClient.init(username, token, getApplicationContext());
                 // start async task
                 XMPPClient.connect(this);
             } catch (Exception ex) {

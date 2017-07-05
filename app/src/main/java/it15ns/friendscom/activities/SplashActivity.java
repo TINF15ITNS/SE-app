@@ -35,7 +35,7 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(intent);
         } else {
             try {
-                XMPPClient.init(LocalUserHandler.getLocalUser(this).getNickname(), LocalUserHandler.getToken());
+                XMPPClient.init(LocalUserHandler.getLocalUser(this).getNickname(), LocalUserHandler.getToken(), getApplicationContext());
                 // start async task
                 XMPPClient.connect(this);
             } catch (Exception ex) {

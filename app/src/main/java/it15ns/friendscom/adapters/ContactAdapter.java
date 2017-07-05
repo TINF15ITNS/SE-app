@@ -89,7 +89,7 @@ public class ContactAdapter extends BaseAdapter {
 
         if (++position >= getCount()) {
             position = 0;
-        }
+    }
         return convertView;
     }
 

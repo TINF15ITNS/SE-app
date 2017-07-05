@@ -15,7 +15,8 @@ import io.grpc.serverPackage.ServerServiceGrpc;
 
 public class GrpcSyncTask {
     // Für Emulator
-    private static String mHost = "10.0.2.2";
+    //private static String IPADRESS = "10.0.2.2";
+    private static final String IPADRESS = "141.72.191.147";
     // Für VPN
     //private static String mHost = "192.168.1.43";
     private static int mPort = 50051;
@@ -24,7 +25,7 @@ public class GrpcSyncTask {
 
     public static Object execute(GrpcRunnable runnable) {
         try {
-            mChannel = ManagedChannelBuilder.forAddress(mHost, mPort).usePlaintext(true).build();
+            mChannel = ManagedChannelBuilder.forAddress(IPADRESS, mPort).usePlaintext(true).build();
             ServerServiceGrpc.ServerServiceBlockingStub blockingStub = ServerServiceGrpc.newBlockingStub(mChannel);
             ServerServiceGrpc.ServerServiceStub stub = ServerServiceGrpc.newStub(mChannel);
 

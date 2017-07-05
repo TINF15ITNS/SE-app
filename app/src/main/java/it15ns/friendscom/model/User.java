@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.Image;
 
 import java.util.*;
+import java.util.Calendar;
 
 import it15ns.friendscom.datatypes.Debt;
 import it15ns.friendscom.datatypes.Location;
@@ -123,7 +124,9 @@ public class User {
     }
 
     public java.util.Calendar getBirthday() {
-        return birthday;
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(0);
+        return birthday != null ?  cal : birthday;
     }
 
     public String getTelNumber() {

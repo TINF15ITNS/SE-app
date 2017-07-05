@@ -17,9 +17,10 @@ public class GrpcTask extends AsyncTask<Void, Void, Boolean> {
     private final GrpcRunnable mGrpc;
 
     // Für Emulator
-    private String mHost = "10.0.2.2";
-    //private String mHost = "192.168.1.43";
+    //private String IPADRESS = "10.0.2.2";
 
+    //private String mHost = "192.168.1.43";
+    private static final String IPADRESS = "141.72.191.147";
     // Für VPN
     //private String mHost = "192.168.1.24";
     private int mPort = 50051;
@@ -40,7 +41,7 @@ public class GrpcTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... nothing) {
         try {
-            mChannel = ManagedChannelBuilder.forAddress(mHost, mPort).usePlaintext(true).build();
+            mChannel = ManagedChannelBuilder.forAddress(IPADRESS, mPort).usePlaintext(true).build();
             ServerServiceGrpc.ServerServiceBlockingStub blockingStub = ServerServiceGrpc.newBlockingStub(mChannel);
             ServerServiceGrpc.ServerServiceStub stub = ServerServiceGrpc.newStub(mChannel);
 

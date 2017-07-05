@@ -120,12 +120,14 @@ public class RegisterActivity extends AppCompatActivity {
             sharedPrefs.edit().putString("username", username).commit();
 
             try {
-                XMPPClient.init(text_nickname.getText().toString(), token);
+                XMPPClient.init(text_nickname.getText().toString(), token, getApplicationContext());
                 // start async task
                 XMPPClient.connect(this);
             } catch (Exception ex) {
                 Toast.makeText(RegisterActivity.this, "Es gibt Probleme mit dem Nachrichtenserver!", Toast.LENGTH_LONG).show();
                 Log.d("XMPP Error", ex.getMessage());
+                Intent loginActivity = new Intent(this,LoginActivity.class);
+                startActivity(loginActivity);
             }
 
             // TODO: Abfangen nach Registrieren --> Direkter Login
