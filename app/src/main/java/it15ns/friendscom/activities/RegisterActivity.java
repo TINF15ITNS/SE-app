@@ -95,7 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
             showProgress(true);
             // start async background thread for grpc authentication
 
-            new GrpcTask(GrpcRunnableFactory.getRegisterRunnable(username, password , this)).execute();
+            new GrpcTask(GrpcRunnableFactory.getRegisterRunnable(username, password , this), getApplicationContext()).execute();
         }
     }
 

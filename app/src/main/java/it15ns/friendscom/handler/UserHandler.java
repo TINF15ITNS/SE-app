@@ -3,7 +3,6 @@ package it15ns.friendscom.handler;
 import android.content.Context;
 import android.util.Log;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -11,15 +10,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import io.grpc.serverPackage.GetFriendListResponse;
 import io.grpc.serverPackage.GetUserDetailsResponse;
 import io.grpc.serverPackage.Response;
-import it15ns.friendscom.grpc.GrpcInvoker;
-import it15ns.friendscom.grpc.GrpcRunnableFactory;
 import it15ns.friendscom.grpc.GrpcSyncTask;
-import it15ns.friendscom.grpc.GrpcTask;
 import it15ns.friendscom.grpc.runnables.AddToFriendlistRunnable;
 import it15ns.friendscom.grpc.runnables.GetFriendlistRunnable;
 import it15ns.friendscom.grpc.runnables.GetUserDetailsRunnable;

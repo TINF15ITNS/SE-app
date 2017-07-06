@@ -91,7 +91,7 @@ public class SearchProfileActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View v) {
         String searchString = profileName.getText().toString();
-        new GrpcTask(GrpcRunnableFactory.getSearchProfileRunnable(searchString, this)).execute();
+        new GrpcTask(GrpcRunnableFactory.getSearchProfileRunnable(searchString, this), getApplicationContext()).execute();
     }
 
     public void searchResult(SearchUserResponse response) {

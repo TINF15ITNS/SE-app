@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+import it15ns.friendscom.R;
 import it15ns.friendscom.activities.MainActivity;
 import it15ns.friendscom.activities.LoginActivity;
 import it15ns.friendscom.activities.RegisterActivity;
@@ -40,40 +41,35 @@ import it15ns.friendscom.activities.SplashActivity;
 public class XMPPClient {
     private static XMPPClient instance = new XMPPClient();
 
-    public static boolean USE_STREAM_MANAGEMENT = false;
-    public static int STREAM_MANAGEMENT_RESUMPTION_TIME = 30;
 
-    private static final String DOMAIN = "localhost";
-    private static final String HOST = "";
-    //private static final String IPADRESS = "10.0.2.2";
-
-    //private static final String IPADRESS = "192.168.1.43";
-    private static final String IPADRESS = "141.72.191.147";
-
+    // server properties
+    //replace with your Server IP
+    private static String ipaddress;
     private static final int PORT = 5222;
+    // Für Emulator localhost
+    // private String IPADRESS = "10.0.2.2";
 
-    private String username ="";
-    private String password = "";
-
-    XMPPTCPConnection connection ;
-    ChatManager chatmanager ;
-    Chat newChat;
-    XMPPConnectionListener connectionListener = new XMPPConnectionListener();
-    XMPPChatListener chatListener = new XMPPChatListener();
-
+    private XMPPTCPConnection connection ;
+    private ChatManager chatmanager ;
+    private Chat newChat;
+    private XMPPConnectionListener connectionListener = new XMPPConnectionListener();
+    private XMPPChatListener chatListener = new XMPPChatListener();
     private boolean connected;
-    private boolean isToasted;
-    private boolean chatCreated;
     private boolean loggedIn;
+    private boolean chatCreated;
+    // initialized by init function to send messages later
 
-    // privater Konstruktor -> Singleton pattern
+
+    // privater Konstruktor -> Singleton
     private XMPPClient() {}
 
-    // Um das Fragment upzudaten aus dem ChatListener
+    // Wird im Chatlistener gebraucht um auf der mainactivity update() aufruffen zu können, falls eine Nachricht asynchron eintrtifft
+    // MainActivity informiert die adapter
     public static void setChatActivity(MainActivity activity) {
         instance.chatListener.setMainActivity(activity);
     }
 
+    // Wird im Chatlistener gebraucht um den specific chat zu updaten wenn eine neue nachricht eintrifft
     public static void setSpecificChatActivity(SpecificChatActivity specificChatActivity) {
         instance.chatListener.setSpecificChatActivity(specificChatActivity);
     }
@@ -82,47 +78,42 @@ public class XMPPClient {
     public static void init(String username, String password, Context ctx) throws Exception{
         Log.i("XMPP", "Initializing!");
 
+        // load resources to get the ipadress of the server and the ssl certificate
         Resources res = ctx.getResources();
+
+
+        // get the the trust manager
         String packageName = ctx.getApplicationContext().getPackageName();
         int id = res.getIdentifier("raw/trusted_keys", "raw", packageName);
         InputStream ins = res.openRawResource(id);
-
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
         ks.load(ins,"P@ssw0rd".toCharArray());
-
-        TrustManagerFactory tmf =
-                TrustManagerFactory
-                        .getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         tmf.init(ks);
 
+        // initialize an ssl context with the trust manager
         SSLContext sslctx = SSLContext.getInstance("TLS");
         sslctx.init(null, tmf.getTrustManagers(), new SecureRandom());
+        // create
+        instance.ipaddress = res.getString(R.string.ipaddress);
+        // get ip address from resources and save it lcoally to use in for sending messages
+        InetAddress serverInetAddress = InetAddress.getByName(instance.ipaddress);
 
-        instance.username = username;
-        instance.password = password;
         XMPPTCPConnectionConfiguration.Builder configBuilder = XMPPTCPConnectionConfiguration.builder()
-            .setUsernameAndPassword(username, instance.password)
+            .setUsernameAndPassword(username, password)
             .setSecurityMode(ConnectionConfiguration.SecurityMode.required)
             .setDebuggerEnabled(true)
             .setResource("Android")
             .setCustomSSLContext(sslctx)
             //.setXmppDomain(DOMAIN)
-             .setXmppDomain(IPADRESS)
-            .setPort(PORT);
-
-        if(HOST != "") {
-            configBuilder.setHost(HOST);
-        } else if(IPADRESS != "") {
-            InetAddress inetAddress = InetAddress.getByName(IPADRESS);
-            configBuilder.setHostAddress(inetAddress);
-        } else {
-            throw new InvalidParameterException();
-        }
+             .setXmppDomain(instance.ipaddress)
+            .setPort(PORT)
+            .setHostAddress(serverInetAddress);
 
         instance.connection = new XMPPTCPConnection(configBuilder.build());
-        instance.connection.setUseStreamManagement(USE_STREAM_MANAGEMENT);
-        instance.connection.setUseStreamManagementResumption(USE_STREAM_MANAGEMENT);
-        instance.connection.setPreferredResumptionTime(STREAM_MANAGEMENT_RESUMPTION_TIME);
+        instance.connection.setUseStreamManagement(false);
+        instance.connection.setUseStreamManagementResumption(false);
+        instance.connection.setPreferredResumptionTime(30);
         instance.connection.addConnectionListener(instance.connectionListener);
     }
 
@@ -265,12 +256,11 @@ public class XMPPClient {
 
     public static boolean sendMsg(String nickname, String message) {
         if (instance.connection.isConnected()) {
-            // Assume we've created an XMPPConnection name "connection"._
             instance.chatmanager = ChatManager.getInstanceFor(instance.connection);
 
             String jid;
             if(!nickname.contains("@"))
-                jid = nickname.concat("@localhost");
+                jid = nickname.concat("@"+ instance.ipaddress);
             else
                 jid = nickname;
 
@@ -291,6 +281,7 @@ public class XMPPClient {
 
     public static void login() throws XMPPException, IOException, SmackException, InterruptedException {
         instance.connection.login();
+        instance.loggedIn = true;
     }
 
     //Connection Listener to check connection state
@@ -300,9 +291,6 @@ public class XMPPClient {
         public void connected(final XMPPConnection connection) {
             Log.d("xmpp", "Connected!");
             connected = true;
-            if (!connection.isAuthenticated()) {
-                //login();
-            }
         }
 
         @Override
@@ -312,45 +300,10 @@ public class XMPPClient {
 
             chatmanager = ChatManager.getInstanceFor(connection);
             chatmanager.addIncomingListener(chatListener);
-
-            /*
-            chatCreated = false;
-            new Thread(new Runnable() {
-
-            @Override
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-               // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-                }
-            }).start();
-
-            if (isToasted)
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        // TODO Auto-generated method stub
-                    }
-                });
-            */
         }
 
         @Override
         public void connectionClosed() {
-            if (isToasted)
-
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        // TODO Auto-generated method stub
-
-
-                    }
-                });
             Log.d("xmpp", "ConnectionCLosed!");
             connected = false;
             chatCreated = false;
@@ -359,43 +312,21 @@ public class XMPPClient {
 
         @Override
         public void connectionClosedOnError(Exception arg0) {
-            if (isToasted)
 
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                    }
-                });
             Log.d("xmpp", "ConnectionClosedOn Error!");
             connected = false;
-
             chatCreated = false;
             loggedIn = false;
         }
 
         @Override
         public void reconnectingIn(int arg0) {
-
             Log.d("xmpp", "Reconnectingin " + arg0);
-
             loggedIn = false;
         }
 
         @Override
         public void reconnectionFailed(Exception arg0) {
-            if (isToasted)
-
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-
-
-                    }
-                });
             Log.d("xmpp", "ReconnectionFailed!");
             connected = false;
 
@@ -405,16 +336,6 @@ public class XMPPClient {
 
         @Override
         public void reconnectionSuccessful() {
-            if (isToasted)
-
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        // TODO Auto-generated method stub
-
-                    }
-                });
             Log.d("xmpp", "ReconnectionSuccessful");
             connected = true;
 

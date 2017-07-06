@@ -126,7 +126,7 @@ public class User {
     public java.util.Calendar getBirthday() {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(0);
-        return birthday != null ?  cal : birthday;
+        return birthday == null ? cal : birthday;
     }
 
     public String getTelNumber() {

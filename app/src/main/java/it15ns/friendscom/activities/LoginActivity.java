@@ -125,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
             // perform the user login attempt.
             showProgress(true);
             // start async background thread for grpc authentication
-            new GrpcTask(GrpcRunnableFactory.getLoginRunnable(username, password , this)).execute();
+            new GrpcTask(GrpcRunnableFactory.getLoginRunnable(username, password , this), getApplicationContext()).execute();
         }
     }
 

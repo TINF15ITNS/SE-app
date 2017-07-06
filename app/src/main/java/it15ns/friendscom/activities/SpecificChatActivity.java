@@ -113,7 +113,7 @@ public class SpecificChatActivity extends AppCompatActivity {
                     if(chat != null)
                         sendMessage(message);
                     else {
-                        String partner = txt_chatPartner.getText().toString();
+                        String partner = txt_chatPartner.getText().toString().toLowerCase();
                         if(!partner.equals("Chat Partner") && partner.length() > 4) {
                             SearchUserResponse response = (SearchUserResponse) GrpcSyncTask.execute(new SyncSearchProfileRunnable(partner));
                             if(response.getSuccess()) {

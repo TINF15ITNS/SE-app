@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import it15ns.friendscom.R;
+import it15ns.friendscom.grpc.GrpcSyncTask;
 import it15ns.friendscom.handler.LocalUserHandler;
 import it15ns.friendscom.xmpp.XMPPClient;
 
@@ -23,6 +24,7 @@ public class SplashActivity extends AppCompatActivity {
         splash_progress = findViewById(R.id.splash_progress);
         showProgress(true);
 
+        GrpcSyncTask.setContext(getApplicationContext());
         /**
         SharedPreferences sharedPrefs = getSharedPreferences("data", Context.MODE_PRIVATE);
         String token = sharedPrefs.getString("token", "");

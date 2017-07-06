@@ -2,18 +2,13 @@ package it15ns.friendscom.handler;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 
-import java.sql.Date;
 import java.util.Calendar;
 
 import io.grpc.serverPackage.GetUserDetailsResponse;
 import io.grpc.serverPackage.Response;
-import it15ns.friendscom.grpc.GrpcInvoker;
-import it15ns.friendscom.grpc.GrpcRunnableFactory;
 import it15ns.friendscom.grpc.GrpcSyncTask;
-import it15ns.friendscom.grpc.GrpcTask;
 import it15ns.friendscom.grpc.runnables.DeleteProfileRunnable;
 import it15ns.friendscom.grpc.runnables.GetUserDetailsRunnable;
 import it15ns.friendscom.model.User;

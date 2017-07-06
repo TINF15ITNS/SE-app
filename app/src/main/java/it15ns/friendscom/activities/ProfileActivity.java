@@ -314,16 +314,17 @@ public class ProfileActivity extends AppCompatActivity {
         tempUser.setBirthday(calendar);
     }
 
+    // save methods
+    // will be invoked by the save button
     private void updateLocalUser() {
         tempUser.setName(e_name.getText().toString());
         tempUser.setSurname(e_surname.getText().toString());
-        if (!e_birthday.getText().toString().equals("")) {
-            //tempUser.setBirthday(new java.util.Calendar().set(year, ) .valueOf(e_birthday.getText().toString()));
-            //TODO:passt der string?
-        }
+
         tempUser.setTelNumber(e_telnr.getText().toString());
         tempUser.setMail(e_email.getText().toString());
-        new GrpcTask(new UpdateProfileRunnable(tempUser, this)).execute();
+        // start async task
+        // will invoke updateResult
+        new GrpcTask(new UpdateProfileRunnable(tempUser, this), getApplicationContext()).execute();
     }
 
     public void updateResult(Response response) {

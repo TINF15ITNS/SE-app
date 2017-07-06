@@ -1,15 +1,8 @@
 package it15ns.friendscom.grpc.runnables;
 
 import io.grpc.serverPackage.ByNicknameRequest;
-import io.grpc.serverPackage.GetUserDetailsRequest;
-import io.grpc.serverPackage.GetUserDetailsResponse;
-import io.grpc.serverPackage.SearchUserRequest;
-import io.grpc.serverPackage.SearchUserResponse;
 import io.grpc.serverPackage.ServerServiceGrpc;
-import it15ns.friendscom.activities.ProfileActivity;
-import it15ns.friendscom.activities.SearchProfileActivity;
 import it15ns.friendscom.grpc.CustomCredentials;
-import it15ns.friendscom.grpc.GrpcInvoker;
 import it15ns.friendscom.grpc.GrpcRunnable;
 import it15ns.friendscom.handler.LocalUserHandler;
 
