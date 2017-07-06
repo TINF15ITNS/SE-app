@@ -61,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
         text_password.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = text_nickname.getText().toString();
+        String username = text_nickname.getText().toString().trim().toLowerCase();
         String password = text_password.getText().toString();
 
         boolean cancel = false;
@@ -99,18 +99,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    public void xmppLoginFinished(boolean success) {
-        if(success) {
-            showProgress(false);
-            Intent chatActivity = new Intent(this,MainActivity.class);
-            startActivity(chatActivity);
-        } else {
-            showProgress(false);
-            Toast.makeText(RegisterActivity.this, "Es gibt Probleme mit dem Nachrichtenserver!", Toast.LENGTH_LONG).show();
-            text_password.requestFocus();
-        }
-    }
-
     public void registerResult(LoginResponse response) {
         if(response.getSuccess()) {
             String username = text_nickname.getText().toString();
@@ -129,13 +117,23 @@ public class RegisterActivity extends AppCompatActivity {
                 Intent loginActivity = new Intent(this,LoginActivity.class);
                 startActivity(loginActivity);
             }
+        } else {
+            showProgress(false);
+            Toast.makeText(RegisterActivity.this, "Registrierung fehlgeschlagen", Toast.LENGTH_LONG).show();
+            text_password.requestFocus();
+        }
+    }
 
-            // TODO: Abfangen nach Registrieren --> Direkter Login
+    public void xmppLoginFinished(boolean success) {
+        if(success) {
+            showProgress(false);
             Intent chatActivity = new Intent(this,MainActivity.class);
             startActivity(chatActivity);
         } else {
             showProgress(false);
-            Toast.makeText(RegisterActivity.this, "Registrierung fehlgeschlagen", Toast.LENGTH_LONG).show();
+            Intent loginActivity = new Intent(this,LoginActivity.class);
+            startActivity(loginActivity);
+            Toast.makeText(RegisterActivity.this, "Es gibt Probleme mit dem Nachrichtenserver!", Toast.LENGTH_LONG).show();
             text_password.requestFocus();
         }
     }

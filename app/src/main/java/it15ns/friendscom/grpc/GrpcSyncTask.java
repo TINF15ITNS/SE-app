@@ -25,6 +25,7 @@ public class GrpcSyncTask {
     {
         context = applicationContext;
     }
+
     public static Object execute(GrpcRunnable runnable) {
         String IPADRESS =  context.getResources().getString(R.string.ipaddress);
         try {
